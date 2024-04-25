@@ -2,64 +2,86 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Restaurant;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class AdminController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // Afficher tous les utilisateurs
     public function index()
     {
-        //
-        return view('admin.index');
+        $users = User::where('role', 'admin')->get();
+$restaurants = Restaurant::all();
+return view('superadmin.users.index', compact('users', 'restaurants', ));
+
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    // Afficher le formulaire de création d'utilisateur
     public function create()
     {
-        //
+        return view('superadmin.users.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Enregistrer un nouvel utilisateur dans la base de données
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6',
+        ]);
+
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'role' => 'admin',
+        ]);
+
+        return redirect()->route('superadmin.users.index')->with('success', 'Utilisateur créé avec succès.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    // Afficher les détails d'un utilisateur spécifique
+    public function show($id)
     {
-        //
+        $user = User::findOrFail($id);
+        return view('superadmin.users.show', compact('user'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    // Afficher le formulaire de modification d'utilisateur
+    public function edit($id)
     {
-        //
+        $user = User::findOrFail($id);
+        return view('superadmin.users.edit', compact('user'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    // Mettre à jour les informations d'un utilisateur dans la base de données
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|email|unique:users,email,'.$id,
+            'password' => 'nullable|string|min:6',
+        ]);
+
+        $user = User::findOrFail($id);
+        $user->name = $request->name;
+        $user->email = $request->email;
+        if ($request->password) {
+            $user->password = bcrypt($request->password);
+        }
+        $user->save();
+
+        return redirect()->route('superadmin.users.index')->with('success', 'Informations utilisateur mises à jour avec succès.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    // Supprimer un utilisateur de la base de données
+    public function destroy($id)
     {
-        //
+        $user = User::findOrFail($id);
+        $user->delete();
+
+        return redirect()->route('superadmin.users.index')->with('success', 'Utilisateur supprimé avec succès.');
     }
 }
