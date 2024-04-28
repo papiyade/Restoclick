@@ -18,10 +18,10 @@ class RestaurantController extends Controller
     //     return view('superadmin.restaurants.index', compact('restaurants'));
     // }
     public function index()
-{
-    $restaurants = Restaurant::with('admin')->get();
-    return view('superadmin.restaurants.index', compact('restaurants'));
-}
+    {
+        $restaurants = Restaurant::with('admin')->get();
+        return view('superadmin.restaurants.index', compact('restaurants'));
+    }
 
 
     /**
@@ -32,8 +32,6 @@ class RestaurantController extends Controller
         //
         $admins = User::where('role', 'admin')->get();
         return view('superadmin.restaurants.create', compact('admins'));
-
-
     }
 
     /**
@@ -74,24 +72,42 @@ class RestaurantController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
-        //
+        $restaurant = Restaurant::findOrFail($id);
+        return view('superadmin.restaurants.edit', compact('restaurant'));
     }
+
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required|string',
+            'address' => 'required|string',
+            'phone_number' => 'required|string',
+            'email' => 'required|email',
+        ]);
+
+        $restaurant = Restaurant::findOrFail($id);
+        $restaurant->update($validatedData);
+
+        return redirect()->route('superadmin.restaurants.index')->with('success', 'Restaurant modifié avec succès');
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
         //
+        $restaurant = Restaurant::findOrFail($id);
+        $restaurant->delete();
+
+        return redirect()->route('superadmin.restaurants.index')->with('success', 'Restaurant supprimé avec succès.');
+
     }
 }

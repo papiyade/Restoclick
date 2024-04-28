@@ -14,7 +14,7 @@
     <!-- Contenu de la page d'accueil -->
 
                             <!-- Column starts -->
-                            <div class="col-xl-12">
+                            <div class="col-xl-12" style="width: 90%;">
                                 <div class="card dz-card" id="bootstrap-table1">
                                     <div class="card-header flex-wrap border-0 d-flex justify-content-between align-items-center">
                                         <div>
@@ -57,8 +57,12 @@
                                                                             <svg width="20px" height="20px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"/><circle fill="#000000" cx="5" cy="12" r="2"/><circle fill="#000000" cx="12" cy="12" r="2"/><circle fill="#000000" cx="19" cy="12" r="2"/></g></svg>
                                                                         </button>
                                                                         <div class="dropdown-menu">
-                                                                            <a class="dropdown-item" href="#">Edit</a>
-                                                                            <a class="dropdown-item" href="#">Delete</a>
+                                                                            <a class="dropdown-item" href="{{ route('superadmin.restaurants.edit', ['id' => $restaurant->id]) }}">Modifier</a>
+                                                                            <form method="POST" action="{{ route('superadmin.restaurants.destroy', $restaurant->id) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce restaurant ?')">
+                                                                                @csrf
+                                                                                @method('DELETE')
+                                                                                <button type="submit" class="btn btn-danger">Supprimer</button>
+                                                                            </form>
                                                                         </div>
                                                                     </div>
                                                                 </td>

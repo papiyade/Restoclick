@@ -8,12 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Plat extends Model
 {
     use HasFactory;
-    protected $fillable = ['menu_id', 'category_id', 'name', 'description', 'price', 'image_url', 'availability'];
-
-    public function menu()
-    {
-        return $this->belongsTo(Menu::class);
-    }
+    protected $fillable = ['category_id', 'name', 'description', 'price', 'image_url', 'availability'];
 
     public function category()
     {

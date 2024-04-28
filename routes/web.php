@@ -4,6 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\RestaurantController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\PlatController;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     return view('welcome');
@@ -17,9 +20,11 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::get('/dashboard', function () {
+        if (Auth::user()->hasRole('superadmin')) {
+            return redirect()->route('superadmin.users.index');
+        }
         return view('dashboard');
     })->name('dashboard');
-
 });
 Route::get('superadmin/index',[SuperAdminController::class,'index'])->name(('superadmin.index'));
 Route::get('superadmin/restaurants/create', [RestaurantController::class, 'create'])->name('superadmin.restaurants.create');
@@ -41,4 +46,30 @@ Route::get('superadmin/users/{id}/edit', [AdminController::class, 'edit'])->name
 Route::put('superadmin/users/{id}', [AdminController::class, 'update'])->name('superadmin.users.update');
 Route::delete('superadmin/users/{id}', [AdminController::class,'destroy'])->name('superadmin.users.destroy');
 
+Route::get('superadmin/restaurants/{id}/edit', [RestaurantController::class , 'edit'])->name('superadmin.restaurants.edit');
+Route::put('superadmin/restaurants/{id}', [RestaurantController::class, 'update'])->name('superadmin.restaurants.update');
+Route::delete('superadmin/restaurants/{id}', [RestaurantController::class,'destroy'])->name('superadmin.restaurants.destroy');
 
+Route::middleware(['web', 'auth', 'redirectIfAuthenticated'])->group(function () {
+});
+    //  routes categories
+
+Route::get('admin/categories', [CategoryController::class, 'index'])->name('admin.categories.index');
+Route::get('admin/categories/create', [CategoryController::class, 'create'])->name('admin.categories.create');
+Route::post('admin/categories', [CategoryController::class, 'store'])->name('admin.categories.store');
+Route::get('admin/categories/{category}/edit', [CategoryController::class, 'edit'])->name('admin.categories.edit');
+Route::put('admin/categories/{category}', [CategoryController::class, 'update'])->name('admin.categories.update');
+Route::delete('admin/categories/{category}', [CategoryController::class, 'destroy'])->name('admin.categories.destroy');
+    // Routes plats
+// Route::get('admin/plats', [PlatController::class, 'index'])->name('admin.plats.index');
+// Route::get('admin/plats/create', [PlatController::class, 'create'])->name('admin.plats.create');
+// Route::post('admin/plats', [PlatController::class, 'store'])->name('admin.plats.store');
+// Route::get('admin/plats/{plat}/edit', [PlatController::class, 'edit'])->name('admin.plats.edit');
+// Route::put('admin/plats/{plat}', [PlatController::class, 'update'])->name('admin.plats.update');
+// Route::delete('admin/plats/{plat}', [PlatController::class, 'destroy'])->name('admin.plats.destroy');
+Route::get('admin/plats', [PlatController::class, 'index'])->name('admin.plats.index');
+Route::get('admin/plats/create', [PlatController::class, 'create'])->name('admin.plats.create');
+Route::post('admin/plats', [PlatController::class, 'store'])->name('admin.plats.store');
+    Route::get('admin/plats/{plat}/edit', [PlatController::class,'edit'])->name('admin.plats.edit');
+    Route::put('admin/plats/{plat}', [PlatController::class,'update'])->name('admin.plats.update');
+    Route::delete('admin/plats/{plat}', [PlatController::class,'destroy'])->name('admin.plats.destroy');

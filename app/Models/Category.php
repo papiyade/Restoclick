@@ -15,6 +15,7 @@ class Category extends Model
         return $this->belongsTo(Restaurant::class);
     }
 
+
     public function plats()
     {
         return $this->hasMany(Plat::class);

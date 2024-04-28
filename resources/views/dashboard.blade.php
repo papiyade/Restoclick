@@ -7,7 +7,7 @@
 
 
 </x-app-layout> --}}
-@extends('layouts.app_superadmin')
+@extends('layouts.app_admin')
 
 @section('title', 'Page d\'accueil')
 

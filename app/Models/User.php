@@ -62,11 +62,20 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function hasRole($role)
+    {
+        return $this->role === $role;
+    }
 
     public function restaurant()
 {
     return $this->hasOne(Restaurant::class, 'admin_id');
 }
+public function plats()
+{
+    return $this->restaurant->plats ?? collect(); // Assurez-vous de retourner une collection même si le restaurant est null
+}
+
 
 
     public function redirectTo()
