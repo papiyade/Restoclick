@@ -16,7 +16,7 @@
                                     <th>Prix</th>
                                     <th>Disponibilité</th>
                                     <th>Catégorie</th>
-                                    
+
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -27,7 +27,12 @@
                                             <td>{{ $plat->name }}</td>
                                             <td>{{ $plat->description }}</td>
                                             <td>{{ $plat->price }}</td>
-                                            <td>{{ $plat->availability }}</td>
+                                            <td> @if ($plat->availability === 'available')
+                                                <span class="badge badge-rounded badge-success">Disponible</span>
+                                            @else
+                                                <span class="badge badge-rounded badge-danger">Non disponible</span>
+                                            @endif
+                                            </td>
                                             <td>{{ $plat->category->name }}</td>
 
                                             <td>

@@ -6,6 +6,7 @@ use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PlatController;
+use App\Http\Controllers\MenuController;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
@@ -73,3 +74,11 @@ Route::post('admin/plats', [PlatController::class, 'store'])->name('admin.plats.
     Route::get('admin/plats/{plat}/edit', [PlatController::class,'edit'])->name('admin.plats.edit');
     Route::put('admin/plats/{plat}', [PlatController::class,'update'])->name('admin.plats.update');
     Route::delete('admin/plats/{plat}', [PlatController::class,'destroy'])->name('admin.plats.destroy');
+
+
+    Route::get('admin/menus', [MenuController::class, 'index'])->name('admin.menus.index');
+    Route::get('admin/menus/create', [MenuController::class, 'create'])->name('admin.menus.create');
+    Route::post('admin/menus', [MenuController::class, 'store'])->name('admin.menus.store');
+    Route::get('admin/menus/{menu}/edit', [MenuController::class, 'edit'])->name('admin.menus.edit');
+    Route::put('admin/menus/{menu}', [MenuController::class, 'update'])->name('admin.menus.update');
+    Route::delete('admin/menus/{menu}', [MenuController::class, 'destroy'])->name('admin.menus.destroy');
