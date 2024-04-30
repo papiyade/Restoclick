@@ -11,10 +11,16 @@ class AdminController extends Controller
     // Afficher tous les utilisateurs
     public function index()
     {
-        $users = User::where('role', 'admin')->get();
-$restaurants = Restaurant::all();
-return view('superadmin.users.index', compact('users', 'restaurants', ));
+        // $users = User::where('role', 'admin')->get();
+        // $userCount = User::count();
+        // $restaurants = Restaurant::all();
+        // return view('superadmin.users.index', compact('users', 'restaurants', ));
+        $users = User::where('role', '!=', 'superadmin')->get();
+        $userCount = $users->count();
+        $restoCount = Restaurant::count();
+        $restaurants = Restaurant::all();
 
+        return view('superadmin.users.index', compact('users', 'restaurants', 'userCount','restoCount'));
     }
 
     // Afficher le formulaire de création d'utilisateur
@@ -61,7 +67,7 @@ return view('superadmin.users.index', compact('users', 'restaurants', ));
     {
         $request->validate([
             'name' => 'required|string',
-            'email' => 'required|email|unique:users,email,'.$id,
+            'email' => 'required|email|unique:users,email,' . $id,
             'password' => 'nullable|string|min:6',
         ]);
 

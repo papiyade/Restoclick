@@ -3,15 +3,11 @@
 @section('title', 'Modifier un utilisateur')
 
 @section('content')
-    <div class="content-body">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="card">
+
                         <div class="card-header">
                             <h4 class="card-title">Modifier un utilisateur</h4>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body" style="width: 70%;">
                             <form method="POST" action="{{ route('superadmin.users.update', $user->id) }}">
                                 @csrf
                                 @method('PUT')
@@ -24,8 +20,8 @@
                                     <input type="email" class="form-control" id="email" name="email" value="{{ $user->email }}" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="password" class="form-label">Nouveau mot de passe (laissez vide pour ne pas changer)</label>
-                                    <input type="password" class="form-control" id="password" name="password">
+                                    <label for="password" class="form-label">Nouveau mot de passe </label>
+                                    <input type="password"  class="form-control" id="password" name="password">
                                 </div>
                                 <div class="mb-3">
                                     <label for="confirm_password" class="form-label">Confirmer le nouveau mot de passe</label>
@@ -35,8 +31,4 @@
                             </form>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
 @endsection

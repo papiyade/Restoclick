@@ -1012,8 +1012,8 @@
 							<span class="nav-text">Menus</span>
 						</a>
 						<ul aria-expanded="false">
-							<li><a href="{{route('superadmin.restaurants.index')}}">Liste des Menus</a></li>
-							<li><a href="{{route('superadmin.restaurants.create')}}">Créer le Menu du jour</a></li>
+							<li><a href="{{route('admin.menus.index')}}">Liste des Menus</a></li>
+							<li><a href="{{route('admin.menus.create')}}">Créer le Menu du jour</a></li>
 						</ul>
 					</li>
 					<li><a class="has-arrow " href="javascript:void(0);" aria-expanded="false">
@@ -1229,6 +1229,8 @@
 <script src="{{ asset('assets/js/deznav-init.js') }}"></script>
 <script src="{{ asset('assets/js/demo.js') }}"></script>
 <script src="{{ asset('assets/js/styleSwitcher.js') }}"></script>
+<script src="{{ asset ('assets/vendor/sweetalert2/dist/sweetalert2.min.js')}}"></script>
+<script src="{{ asset ('assets/js/plugins-init/sweetalert.init.js')}}"></script>
 
 <script>
     var swiper = new Swiper(".mySwiper", {

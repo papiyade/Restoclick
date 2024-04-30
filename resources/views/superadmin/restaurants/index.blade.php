@@ -10,8 +10,9 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="btn-close">
         </button>
     </div>
+
     @endif
-    <!-- Contenu de la page d'accueil -->
+   
 
                             <!-- Column starts -->
                             <div class="col-xl-12" style="width: 90%;">

@@ -27,6 +27,8 @@ Route::middleware([
         return view('dashboard');
     })->name('dashboard');
 });
+
+
 Route::get('superadmin/index',[SuperAdminController::class,'index'])->name(('superadmin.index'));
 Route::get('superadmin/restaurants/create', [RestaurantController::class, 'create'])->name('superadmin.restaurants.create');
 Route::post('admin/restaurants', [RestaurantController::class, 'store'])->name('admin.restaurants.store');
@@ -34,14 +36,14 @@ Route::post('admin/restaurants', [RestaurantController::class, 'store'])->name('
 Route::get('superadmin/restaurants/index', [RestaurantController::class, 'index'])->name('superadmin.restaurants.index');
 Route::get('superadmin/users/index', [AdminController::class, 'index'])->name('superadmin.users.index');
 
-// Route pour afficher le formulaire de création d'utilisateur
+
 Route::get('/superadmin/users/create', [AdminController::class, 'create'])->name('superadmin.users.create');
-// Route pour enregistrer un nouvel utilisateur
+
 Route::post('/superadmin/users', [AdminController::class, 'store'])->name('superadmin.users.store');
 
-// Route pour la création d'un restaurant
+
 Route::get('/superadmin/restaurants/create', [RestaurantController::class, 'create'])->name('superadmin.restaurants.create');
-// Route pour la création d'un restaurant
+
 Route::post('/superadmin/restaurants', [RestaurantController::class, 'store'])->name('superadmin.restaurants.store');
 Route::get('superadmin/users/{id}/edit', [AdminController::class, 'edit'])->name('superadmin.users.edit');
 Route::put('superadmin/users/{id}', [AdminController::class, 'update'])->name('superadmin.users.update');
@@ -82,3 +84,5 @@ Route::post('admin/plats', [PlatController::class, 'store'])->name('admin.plats.
     Route::get('admin/menus/{menu}/edit', [MenuController::class, 'edit'])->name('admin.menus.edit');
     Route::put('admin/menus/{menu}', [MenuController::class, 'update'])->name('admin.menus.update');
     Route::delete('admin/menus/{menu}', [MenuController::class, 'destroy'])->name('admin.menus.destroy');
+
+

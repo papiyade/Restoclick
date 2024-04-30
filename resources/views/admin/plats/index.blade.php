@@ -15,6 +15,7 @@
                                     <th>Description</th>
                                     <th>Prix</th>
                                     <th>Disponibilité</th>
+                                    
                                     <th>Catégorie</th>
 
                                     <th>Actions</th>
@@ -33,6 +34,7 @@
                                                 <span class="badge badge-rounded badge-danger">Non disponible</span>
                                             @endif
                                             </td>
+
                                             <td>{{ $plat->category->name }}</td>
 
                                             <td>

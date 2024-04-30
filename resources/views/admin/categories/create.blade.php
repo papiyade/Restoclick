@@ -30,7 +30,11 @@
                                 <label for="description">Description</label>
                                 <textarea class="form-control" id="description" name="description" placeholder="Entrez la description de la catégorie">{{ old('description') }}</textarea>
                             </div>
-                            <button type="submit" class="btn btn-primary">Créer</button>
+                            <div class="mt-3">
+                                <button type="submit" class="btn btn-primary">Créer</button>
+
+
+                            </div>
                         </form>
                     </div>
                 </div>
