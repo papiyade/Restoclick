@@ -73,5 +73,57 @@ class MenuController extends Controller
         return redirect()->route('admin.menus.index')->with('success', 'Menu créé avec succès.');
     }
 
+    public function edit(Menu $menu)
+{
+    // Récupérer l'utilisateur connecté
+    $user = auth()->user();
+
+    // Vérifier si l'utilisateur est associé à un restaurant
+    if ($user->restaurant) {
+        // Récupérer les plats associés au restaurant
+        $plats = $user->restaurant->plats;
+
+        // Récupérer les catégories associées au restaurant
+        $categories = $user->restaurant->categories;
+
+        return view('admin.menus.edit', compact('menu', 'plats', 'categories'));
+    } else {
+        // Rediriger avec un message d'erreur si l'utilisateur n'est pas associé à un restaurant
+        return redirect()->route('admin.dashboard')->with('error', 'Vous n\'êtes pas associé à un restaurant.');
+    }
+}
+
+public function update(Request $request, Menu $menu)
+{
+    // Validation des données du formulaire
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'plats' => 'required|array',
+        'plats.*' => 'exists:plats,id',
+    ]);
+
+    // Mettre à jour les données du menu
+    $menu->update([
+        'name' => $request->name,
+        'description' => $request->description,
+    ]);
+
+    // Associer les plats sélectionnés au menu
+    $menu->plats()->sync($request->plats);
+
+    // Redirection avec un message de succès
+    return redirect()->route('admin.menus.index')->with('success', 'Menu mis à jour avec succès.');
+}
+
+public function destroy(Menu $menu)
+{
+    // Supprimer le menu
+    $menu->delete();
+
+    // Redirection avec un message de succès
+    return redirect()->route('admin.menus.index')->with('success', 'Menu supprimé avec succès.');
+}
+
     // Autres méthodes pour edit, update et destroy
 }

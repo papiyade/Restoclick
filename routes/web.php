@@ -73,9 +73,9 @@ Route::delete('admin/categories/{category}', [CategoryController::class, 'destro
 Route::get('admin/plats', [PlatController::class, 'index'])->name('admin.plats.index');
 Route::get('admin/plats/create', [PlatController::class, 'create'])->name('admin.plats.create');
 Route::post('admin/plats', [PlatController::class, 'store'])->name('admin.plats.store');
-    Route::get('admin/plats/{plat}/edit', [PlatController::class,'edit'])->name('admin.plats.edit');
-    Route::put('admin/plats/{plat}', [PlatController::class,'update'])->name('admin.plats.update');
-    Route::delete('admin/plats/{plat}', [PlatController::class,'destroy'])->name('admin.plats.destroy');
+Route::get('admin/plats/{plat}/edit', [PlatController::class,'edit'])->name('admin.plats.edit');
+Route::put('admin/plats/{plat}', [PlatController::class,'update'])->name('admin.plats.update');
+Route::delete('admin/plats/{plat}', [PlatController::class,'destroy'])->name('admin.plats.destroy');
 
 
     Route::get('admin/menus', [MenuController::class, 'index'])->name('admin.menus.index');

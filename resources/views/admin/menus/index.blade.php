@@ -2,13 +2,11 @@
 
 @section('title', 'Page d\'accueil')
 
-
-
 @section('content')
 <div class="row">
     @foreach($menus as $index => $menu)
-    <div class="col-xl-4 col-lg-6 col-xxl-4 col-sm-6">
-        <div class="card ">
+    <div class="col-xl-4 col-lg-6 col-xxl-4 col-sm-6"  style="width: 50%;">
+        <div class="card">
             <div class="card-body">
                 <h5 class="card-title fs-20 ">{{ $menu->name }}</h5>
                 <hr>
@@ -23,12 +21,16 @@
                             <!-- Boucle sur les plats de la catégorie dans ce menu -->
                             @foreach($menu->plats->where('category_id', $category->id) as $plat)
                                 <li class="list-group-item d-flex justify-content-between align-items-center custom-bg-color">
+                                    <a href="#" onclick="afficherImageAgrandie('{{ asset('storage/' . $plat->image_url) }}')">
+                                        @if ($plat->image_url)
+                                            <img src="{{ asset('storage/' . $plat->image_url) }}" alt="Image du plat" style="max-width: 80px;">
+                                        @endif
+                                    </a>
                                     <span class="text-warning fs-12">{{ $plat->name }}</span>
                                     <span class="badge badge-success rounded">{{ $plat->price }} Fcfa</span>
                                 </li>
                             @endforeach
                         </ul>
-
                     @endif
                 @endforeach
 
@@ -48,18 +50,73 @@
                             </svg></button>
                     </form>
                 </div>
-
             </div>
         </div>
     </div>
     @endforeach
 </div>
-
 @endsection
-
-
-
 
 @section('scripts')
+<script>
+    function afficherImageAgrandie(imageUrl) {
+        const modal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
 
+        modalImage.src = imageUrl;
+        modal.style.display = 'block';
+    }
+
+    function fermerModal() {
+        const modal = document.getElementById('imageModal');
+        modal.style.display = 'none';
+    }
+</script>
 @endsection
+
+@section('extra_styles')
+<style>
+    /* Styles pour le modal d'image agrandie */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 50%;
+        height: 50%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+        margin: auto;
+        display: block;
+        width: 50%;
+        max-width: 200px;
+    }
+
+    #modalImage {
+        width: 20%;
+        height: auto;
+    }
+</style>
+@endsection
+
+@section('extra_scripts')
+<script>
+    // Fermer le modal lorsque l'utilisateur clique en dehors de l'image
+    window.onclick = function(event) {
+        const modal = document.getElementById('imageModal');
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
+</script>
+@endsection
+
+<!-- Modal pour afficher l'image agrandie -->
+<div id="imageModal" class="modal">
+    <span class="close" onclick="fermerModal()">&times;</span>
+    <img class="modal-content" id="modalImage">
+</div>

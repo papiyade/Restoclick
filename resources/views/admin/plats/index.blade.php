@@ -48,6 +48,7 @@
                                             <td>{{ $plat->category->name }}</td>
                                             <td>
                                                 <a href="{{ route('admin.plats.edit', $plat) }}" class="btn btn-sm btn-primary">Modifier</a>
+
                                                 <form action="{{ route('admin.plats.destroy', $plat) }}" method="POST" style="display: inline-block;">
                                                     @csrf
                                                     @method('DELETE')

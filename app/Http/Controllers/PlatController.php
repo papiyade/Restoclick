@@ -91,60 +91,59 @@ class PlatController extends Controller
         }
     }
 
-    // Afficher le formulaire d'édition d'un plat
-    public function edit(Plat $plat)
-    {
-        // Vérifier si le plat appartient au restaurant associé à l'admin
-        if ($this->isAdminAuthorized($plat)) {
-            // Récupérer l'ID du restaurant associé à l'admin connecté
-            $restaurantId = Auth::user()->restaurant_id;
 
-            // Récupérer les catégories du restaurant associé à l'admin
-            $categories = Category::whereHas('restaurant', function ($query) use ($restaurantId) {
-                $query->where('id', $restaurantId);
-            })->get();
+// Afficher le formulaire d'édition d'un plat
+// Afficher le formulaire d'édition d'un plat
+public function edit(Plat $plat)
+{
+    $user = auth()->user();
+    $userId = Auth::id();
+    $plat->restaurant_id = $user->restaurant->id;
+    // Vérifier si l'administrateur est autorisé à modifier ce plat
+    $categories = Category::whereHas('restaurant', function ($query) use ($userId) {
+        $query->where('admin_id', $userId);
+    })->get();
 
-            return view('admin.plats.edit', compact('plat', 'categories'));
-        } else {
-            // Rediriger avec un message d'erreur
-            return redirect()->route('admin.plats.index')->with('error', 'Vous n\'êtes pas autorisé à modifier ce plat.');
-        }
+    return view('admin.plats.edit', compact('plat', 'categories'));
+}
+
+
+
+// Mettre à jour un plat dans la base de données
+public function update(Request $request, Plat $plat)
+{
+    // Vérifier si l'administrateur est autorisé à modifier ce plat
+    if (!$this->isAdminAuthorized($plat)) {
+        // Rediriger avec un message d'erreur
+        return redirect()->route('admin.plats.index')->with('error', 'Vous n\'êtes pas autorisé à modifier ce plat.');
     }
 
-    // Mettre à jour un plat dans la base de données
-    public function update(Request $request, Plat $plat)
-    {
-        // Validation des données du formulaire
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validation de l'image
-            'availability' => 'required|in:available,unavailable',
-            'category_id' => 'required|exists:categories,id', // Validation de la catégorie
-        ]);
+    // Validation des données du formulaire
+    $validatedData = $request->validate([
+        'name' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'price' => 'required|numeric|min:0',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validation de l'image
+        'availability' => 'required|in:available,unavailable',
+        'category_id' => 'required|exists:categories,id', // Validation de la catégorie
+    ]);
 
-        // Vérifier si le plat appartient au restaurant associé à l'admin
-        if ($this->isAdminAuthorized($plat)) {
-            // Mettre à jour les informations du plat
-            $plat->update($request->all());
-
-            // Traitement de l'image
-            if ($request->hasFile('image')) {
-                // Télécharger l'image et obtenir le chemin d'accès
-                $imagePath = $request->file('image')->store('images', 'public');
-                // Mettre à jour le chemin d'accès de l'image dans le plat
-                $plat->image_url = $imagePath;
-                $plat->save();
-            }
-
-            // Rediriger avec un message de succès
-            return redirect()->route('admin.plats.index')->with('success', 'Plat mis à jour avec succès.');
-        } else {
-            // Rediriger avec un message d'erreur
-            return redirect()->route('admin.plats.index')->with('error', 'Vous n\'êtes pas autorisé à modifier ce plat.');
-        }
+    // Traitement de l'image
+    if ($request->hasFile('image')) {
+        $imagePath = $request->file('image')->store('images', 'public');
+        $validatedData['image_url'] = $imagePath;
     }
+
+    // Mettre à jour les informations du plat
+    $plat->update($validatedData);
+
+    // Redirection avec un message de succès
+    return redirect()->route('admin.plats.index')->with('success', 'Plat mis à jour avec succès.');
+}
+
+
+
+
 
     // Supprimer un plat de la base de données
     public function destroy(Plat $plat)
