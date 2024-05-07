@@ -18,7 +18,7 @@
         <div class="card">
             <div class="card-header border-0">
                 <h3 class="h-title">Revenue</h3>
-                      <a href="{{route('superadmin.restaurants.create')}}"><button class=" btn btn-primary">Add resto</button></a>
+                      <a href=""><button class=" btn btn-primary">View</button></a>
             </div>
         </div>
 

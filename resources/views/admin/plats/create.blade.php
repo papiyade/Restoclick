@@ -3,8 +3,8 @@
 @section('content')
     <div class="container">
         <div class="row">
-            <div class="col-md-8 offset-md-2">
-                <div class="card">
+
+                <div class="card" style="width: 70%;">
                     <div class="card-header">Créer un nouveau plat</div>
 
                     <div class="card-body">
@@ -23,19 +23,15 @@
 
                             <div class="form-group">
                                 <label for="price">Prix</label>
-                                <input type="number" name="price" id="price" class="form-control" step="0.01" required>
+                                <input type="number" name="price" id="price" class="form-control" step="0.01"
+                                    required>
                             </div>
 
 
-                            {{-- <div class="mb-3">
-                                <label for="image_url" class="form-label">Choisir une Image</label>
-                                <input class="form-control" name="image_url" type="url" id="formFile">
-                              </div> --}}
-                              <!-- Modifier le champ de l'image -->
-<div class="mb-3">
-    <label for="image" class="form-label">Choisir une Image</label>
-    <input class="form-control" name="image_url" type="file" id="image">
-</div>
+                            <div class="mb-3">
+                                <label for="image" class="form-label">Choisir une Image</label>
+                                <input class="form-control" name="image_url" type="file" id="image">
+                            </div>
 
 
                             <div class="form-group">
@@ -49,17 +45,17 @@
                             <div class="form-group">
                                 <label for="category_id">Catégorie</label>
                                 <select name="category_id" id="category_id" class="form-control" required>
-                                    @foreach($categories as $category)
+                                    @foreach ($categories as $category)
                                         <option value="{{ $category->id }}">{{ $category->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
 
-                            <button type="submit" class="btn btn-primary">Créer le plat</button>
+                            <button type="submit" class="btn btn-primary mt-3">Créer le plat</button>
                         </form>
                     </div>
                 </div>
-            </div>
+
         </div>
     </div>
 @endsection

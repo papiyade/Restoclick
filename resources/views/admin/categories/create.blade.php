@@ -4,9 +4,8 @@
 
 @section('content')
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
+
+                <div class="card" style="width: 60%;">
                     <div class="card-header">Créer une Catégorie</div>
 
                     <div class="card-body">
@@ -38,7 +37,6 @@
                         </form>
                     </div>
                 </div>
-            </div>
-        </div>
+
     </div>
 @endsection
