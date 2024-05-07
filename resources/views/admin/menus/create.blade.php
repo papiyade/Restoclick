@@ -1,42 +1,50 @@
 @extends('layouts.app_admin')
 
 @section('title', 'Page d\'accueil')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
 @section('content')
-<!-- Formulaire de création de menu -->
-<form action="{{ route('admin.menus.store') }}" method="POST">
-    @csrf
-    <div class="col-sm-6">
-        <label for="name">Nom du Menu</label>
-        <input type="text" class="form-control" name="name" id="name" required>
-    </div>
-    <div class="col-sm-6">
-        <label for="description">Description</label>
-        <textarea class="form-control" name="description" id="description"></textarea>
-    </div>
-    <div>
-        <label>Plats</label>
-        <!-- Afficher les plats avec des cases à cocher -->
-        @foreach($plats as $plat)
-            <div class="mb-3">
-                <div class="form-check form-check-inline">
-                    <label class="form-check-label">
-                      <input type="checkbox" class="form-check-input" name="plats[]" value="{{ $plat->id }}">
-                    <label>{{ $plat->name }}</label>
+<div class="container">
+    <h2>Créer le menu du jour</h2>
+    <form action="{{ route('admin.menus.store') }}" method="POST">
+        @csrf
+        <div class="form-group" style="width: 50%;">
+            <label class="font-italic" for="name">Nom du Menu</label>
+            <input type="text" class="form-control" name="name" id="name" required>
+        </div>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea class="form-control" name="description" id="description" style="width: 50%;"></textarea>
+        </div>
+        <div class="row mt-3">
+            @php $colWidth = 6 / count($categories); @endphp <!-- Calcul de la largeur des colonnes -->
+            @foreach($categories as $category)
+            <div class="col-md-{{ $colWidth }}">
+                <div class="form-group">
+                    <label class="badge badge-rounded badge-info fs-15" for="category{{ $category->id }}">{{ $category->name }}</label>
+                    <select class="form-control" name="plats[]" id="category{{ $category->id }}" multiple>
+                        @foreach($category->plats as $plat)
+                            @if($plat->availability == 'available')
+                                <option class="fs-15" value="{{ $plat->id }}">{{ $plat->name }}</option>
+                            @endif
+                        @endforeach
+                    </select>
                 </div>
             </div>
+            @endforeach
 
-        @endforeach
-
-    </div>
-    <button type="submit" class="btn btn-primary">Créer Menu</button>
-</form>
-
-
-
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Créer Menu</button>
+    </form>
+</div>
 @endsection
 
 @section('scripts')
-    <!-- Scripts spécifiques à la page d'accueil -->
+<script>
+    $(document).ready(function() {
+        // Initialiser les listes déroulantes Bootstrap selectpicker
+        $('select').selectpicker();
+    });
+</script>
 @endsection
-

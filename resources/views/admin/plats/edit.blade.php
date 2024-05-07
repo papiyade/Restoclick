@@ -8,7 +8,9 @@
                     <div class="card-header">Modifier un plat</div>
 
                     <div class="card-body">
-                        <form action="{{ route('admin.plats.update', $plat) }}" method="POST">
+
+                            <form action="{{ route('admin.plats.update', $plat) }}" method="POST">
+
                             @csrf
                             @method('PUT')
 

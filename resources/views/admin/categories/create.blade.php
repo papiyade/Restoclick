@@ -26,7 +26,7 @@
                                 <label for="name">Nom</label>
                                 <input type="text" class="form-control" id="name" name="name" placeholder="Entrez le nom de la catégorie" value="{{ old('name') }}">
                             </div>
-                            <div class="form-group">
+                            <div class="form-group mt-3">
                                 <label for="description">Description</label>
                                 <textarea class="form-control" id="description" name="description" placeholder="Entrez la description de la catégorie">{{ old('description') }}</textarea>
                             </div>

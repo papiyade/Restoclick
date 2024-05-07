@@ -12,19 +12,25 @@ class PlatController extends Controller
     // Afficher la liste des plats de l'admin connecté
     public function index()
     {
-        // Récupérer l'administrateur connecté
+        // Récupérer l'utilisateur connecté
         $admin = Auth::user();
 
-        // Vérifier si l'administrateur est associé à un restaurant
-        if ($admin->restaurant) {
-            // Si oui, récupérer les plats associés à ce restaurant
-            $plats = $admin->restaurant->plats;
+        // Vérifier si un utilisateur est connecté
+        if ($admin) {
+            // Vérifier si l'utilisateur est associé à un restaurant
+            if ($admin->restaurant) {
+                // Si oui, récupérer les plats associés à ce restaurant
+                $plats = $admin->restaurant->plats;
 
-            // Retourner la vue avec les plats récupérés
-            return view('admin.plats.index', compact('plats'));
+                // Retourner la vue avec les plats récupérés
+                return view('admin.plats.index', compact('plats'));
+            } else {
+                // Si non, rediriger l'administrateur vers une page d'erreur ou une autre page appropriée
+                return redirect()->route('admin.dashboard')->with('error', 'Vous n\'êtes pas associé à un restaurant.');
+            }
         } else {
-            // Si non, rediriger l'administrateur vers une page d'erreur ou une autre page appropriée
-            return redirect()->route('admin.dashboard')->with('error', 'Vous n\'êtes pas associé à un restaurant.');
+            // Si aucun utilisateur n'est connecté, rediriger vers la page de connexion
+            return redirect()->route('login')->with('error', 'Veuillez vous connecter pour accéder à cette page.');
         }
     }
 
@@ -44,35 +50,46 @@ class PlatController extends Controller
 
     // Enregistrer un nouveau plat dans la base de données
     public function store(Request $request)
-{
-    // Validation des données du formulaire
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'description' => 'nullable|string',
-        'price' => 'required|numeric|min:0',
-        'image_url' => 'nullable|url',
-        'availability' => 'required|in:available,unavailable',
-        'category_id' => 'required|exists:categories,id', // Validation de la catégorie
-    ]);
+    {
+        // Validation des données du formulaire
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric|min:0',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validation de l'image
+            'availability' => 'required|in:available,unavailable',
+            'category_id' => 'required|exists:categories,id', // Validation de la catégorie
+        ]);
 
-    // Récupérer l'utilisateur connecté
-    $user = Auth::user();
+        // Récupérer l'utilisateur connecté
+        $user = Auth::user();
 
-    // Vérifier si l'utilisateur est connecté et associé à un restaurant
-    if ($user && $user->restaurant) {
-        // Créer le plat associé au restaurant de l'admin
-        $plat = new Plat($request->all());
-        $plat->restaurant_id = $user->restaurant->id; // Associer le plat au restaurant de l'admin
-        $plat->save();
+        // Vérifier si l'utilisateur est connecté et associé à un restaurant
+        if ($user && $user->restaurant) {
+            // Créer le plat associé au restaurant de l'admin
+            $plat = new Plat($request->all());
 
-        // Rediriger avec un message de succès
-        return redirect()->route('admin.plats.index')->with('success', 'Plat créé avec succès.');
-    } else {
-        // Rediriger avec un message d'erreur
-        return redirect()->route('admin.plats.index')->with('error', 'Vous devez être connecté et associé à un restaurant pour créer un plat.');
+            // Traitement de l'image
+            if ($request->hasFile('image')) {
+
+                $imagePath = $request->file('image')->store('images', 'public');
+
+
+                $plat->image_url = $imagePath;
+            }
+
+            // Associer le plat au restaurant de l'admin
+            $plat->restaurant_id = $user->restaurant->id;
+
+            $plat->save();
+
+            // Rediriger avec un message de succès
+            return redirect()->route('admin.plats.index')->with('success', 'Plat créé avec succès.');
+        } else {
+            // Rediriger avec un message d'erreur
+            return redirect()->route('admin.plats.index')->with('error', 'Vous devez être connecté et associé à un restaurant pour créer un plat.');
+        }
     }
-}
-
 
     // Afficher le formulaire d'édition d'un plat
     public function edit(Plat $plat)
@@ -102,15 +119,25 @@ class PlatController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
-            'image_url' => 'nullable|url',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validation de l'image
             'availability' => 'required|in:available,unavailable',
-            // Ajoutez d'autres validations selon vos besoins
+            'category_id' => 'required|exists:categories,id', // Validation de la catégorie
         ]);
 
         // Vérifier si le plat appartient au restaurant associé à l'admin
         if ($this->isAdminAuthorized($plat)) {
             // Mettre à jour les informations du plat
             $plat->update($request->all());
+
+            // Traitement de l'image
+            if ($request->hasFile('image')) {
+                // Télécharger l'image et obtenir le chemin d'accès
+                $imagePath = $request->file('image')->store('images', 'public');
+                // Mettre à jour le chemin d'accès de l'image dans le plat
+                $plat->image_url = $imagePath;
+                $plat->save();
+            }
+
             // Rediriger avec un message de succès
             return redirect()->route('admin.plats.index')->with('success', 'Plat mis à jour avec succès.');
         } else {
@@ -141,3 +168,4 @@ class PlatController extends Controller
         return $plat->restaurant_id === $restaurantId;
     }
 }
+

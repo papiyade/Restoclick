@@ -62,7 +62,7 @@
 									<div class="text-center mb-3">
 										<a href="index.html"><img src="{{asset('assets/images/logo/logo-full.png')}}" alt=""></a>
 									</div>
-                                    <h4 class="text-center mb-4">Sign up your account</h4>
+                                    <h4 class="text-center mb-4">Connectez Vous</h4>
                                     <form method="POST" action="{{ route('login') }}">
                                         @csrf
 
@@ -71,25 +71,25 @@
                                             <input type="email" name="email" for="email" value="{{ __('Email') }}" class="form-control" required autofocus autocomplete="username" placeholder="hello@example.com">
                                         </div>
                                         <div class="mb-3">
-                                            <label for="password" value="{{ __('Password') }}" class="mb-1"><strong>Password</strong></label>
+                                            <label for="password" value="{{ __('Password') }}" class="mb-1"><strong>Mot de Passe</strong></label>
                                             <input id="password"  type="password" name="password" required autocomplete="current-password" class="form-control" >
                                         </div>
                                         <div class="block mt-4">
                                             <label for="remember_me" class="flex items-center">
                                                 <x-checkbox id="remember_me" name="remember" />
-                                                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
+                                                <span class="ms-2 text-sm text-gray-600">{{ __('Se souvenir de moi') }}</span>
                                             </label>
                                         </div>
 
                                         <div class="flex text-center  mt-4">
                                             @if (Route::has('password.request'))
                                                 <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                                                    {{ __('Forgot your password?') }}
+                                                    {{ __('Mot de Passe oublié ?') }}
                                                 </a>
                                             @endif
 
-                                            <x-button type="submit" class="btn btn-primary btn-block">
-                                                {{ __('Log in') }}
+                                            <x-button type="submit" class="btn btn-primary btn-block mt-3">
+                                                {{ __('Se Connecter') }}
                                             </x-button>
                                         </div>
                                     </form>

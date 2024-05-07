@@ -26,10 +26,17 @@
                                 <input type="number" name="price" id="price" class="form-control" step="0.01" required>
                             </div>
 
-                            <div class="form-group">
-                                <label for="image_url">URL de l'image</label>
-                                <input type="url" name="image_url" id="image_url" class="form-control">
-                            </div>
+
+                            {{-- <div class="mb-3">
+                                <label for="image_url" class="form-label">Choisir une Image</label>
+                                <input class="form-control" name="image_url" type="url" id="formFile">
+                              </div> --}}
+                              <!-- Modifier le champ de l'image -->
+<div class="mb-3">
+    <label for="image" class="form-label">Choisir une Image</label>
+    <input class="form-control" name="image_url" type="file" id="image">
+</div>
+
 
                             <div class="form-group">
                                 <label for="availability">Disponibilité</label>
