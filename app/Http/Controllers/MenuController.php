@@ -115,6 +115,12 @@ public function update(Request $request, Menu $menu)
     // Redirection avec un message de succès
     return redirect()->route('admin.menus.index')->with('success', 'Menu mis à jour avec succès.');
 }
+public function showMenu()
+{
+    $categories = Category::with('plats')->get(); // Supposons que le modèle Category a une relation 'plats'
+    return view('front-menu', compact('categories'));
+}
+
 
 public function destroy(Menu $menu)
 {

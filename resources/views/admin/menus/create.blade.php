@@ -18,12 +18,12 @@
             <textarea class="form-control" name="description" id="description" style="width: 50%;"></textarea>
         </div>
         <div class="row mt-3">
-            @php $colWidth = 6 / count($categories); @endphp <!-- Calcul de la largeur des colonnes -->
+            @php $colWidth = 8 / count($categories); @endphp <!-- Calcul de la largeur des colonnes -->
             @foreach($categories as $category)
             <div class="col-md-{{ $colWidth }}">
                 <div class="form-group">
                     <label class="badge badge-rounded badge-info fs-15" for="category{{ $category->id }}">{{ $category->name }}</label>
-                    <select class="form-control" name="plats[]" id="category{{ $category->id }}" multiple>
+                    <select class="form-control" name="plats[]" id="category{{ $category->id }}" multiple data-none-selected-text="Aucun plat Sélectionné">
                         @foreach($category->plats as $plat)
                             @if($plat->availability == 'available')
                                 <option class="fs-15" value="{{ $plat->id }}">{{ $plat->name }}</option>
@@ -43,7 +43,7 @@
 @section('scripts')
 <script>
     $(document).ready(function() {
-        // Initialiser les listes déroulantes Bootstrap selectpicker
+
         $('select').selectpicker();
     });
 </script>

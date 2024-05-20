@@ -31,7 +31,7 @@
                             <label for="description">Description</label>
                             <textarea class="form-control" id="description" name="description" placeholder="Entrez la description de la catégorie">{{ old('description', $category->description) }}</textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+                        <button type="submit" class="btn btn-primary mt-3">Enregistrer les modifications</button>
                     </form>
                 </div>
             </div>

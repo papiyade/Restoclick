@@ -1,10 +1,10 @@
 <x-action-section>
     <x-slot name="title">
-        {{ __('Two Factor Authentication') }}
+        {{ __(' Authentication à Deux facteurs') }}
     </x-slot>
 
     <x-slot name="description">
-        {{ __('Add additional security to your account using two factor authentication.') }}
+        {{ __('Ajoutez une sécurité supplémentaire à votre compte en utilisant l\'authentification à deux facteurs.') }}
     </x-slot>
 
     <x-slot name="content">
@@ -13,16 +13,16 @@
                 @if ($showingConfirmation)
                     {{ __('Finish enabling two factor authentication.') }}
                 @else
-                    {{ __('You have enabled two factor authentication.') }}
+                    {{ __('Vous avez activé l\'authentification à deux facteurs.') }}
                 @endif
             @else
-                {{ __('You have not enabled two factor authentication.') }}
+                {{ __('Vous n\'avez pas activé l\'authentification à deux facteurs.') }}
             @endif
         </h3>
 
         <div class="mt-3 max-w-xl text-sm text-gray-600">
             <p>
-                {{ __('When two factor authentication is enabled, you will be prompted for a secure, random token during authentication. You may retrieve this token from your phone\'s Google Authenticator application.') }}
+                {{ __('Lorsque l\'authentification à deux facteurs est activée, vous serez invité à saisir un jeton sécurisé et aléatoire lors de l\'authentification. Vous pouvez récupérer ce jeton depuis l\'application Google Authenticator de votre téléphone.') }}
             </p>
         </div>
 
@@ -31,9 +31,9 @@
                 <div class="mt-4 max-w-xl text-sm text-gray-600">
                     <p class="font-semibold">
                         @if ($showingConfirmation)
-                            {{ __('To finish enabling two factor authentication, scan the following QR code using your phone\'s authenticator application or enter the setup key and provide the generated OTP code.') }}
+                            {{ __('Pour finaliser l\'activation de l\'authentification à deux facteurs, scannez le code QR suivant à l\'aide de l\'application d\'authentification de votre téléphone ou saisissez la clé de configuration et fournissez le code OTP généré.') }}
                         @else
-                            {{ __('Two factor authentication is now enabled. Scan the following QR code using your phone\'s authenticator application or enter the setup key.') }}
+                            {{ __('L\'authentification à deux facteurs est désormais activée. Veuillez scanner le code QR suivant à l\'aide de l\'application d\'authentification de votre téléphone ou saisissez la clé de configuration.') }}
                         @endif
                     </p>
                 </div>
@@ -80,7 +80,7 @@
             @if (! $this->enabled)
                 <x-confirms-password wire:then="enableTwoFactorAuthentication">
                     <x-button type="button" wire:loading.attr="disabled">
-                        {{ __('Enable') }}
+                        {{ __('Activer') }}
                     </x-button>
                 </x-confirms-password>
             @else
@@ -107,13 +107,13 @@
                 @if ($showingConfirmation)
                     <x-confirms-password wire:then="disableTwoFactorAuthentication">
                         <x-secondary-button wire:loading.attr="disabled">
-                            {{ __('Cancel') }}
+                            {{ __('Annuler') }}
                         </x-secondary-button>
                     </x-confirms-password>
                 @else
                     <x-confirms-password wire:then="disableTwoFactorAuthentication">
                         <x-danger-button wire:loading.attr="disabled">
-                            {{ __('Disable') }}
+                            {{ __('Déssactiver') }}
                         </x-danger-button>
                     </x-confirms-password>
                 @endif

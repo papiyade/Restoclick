@@ -110,14 +110,39 @@ public function edit(Plat $plat)
 
 
 // Mettre à jour un plat dans la base de données
+// public function update(Request $request, Plat $plat)
+// {
+//     // Vérifier si l'administrateur est autorisé à modifier ce plat
+//     if (!$this->isAdminAuthorized($plat)) {
+//         // Rediriger avec un message d'erreur
+//         return redirect()->route('admin.plats.index')->with('error', 'Vous n\'êtes pas autorisé à modifier ce plat.');
+//     }
+
+//     // Validation des données du formulaire
+//     $validatedData = $request->validate([
+//         'name' => 'required|string|max:255',
+//         'description' => 'nullable|string',
+//         'price' => 'required|numeric|min:0',
+//         'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validation de l'image
+//         'availability' => 'required|in:available,unavailable',
+//         'category_id' => 'required|exists:categories,id', // Validation de la catégorie
+//     ]);
+
+//     // Traitement de l'image
+//     if ($request->hasFile('image')) {
+//         $imagePath = $request->file('image')->store('images', 'public');
+//         $validatedData['image_url'] = $imagePath;
+//     }
+
+//     // Mettre à jour les informations du plat
+//     $plat->update($validatedData);
+
+//     // Redirection avec un message de succès
+//     return redirect()->route('admin.plats.index')->with('success', 'Plat mis à jour avec succès.');
+// }
+
 public function update(Request $request, Plat $plat)
 {
-    // Vérifier si l'administrateur est autorisé à modifier ce plat
-    if (!$this->isAdminAuthorized($plat)) {
-        // Rediriger avec un message d'erreur
-        return redirect()->route('admin.plats.index')->with('error', 'Vous n\'êtes pas autorisé à modifier ce plat.');
-    }
-
     // Validation des données du formulaire
     $validatedData = $request->validate([
         'name' => 'required|string|max:255',
@@ -140,6 +165,37 @@ public function update(Request $request, Plat $plat)
     // Redirection avec un message de succès
     return redirect()->route('admin.plats.index')->with('success', 'Plat mis à jour avec succès.');
 }
+
+
+public function trierPlats(Request $request)
+{
+    // Récupérer le critère de tri depuis la requête
+    $critereTri = $request->input('tri');
+
+    // Récupérer l'ID de l'utilisateur connecté
+    $userId = Auth::id();
+
+    // Récupérer les plats associés au restaurant de l'administrateur connecté
+    $plats = Plat::whereHas('restaurant', function ($query) use ($userId) {
+        $query->where('admin_id', $userId);
+    });
+
+    // Appliquer le tri en fonction du critère sélectionné
+    if ($critereTri === 'nom') {
+        $plats->orderBy('name');
+    } elseif ($critereTri === 'prix') {
+        $plats->orderBy('price');
+    } elseif ($critereTri === 'disponibilite') {
+        $plats->orderBy('availability');
+    }
+
+    // Récupérer les plats triés
+    $plats = $plats->get();
+
+    // Retourner la vue avec les plats triés
+    return view('admin.plats.index', compact('plats'));
+}
+
 
 
 

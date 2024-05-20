@@ -11,10 +11,7 @@ class AdminController extends Controller
     // Afficher tous les utilisateurs
     public function index()
     {
-        // $users = User::where('role', 'admin')->get();
-        // $userCount = User::count();
-        // $restaurants = Restaurant::all();
-        // return view('superadmin.users.index', compact('users', 'restaurants', ));
+       
         $users = User::where('role', '!=', 'superadmin')->get();
         $userCount = $users->count();
         $restoCount = Restaurant::count();

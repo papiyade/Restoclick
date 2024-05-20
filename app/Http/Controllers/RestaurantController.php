@@ -11,12 +11,7 @@ class RestaurantController extends Controller
     /**
      * Display a listing of the resource.
      */
-    // public function index()
-    // {
-
-    //     $restaurants = Restaurant::all();
-    //     return view('superadmin.restaurants.index', compact('restaurants'));
-    // }
+    
     public function index()
     {
         $restaurants = Restaurant::with('admin')->get();

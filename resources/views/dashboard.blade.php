@@ -17,12 +17,16 @@
 
         <div class="card">
             <div class="card-header border-0">
-                <h3 class="h-title">Revenue</h3>
+                <h3 class="h-title">Stats</h3>
                       <a href=""><button class=" btn btn-primary">View</button></a>
             </div>
+
         </div>
 
 @endsection
+
+
+
 
 @section('scripts')
     <!-- Scripts spécifiques à la page d'accueil -->

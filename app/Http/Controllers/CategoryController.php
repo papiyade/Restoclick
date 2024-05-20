@@ -16,7 +16,7 @@ class CategoryController extends Controller
         // Vérifier si l'administrateur est associé à un restaurant
         if ($admin->restaurant) {
             // Si oui, récupérer les catégories associées à ce restaurant
-            $categories = $admin->restaurant->categories;
+            $categories = $admin->restaurant->categories()->paginate(10);
             return view('admin.categories.index', compact('categories'));
         } else {
             // Si non, rediriger l'administrateur vers une page d'erreur ou une autre page appropriée
@@ -69,7 +69,7 @@ class CategoryController extends Controller
 
         return redirect()->route('admin.categories.index')->with('success', $message);
     }
-    
+
 
     public function destroy(Category $category)
     {

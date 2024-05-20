@@ -5,7 +5,7 @@
         <div class="row">
 
                 <div class="card" style="width: 70%;">
-                    <div class="card-header">Créer un nouveau plat</div>
+                    <h2>Créer un nouveau plat</h2>
 
                     <div class="card-body">
                         <form action="{{ route('admin.plats.store') }}" method="POST">

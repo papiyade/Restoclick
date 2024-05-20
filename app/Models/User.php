@@ -78,6 +78,7 @@ public function plats()
 
 
 
+
     public function redirectTo()
     {
         if ($this->role === 'superadmin') {
