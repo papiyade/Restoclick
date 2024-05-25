@@ -8,6 +8,8 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PlatController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\MenuFrontController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ReservationController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\SuperAdminMiddleware;
 
@@ -72,16 +74,48 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::put('admin/menus/{menu}', [MenuController::class, 'update'])->name('admin.menus.update');
         Route::delete('admin/menus/{menu}', [MenuController::class, 'destroy'])->name('admin.menus.destroy');
         Route::get('admin/plats/trier', [PlatController::class, 'trierPlats'])->name('admin.plats.trier');
+        Route::get('admin/reservations', [ReservationController::class, 'showReservations'])->name('admin.reservations');
+        Route::get('admin/reservation',[ReservationController::class , 'index'])->name('admin.reservation.index');
+
         Route::get('/front-menu',function () {
             return view('front-menu');
         });
         Route::get('/front-menu', [MenuFrontController::class, 'showMenu']);
 
+        Route::get('/menu', [MenuController::class, 'showMenu'])->name('client.menu');
+Route::post('/menu/add-to-cart/{plat}', [OrderController::class, 'addToCart'])->name('client.add-to-cart');
+
+Route::post('/client/reservation', [ReservationController::class, 'makeReservation'])->name('client.make-reservation');
+
+
+
+// Route::get('/menu', [MenuController::class, 'showMenu'])->name('client.menu');
+// Route::post('/menu/add-to-cart/{plat}', [OrderController::class, 'addToCart'])->name('client.add-to-cart');
+// Route::post('/order', [OrderController::class, 'placeOrder'])->name('client.place-order');
+
+Route::post('/reservation', [ReservationController::class, 'makeReservation'])->name('client.make-reservation');
 
         Route::get('/errors/error-403', function () {
             return view('errors.error-403');
         })->name('errors.error-403');
 
     });
+    Route::get('/reservation', [ReservationController::class, 'showReservationsForm'])->name('client.reservation.form');
+Route::post('/reservation', [ReservationController::class, 'makeReservation'])->name('client.make-reservation');
 });
 
+Route::get('/front-menu/{id}', [MenuFrontController::class, 'showMenuById'])->name('front-menu.showById');
+
+Route::get('/Resto', [MenuFrontController::class, 'showthatMenu'])->name('Resto.showthatMenu');
+
+Route::get('/Resto/{id}', [MenuFrontController::class, 'showMenuParId'])->name('Resto.showById');
+
+// Route::get('/client/book-table/{id}', [ReservationController::class, 'showReservationForm'])->name('client.book-table');
+// Route::post('/reservation', [ReservationController::class, 'makeReservation'])->name('client.make-reservation');
+// routes/web.php
+// routes/web.php
+Route::get('/client/book-table/{id}', [ReservationController::class, 'showReservationForm'])->name('client.book-table');
+Route::post('/reservation', [ReservationController::class, 'makeReservation'])->name('client.make-reservation');
+Route::get('restaurant/{id}/reservation', [ReservationController::class, 'showReservationForm'])->name('client.reservation.form');
+Route::post('restaurant/reservation', [ReservationController::class, 'makeReservation'])->name('client.reservation.submit');
+Route::get('/Resto/{id}', [MenuFrontController::class, 'showMenuParId'])->name('Resto.showById');

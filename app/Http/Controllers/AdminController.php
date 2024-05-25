@@ -11,7 +11,7 @@ class AdminController extends Controller
     // Afficher tous les utilisateurs
     public function index()
     {
-       
+
         $users = User::where('role', '!=', 'superadmin')->get();
         $userCount = $users->count();
         $restoCount = Restaurant::count();
@@ -40,6 +40,8 @@ class AdminController extends Controller
             'email' => $request->email,
             'password' => bcrypt($request->password),
             'role' => 'admin',
+            
+
         ]);
 
         return redirect()->route('superadmin.users.index')->with('success', 'Utilisateur créé avec succès.');

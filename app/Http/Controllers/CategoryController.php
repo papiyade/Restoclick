@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Category;
+use App\Models\Reservation;
 use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
@@ -47,6 +48,13 @@ class CategoryController extends Controller
 
         return redirect()->route('admin.categories.index')->with('success', $message);
     }
+    public function showReservations()
+{
+    $admin = auth()->user();
+    $reservations = Reservation::where('restaurant_id', $admin->restaurant_id)->get();
+    return view('admin.reservations', compact('reservations'));
+}
+
 
     public function edit(Category $category)
     {

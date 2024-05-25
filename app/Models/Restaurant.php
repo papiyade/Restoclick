@@ -32,9 +32,18 @@ class Restaurant extends Model
     {
         return $this->belongsTo(User::class, 'admin_id');
     }
+    public function admins()
+{
+    return $this->hasOne(User::class, 'restaurant_id');
+}
 
     public function plats(){
         return $this->hasMany(Plat::class);
+    }
+
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
     }
 
 

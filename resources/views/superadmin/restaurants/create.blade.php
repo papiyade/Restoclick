@@ -4,15 +4,13 @@
 
 
 @section('content')
-    <div class="content-body">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12 ">
+
+
                     <div class="card">
                         <div class="card-header">
                             <h4 class="card-title">Créer un restaurant</h4>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body" style="width: 70%;">
                             <form method="POST" action="{{ route('superadmin.restaurants.store') }}">
                                 @csrf
                                 <div class="mb-3">
@@ -44,8 +42,6 @@
                             </form>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
+
+
 @endsection

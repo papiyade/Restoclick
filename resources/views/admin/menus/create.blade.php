@@ -17,6 +17,11 @@
             <label for="description">Description</label>
             <textarea class="form-control" name="description" id="description" style="width: 50%;"></textarea>
         </div>
+        <div class="form-group">
+            <label for="price">Prix</label>
+            <input type="number" name="prix" id="prix" class="form-control" step="0.01"
+                required>
+        </div>
         <div class="row mt-3">
             @php $colWidth = 8 / count($categories); @endphp <!-- Calcul de la largeur des colonnes -->
             @foreach($categories as $category)

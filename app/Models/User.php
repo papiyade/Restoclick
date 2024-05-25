@@ -27,6 +27,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'restaurant_id',
+        'role',
     ];
 
     /**
@@ -70,10 +72,36 @@ class User extends Authenticatable
     public function restaurant()
 {
     return $this->hasOne(Restaurant::class, 'admin_id');
+
 }
+public function restaurants()
+{
+    return $this->belongsTo(Restaurant::class);
+}
+
+
 public function plats()
 {
     return $this->restaurant->plats ?? collect(); // Assurez-vous de retourner une collection même si le restaurant est null
+}
+
+public function commandes()
+{
+    return $this->hasMany(Commande::class, 'client_id');
+}
+public function clientReservations()
+{
+    return $this->hasMany(Reservation::class, 'client_id');
+}
+
+public function restaurantReservations()
+{
+    return $this->hasManyThrough(Reservation::class, Restaurant::class, 'admin_id', 'restaurant_id', 'id', 'id');
+}
+
+public function reservations()
+{
+    return $this->hasMany(Reservation::class, 'client_id');
 }
 
 

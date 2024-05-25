@@ -11,7 +11,7 @@ class RestaurantController extends Controller
     /**
      * Display a listing of the resource.
      */
-    
+
     public function index()
     {
         $restaurants = Restaurant::with('admin')->get();
@@ -50,6 +50,9 @@ class RestaurantController extends Controller
             'email' => $validatedData['email'],
             'admin_id' => $validatedData['admin_id'], // Assurez-vous que admin_id est inclus
         ]);
+        $admin = User::findOrFail($request->admin_id);
+        $admin->restaurant_id = $restaurant->id;
+        $admin->save();
 
         return redirect()->route('superadmin.restaurants.index')->with('success', 'Restaurant ajouté avec succès');
     }

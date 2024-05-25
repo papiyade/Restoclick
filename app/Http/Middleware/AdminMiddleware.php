@@ -15,5 +15,21 @@ class AdminMiddleware
         }
 
         abort(403, 'Accès interdit.');
+
+
     }
+    protected function shouldPassThrough($request)
+{
+    $openRoutes = [
+        'front-menu/*',
+    ];
+
+    foreach ($openRoutes as $route) {
+        if ($request->is($route)) {
+            return true;
+        }
+    }
+
+    return false;
+}
 }

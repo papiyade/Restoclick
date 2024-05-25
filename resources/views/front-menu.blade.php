@@ -9,6 +9,7 @@
   <meta content="" name="description">
   <meta content="" name="keywords">
 
+
   <!-- Favicons -->
   <link href="{{asset('asets/assets/img/favicon.png')}}" rel="icon">
   <link href="{{asset('asets/assets/img/apple-touch-icon.png')}}" rel="apple-touch-icon">
@@ -96,7 +97,7 @@
     <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
 
       <div class="logo me-auto">
-        <h1><a href="index.html">{{Auth::user()->restaurant->name}}</a></h1>
+        <h1><a href="index.html">Resto</a></h1>
         <!-- Uncomment below if you prefer to use an image logo -->
         <!-- <a href="index.html"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
       </div>
@@ -287,6 +288,8 @@
     <!-- ======= Menu Section ======= -->
     <section id="menu" class="menu">
         <div class="container">
+            <h1>{{ $restaurant->name }} - Menu</h1>
+            <p>{{ $restaurant->address }}</p>
             <div class="section-title">
                 <h2>Découvrez notre délicieux <span>Menu</span></h2>
             </div>
@@ -313,6 +316,11 @@
                                 <div class="menu-ingredients">
                                     {{ $plat->description }}
                                 </div>
+                                <form action="{{ route('client.add-to-cart', $plat->id) }}" method="POST">
+                                    @csrf
+                                    <input type="number" class="form-control" name="quantity" value="1" min="1">
+                                    <button class="btn btn-rounded-outline btn-warning" type="submit"><span class="fs-20">+</span></button>
+                                </form>
                             </div>
                         @endforeach
                     @endforeach
@@ -525,55 +533,56 @@
 
     <!-- ======= Book A Table Section ======= -->
     <section id="book-a-table" class="book-a-table">
-      <div class="container">
+        <div class="container">
+            <div class="section-title">
+                <h2>Book a <span>Table</span></h2>
+                <p>Ut possimus qui ut temporibus culpa velit eveniet modi omnis est adipisci expedita at voluptas atque vitae autem.</p>
+            </div>
 
-        <div class="section-title">
-          <h2>Book a <span>Table</span></h2>
-          <p>Ut possimus qui ut temporibus culpa velit eveniet modi omnis est adipisci expedita at voluptas atque vitae autem.</p>
+            <form action="{{ route('client.make-reservation') }}" method="POST" role="form" class="php-email-form">
+                @csrf
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 form-group">
+                        <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" required>
+                        <div class="validate"></div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 form-group mt-3 mt-md-0">
+                        <input type="email" class="form-control" name="email" id="email" placeholder="Your Email" required>
+                        <div class="validate"></div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 form-group mt-3 mt-md-0">
+                        <input type="text" class="form-control" name="phone" id="phone" placeholder="Your Phone" required>
+                        <div class="validate"></div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 form-group mt-3">
+                        <input type="text" name="date_heure" class="form-control" id="date_heure" placeholder="Date and Time" required>
+                        <div class="validate"></div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 form-group mt-3">
+                        <input name="table_id" class="form-control" required>
+                            {{-- @foreach($tables as $table)
+                                <option value="{{ $table->id }}">Table {{ $table->id }}</option>
+                            @endforeach --}}
+                        </input>
+                        <div class="validate"></div>
+                    </div>
+                </div>
+                <div class="form-group mt-3">
+                    <textarea class="form-control" name="message" rows="5" placeholder="Message"></textarea>
+                    <div class="validate"></div>
+                </div>
+                <div class="mb-3">
+                    <div class="loading">Loading</div>
+                    <div class="error-message"></div>
+                    <div class="sent-message">Your booking request was sent. We will call back or send an Email to confirm your reservation. Thank you!</div>
+                </div>
+                <div class="text-center"><button type="submit">Send Message</button></div>
+            </form>
+
+
         </div>
-
-        <form action="forms/book-a-table.php" method="post" role="form" class="php-email-form">
-          <div class="row">
-            <div class="col-lg-4 col-md-6 form-group">
-              <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" data-rule="minlen:4" data-msg="Please enter at least 4 chars">
-              <div class="validate"></div>
-            </div>
-            <div class="col-lg-4 col-md-6 form-group mt-3 mt-md-0">
-              <input type="email" class="form-control" name="email" id="email" placeholder="Your Email" data-rule="email" data-msg="Please enter a valid email">
-              <div class="validate"></div>
-            </div>
-            <div class="col-lg-4 col-md-6 form-group mt-3 mt-md-0">
-              <input type="text" class="form-control" name="phone" id="phone" placeholder="Your Phone" data-rule="minlen:4" data-msg="Please enter at least 4 chars">
-              <div class="validate"></div>
-            </div>
-            <div class="col-lg-4 col-md-6 form-group mt-3">
-              <input type="text" name="date" class="form-control" id="date" placeholder="Date" data-rule="minlen:4" data-msg="Please enter at least 4 chars">
-              <div class="validate"></div>
-            </div>
-            <div class="col-lg-4 col-md-6 form-group mt-3">
-              <input type="text" class="form-control" name="time" id="time" placeholder="Time" data-rule="minlen:4" data-msg="Please enter at least 4 chars">
-              <div class="validate"></div>
-            </div>
-            <div class="col-lg-4 col-md-6 form-group mt-3">
-              <input type="number" class="form-control" name="people" id="people" placeholder="# of people" data-rule="minlen:1" data-msg="Please enter at least 1 chars">
-              <div class="validate"></div>
-            </div>
-          </div>
-          <div class="form-group mt-3">
-            <textarea class="form-control" name="message" rows="5" placeholder="Message"></textarea>
-            <div class="validate"></div>
-          </div>
-          <div class="mb-3">
-            <div class="loading">Loading</div>
-            <div class="error-message"></div>
-            <div class="sent-message">Your booking request was sent. We will call back or send an Email to confirm your reservation. Thank you!</div>
-          </div>
-          <div class="text-center"><button type="submit">Send Message</button></div>
-        </form>
-
-      </div>
-    </section><!-- End Book A Table Section -->
-
+    </section>
+    <!-- End Book A Table Section -->
     <!-- ======= Gallery Section ======= -->
     <section id="gallery" class="gallery">
       <div class="container-fluid">
