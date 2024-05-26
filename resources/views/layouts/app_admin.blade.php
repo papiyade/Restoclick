@@ -1040,6 +1040,24 @@
 						</ul>
 					</li>
 
+                    <li><a class="has-arrow " href="javascript:void(0);" aria-expanded="false">
+						<div class="menu-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-vinyl-fill" viewBox="0 0 24 24">
+                                <g opacity="0.5">
+                                <path d="M8 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4m0 3a1 1 0 1 1 0-2 1 1 0 0 1 0 2"/>
+                                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M4 8a4 4 0 1 0 8 0 4 4 0 0 0-8 0"/>
+                            </g>
+                            </svg>
+
+
+						</div>
+							<span class="nav-text">Réservations</span>
+						</a>
+						<ul aria-expanded="false">
+							<li><a href="{{route('admin.reservation.index')}}">Liste des reservations</a></li>
+						</ul>
+					</li>
+
 
 				</ul>
 				<div class="plus-box">
