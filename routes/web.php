@@ -9,6 +9,8 @@ use App\Http\Controllers\PlatController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\MenuFrontController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ShopController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\SuperAdminMiddleware;
@@ -105,6 +107,13 @@ Route::post('/reservation', [ReservationController::class, 'makeReservation'])->
 });
 
 Route::get('/front-menu/{id}', [MenuFrontController::class, 'showMenuById'])->name('front-menu.showById');
+Route::get('/Shop/{id}', [CartController::class , 'seeShop'])->name('Shop.showById');
+Route::get('/get-cart', [CartController::class, 'getCart'])->name('cart.get');
+
+
+Route::get('/shop-detail/{id}', [ShopController::class, 'show'])->name('shop-detail');
+
+
 
 Route::get('/Resto', [MenuFrontController::class, 'showthatMenu'])->name('Resto.showthatMenu');
 
@@ -119,3 +128,5 @@ Route::post('/reservation', [ReservationController::class, 'makeReservation'])->
 Route::get('restaurant/{id}/reservation', [ReservationController::class, 'showReservationForm'])->name('client.reservation.form');
 Route::post('restaurant/reservation', [ReservationController::class, 'makeReservation'])->name('client.reservation.submit');
 Route::get('/Resto/{id}', [MenuFrontController::class, 'showMenuParId'])->name('Resto.showById');
+Route::post('/add-to-cart', [CartController::class, 'addToCart']);
+

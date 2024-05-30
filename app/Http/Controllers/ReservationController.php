@@ -89,20 +89,73 @@ class ReservationController extends Controller
 
     //     return view('admin.reservation.index', compact('reservations'));
     // }
-    public function index()
-    {
-        $admin = auth()->user();
+    // public function index()
+    // {
+    //     $admin = auth()->user();
 
-        if ($admin && $admin->restaurant_id) {
-            $reservations = $admin->restaurantReservations;
-            Log::info("Admin ID: {$admin->id}, Restaurant ID: {$admin->restaurant_id}, Reservations Count: " . $reservations->count());
+    //     if ($admin && $admin->restaurant_id) {
+    //         $reservations = Reservation::where('restaurant_id', $admin->restaurant_id)->paginate(5);
+    //         Log::info("Admin ID: {$admin->id}, Restaurant ID: {$admin->restaurant_id}, Reservations Count: " . $reservations->total());
+    //     } else {
+    //         $reservations = collect(); // Aucun résultat
+    //         Log::info("Admin non authentifié ou sans restaurant_id.");
+    //     }
+
+    //     return view('admin.reservation.index', compact('reservations'));
+    // }
+
+// ReservationController.php
+// public function index(Request $request)
+// {
+//     $query = $request->input('search');
+
+//     if ($query) {
+//         $reservations = Reservation::where('client_name', 'LIKE', "%{$query}%")->paginate(5);
+//     } else {
+//         $reservations = Reservation::paginate(5);
+//     }
+
+//     if ($request->ajax()) {
+//         return response()->json([
+//             'html' => view('partials.reservation_rows', compact('reservations'))->render()
+//         ]);
+//     }
+
+//     return view('admin.reservation.index', compact('reservations'));
+// }
+public function index(Request $request)
+{
+    $admin = auth()->user();
+
+    if ($admin && $admin->restaurant_id) {
+        $query = $request->input('search');
+
+        if ($query) {
+            $reservations = Reservation::where('restaurant_id', $admin->restaurant_id)
+                                        ->where('client_name', 'LIKE', "%{$query}%")
+                                        ->paginate(5);
         } else {
-            $reservations = collect(); // Aucun résultat
-            Log::info("Admin non authentifié ou sans restaurant_id.");
+            $reservations = Reservation::where('restaurant_id', $admin->restaurant_id)
+                                        ->paginate(5);
         }
 
-        return view('admin.reservation.index', compact('reservations'));
+        Log::info("Admin ID: {$admin->id}, Restaurant ID: {$admin->restaurant_id}, Reservations Count: " . $reservations->total());
+    } else {
+        $reservations = collect(); // Aucun résultat
+        Log::info("Admin non authentifié ou sans restaurant_id.");
     }
+
+    if ($request->ajax()) {
+        return response()->json([
+            'html' => view('partials.reservation_rows', compact('reservations'))->render()
+        ]);
+    }
+
+    return view('admin.reservation.index', compact('reservations'));
+}
+
+
+
 
     public function showReservationForm($id)
     {

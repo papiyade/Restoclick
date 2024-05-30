@@ -29,6 +29,13 @@
     <link rel="apple-touch-icon-precomposed" href="{{ asset('front/assets/images/favicon.png') }}">
 
 
+
+
+    {{-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> --}}
+
+
+
+
     <style>
         .line {
             flex-grow: 0;
@@ -37,6 +44,35 @@
             /* Couleur de la ligne */
             margin: 0 10px;
             /* Espacement autour de la ligne */
+        }
+
+        #cart-icon text#cart-count {
+            fill: rgb(255, 255, 255);
+            /* Remplacez 'red' par la couleur de votre choix */
+            font-size: 12px;
+            /* Ajustez la taille de la police si nécessaire */
+        }
+
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            padding-top: 60px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
         }
     </style>
 
@@ -112,7 +148,7 @@
                                 <div class="site-logo-wrap">
                                     <a href="index.html" rel="home" class="main-logo">
                                         <img id="logo_header" alt=""
-                                            src="{{ asset('front/assets/css/animate.min.css') }}"
+                                            src="{{ asset('front/assets/images/logo/logo.png') }}"
                                             data-retina="{{ asset('front/assets/images/logo/logo@2x.png') }}">
                                     </a>
                                 </div>
@@ -183,6 +219,23 @@
                                 <li class="menu-item">
                                     <a href="contact.html">Contact</a>
                                 </li>
+
+                                <li class="menu-item">
+                                    <a href="{{ route('Shop.showById', ['id' => $restaurant->id]) }}">
+                                        <div id="cart-icon">
+                                            <svg style="color: #977644;" xmlns="http://www.w3.org/2000/svg"
+                                                width="24" height="24" fill="currentColor"
+                                                class="bi bi-bag-dash-fill" viewBox="0 0 16 16">
+                                                <path fill-rule="evenodd"
+                                                    d="M10.5 3.5a2.5 2.5 0 0 0-5 0V4h5zm1 0V4H15v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4h3.5v-.5a3.5 3.5 0 1 1 7 0M6 9.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1z" />
+                                                <text id="cart-count" x="10" y="10" fill="#000">0</text>
+                                            </svg>
+                                        </div>
+                                    </a>
+
+                                </li>
+
+
                             </ul>
                         </nav><!-- /main-nav -->
                         <div class="header-right type-1">
@@ -214,7 +267,23 @@
                                 <span></span>
                             </div>
                         </div><!-- /header-right -->
+
+
+
+
+
+
+
+
                     </div>
+
+
+
+
+
+
+
+
                 </div>
                 <div class="mobile-nav-wrap">
                     <div class="overlay-mobile-nav"></div>
@@ -222,7 +291,7 @@
                         <div class="relative">
                             <a href="index.html" rel="home" class="main-logo">
                                 <img id="mobile-logo_header" alt=""
-                                    src="{{ asset('front/assets/images/logo/logo.png') }}"
+                                    src="{{asset('front/assets/images/logo/logo.png') }}"
                                     data-retina="front/assets/images/logo/logo@2x.png">
                             </a>
                             <div class="mobile-nav-close">
@@ -300,6 +369,10 @@
                         </nav>
                     </div>
                 </div>
+
+
+
+
             </header>
             <!-- /header -->
 
@@ -335,80 +408,7 @@
                         </div>
                     </div>
                 </div>
-                {{-- <div class="widget-tabs style-1">
-                    <div class="top">
-                        <ul class="widget-menu-tab ">
-                            <li class="item-title active">
-                                <span class="inner">Tout afficher</span>
-                                @foreach ($categories as $category)
-                                <li class="item-title" data-filter=".item-title-{{ $category->id }}"> <span class="inner">{{ $category->name }}</span></li>
-                            @endforeach
-                            </li>
 
-                        </ul>
-                    </div>
-                    <div class="bottom">
-                        <div class="image image-left">
-                            <div class="wrap">
-                                <img src="{{asset('front/assets/images/box-item/menu-3.jpg')}}" alt="">
-                            </div>
-                        </div>
-                        <div class="widget-content-tab">
-                            <div class="widget-content-inner active">
-                                <div class="swiper-container" data-swiper='{
-                                    "spaceBetween": 0,
-                                    "slidesPerView": 1,
-                                    "pagination": {
-                                        "el": ".menu-pagination",
-                                        "clickable": true
-                                    }
-                                }'>
-                                    <div class="swiper-wrapper">
-                                        <div class="swiper-slide">
-
-                                            <div class="wg-menu-item">
-                                                @if ($lastMenu)
-                                                @foreach ($categories as $category)
-                                                    @foreach ($lastMenu->plats->where('category_id', $category->id) as $plat)
-                                                        <div class="col-lg-6 menu-item filter-{{ $category->id }} menu-grid-item">
-                                                            </div>
-                                                <div class="flex items-center">
-                                                    <div class="name"><a href="#">{{$plat->name}}</a></div>
-                                                    <div class="line"></div>
-
-
-                                                    <div class="price">{{$plat->price}} Fcfa</div>
-                                                </div>
-                                                <p>{{$plat->description}}</p>
-                                                <br><br><br>
-                                                @endforeach
-
-                                                @endforeach
-                                                @else
-                                                <p>Aucun Menu disponible pour le Moment</p>
-                                                @endif
-
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    <div class="swiper-pagination style-dot menu-pagination"></div>
-                                </div>
-                            </div>
-
-
-
-                        </div>
-                        <div class="image image-right">
-                            <div class="wrap">
-                                <img src="{{asset('front/assets/images/box-item/menu-4.jpg')}}" alt="">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="button-bot">
-                        <a class="button-two-line w-full" href="book-a-table.html">BOOK A TABLE TODAY</a>
-                    </div>
-                </div> --}}
                 <div class="widget-tabs style-1">
                     <div class="top">
                         <ul class="widget-menu-tab">
@@ -438,10 +438,11 @@
                                         "el": ".menu-pagination",
                                         "clickable": true
                                     }
-                                }' style="width: 240%;">
-                                    <div class="swiper-wrapper" >
-                                        <div class="swiper-slide" >
-                                            <div class="wg-menu-item" >
+                                }'
+                                    style="width: 220%;">
+                                    <div class="swiper-wrapper">
+                                        <div class="swiper-slide">
+                                            <div class="wg-menu-item">
                                                 @if ($lastMenu)
                                                     @foreach ($lastMenu->plats as $plat)
                                                         <div
@@ -452,6 +453,16 @@
                                                                 <div class="line"></div>
 
                                                                 <div class="price">{{ $plat->price }} Fcfa</div>
+                                                                <div style="margin-left: 3rem; color:#977644;">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                                        width="20" height="20"
+                                                                        fill="currentColor"
+                                                                        class="bi bi-plus-square-fill"
+                                                                        viewBox="0 0 16 16">
+                                                                        <path
+                                                                            d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0" />
+                                                                    </svg>
+                                                                </div>
                                                             </div>
                                                             <p>{{ $plat->description }}</p>
                                                             <br><br><br>
@@ -462,6 +473,7 @@
                                                 @endif
                                             </div>
                                         </div>
+
                                     </div>
                                     <div class="swiper-pagination style-dot menu-pagination"></div>
                                 </div>
@@ -473,6 +485,9 @@
                             </div>
                         </div>
                     </div>
+
+
+
                     <div class="button-bot">
                         <a class="button-two-line w-full"
                             href="{{ route('client.book-table', ['id' => $restaurant->id]) }}">BOOK A TABLE TODAY</a>
@@ -596,7 +611,72 @@
             });
         });
     </script>
+    {{-- <script>
+        $(document).ready(function() {
+            $('.bi-plus-square-fill').on('click', function() {
+                var platId = $(this).closest('.menu-item').data('plat-id');
 
+                $.ajax({
+                    url: '/add-to-cart', // Remplacez par l'URL de votre route pour ajouter au panier
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}', // Inclure le token CSRF pour la sécurité
+                        plat_id: platId
+                    },
+                    success: function(response) {
+                        // Mettre à jour le compteur du panier
+                        var cartCount = parseInt($('#cart-count').text());
+                        $('#cart-count').text(cartCount + 1);
+                    },
+                    error: function(xhr) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script> --}}
+    <script>
+        $(document).ready(function() {
+            $('.bi-plus-square-fill').on('click', function() {
+                var platId = $(this).closest('.menu-item').data('plat-id');
+
+                $.ajax({
+                    url: '/add-to-cart', // URL de votre route pour ajouter au panier
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}', // Token CSRF pour la sécurité
+                        plat_id: platId
+                    },
+                    success: function(response) {
+                        // Mettre à jour le compteur du panier
+                        var cartCount = parseInt($('#cart-count').text());
+                        $('#cart-count').text(cartCount + 1);
+
+                        // Rafraîchir la section de la boutique avec les plats ajoutés au panier
+                        refreshCart();
+                    },
+                    error: function(xhr) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
+
+            function refreshCart() {
+                $.ajax({
+                    url: '/get-cart', // URL de votre route pour récupérer le panier
+                    method: 'GET',
+                    success: function(response) {
+                        $('.wg-shop-content .row').html(response); // Remplacer le contenu de la boutique
+                    },
+                    error: function(xhr) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            }
+        });
+    </script>
+
+<script src="https://unpkg.com/vue@next"></script>
 
 </body>
 

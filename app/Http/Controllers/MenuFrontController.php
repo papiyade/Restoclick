@@ -83,14 +83,15 @@ class MenuFrontController extends Controller
 
     public function showMenuParId($id){
         $restaurant = Restaurant::findOrFail($id);
-         // Récupérer les menus et le dernier menu du restaurant
-         $menus = $restaurant->menus;
-         $lastMenu = $menus->last();
 
-         // Récupérer les catégories associées à ce restaurant
-         $categories = Category::where('restaurant_id', $id)->get();
+    // Récupérer les menus et le dernier menu du restaurant
+    $menus = $restaurant->menus;
+    $lastMenu = $menus->last();
 
-         return view('Resto', compact('lastMenu', 'categories', 'restaurant'));
+    // Récupérer les catégories associées aux plats du dernier menu
+    $categories = $lastMenu ? Category::whereIn('id', $lastMenu->plats->pluck('category_id'))->get() : collect();
+
+    return view('Resto', compact('lastMenu', 'categories', 'restaurant'));
 
 
     }
