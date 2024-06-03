@@ -17,7 +17,6 @@ return new class extends Migration
             $table->unsignedBigInteger('plat_id');
             $table->integer('quantite');
             $table->timestamps();
-
             $table->foreign('commande_id')->references('id')->on('commandes')->onDelete('cascade');
             $table->foreign('plat_id')->references('id')->on('plats')->onDelete('cascade');
         });

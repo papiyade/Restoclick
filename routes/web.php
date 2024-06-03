@@ -107,8 +107,9 @@ Route::post('/reservation', [ReservationController::class, 'makeReservation'])->
 });
 
 Route::get('/front-menu/{id}', [MenuFrontController::class, 'showMenuById'])->name('front-menu.showById');
-Route::get('/Shop/{id}', [CartController::class , 'seeShop'])->name('Shop.showById');
+Route::get('/Shop/{id}', [CartController::class, 'seeShop'])->name('Shop.showById');
 Route::get('/get-cart', [CartController::class, 'getCart'])->name('cart.get');
+Route::post('/add-to-cart', [CartController::class, 'addToCart']);
 
 
 Route::get('/shop-detail/{id}', [ShopController::class, 'show'])->name('shop-detail');
@@ -128,5 +129,4 @@ Route::post('/reservation', [ReservationController::class, 'makeReservation'])->
 Route::get('restaurant/{id}/reservation', [ReservationController::class, 'showReservationForm'])->name('client.reservation.form');
 Route::post('restaurant/reservation', [ReservationController::class, 'makeReservation'])->name('client.reservation.submit');
 Route::get('/Resto/{id}', [MenuFrontController::class, 'showMenuParId'])->name('Resto.showById');
-Route::post('/add-to-cart', [CartController::class, 'addToCart']);
 

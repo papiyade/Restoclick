@@ -13,18 +13,11 @@ return new class extends Migration
     {
         Schema::create('commandes', function (Blueprint $table) {
             $table->id();
-            // $table->unsignedBigInteger('client_id');
-            // $table->unsignedBigInteger('serveur_id');
-            // $table->unsignedBigInteger('table_id');
             $table->enum('statut', ['en_cours', 'terminee', 'annulee']);
             $table->timestamps();
-
             $table->foreignId('client_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('serveur_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('table_id')->constrained('tables')->onDelete('cascade');
-
-
-
         });
     }
 

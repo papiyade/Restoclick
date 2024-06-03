@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('plats', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('menu_id')->nullable()->onDelete('cascade');// Ajoutez nullable()
+            $table->foreignId('menu_id')->nullable()->onDelete('cascade');
             $table->foreignId('restaurant_id')->onDelete('cascade');
             $table->foreignId('category_id')->onDelete('cascade');
             $table->string('name');

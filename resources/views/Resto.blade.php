@@ -14,6 +14,8 @@
     <title>Restaurant HTML Template - Luxury</title>
 
     <meta name="author" content="themesflat.com">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <!-- Mobile Specific Metas -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -220,20 +222,74 @@
                                     <a href="contact.html">Contact</a>
                                 </li>
 
-                                <li class="menu-item">
-                                    <a href="{{ route('Shop.showById', ['id' => $restaurant->id]) }}">
-                                        <div id="cart-icon">
-                                            <svg style="color: #977644;" xmlns="http://www.w3.org/2000/svg"
-                                                width="24" height="24" fill="currentColor"
-                                                class="bi bi-bag-dash-fill" viewBox="0 0 16 16">
-                                                <path fill-rule="evenodd"
-                                                    d="M10.5 3.5a2.5 2.5 0 0 0-5 0V4h5zm1 0V4H15v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4h3.5v-.5a3.5 3.5 0 1 1 7 0M6 9.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1z" />
-                                                <text id="cart-count" x="10" y="10" fill="#000">0</text>
-                                            </svg>
-                                        </div>
-                                    </a>
+                                <div id="app">
+                                    <!-- Your existing HTML -->
 
-                                </li>
+                                    <li class="menu-item">
+                                        <a href="{{ route('Shop.showById', ['id' => $restaurant->id]) }}">
+                                            <div id="cart-icon">
+                                                <svg style="color: #977644;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-bag-dash-fill" viewBox="0 0 16 16">
+                                                    <path fill-rule="evenodd" d="M10.5 3.5a2.5 2.5 0 0 0-5 0V4h5zm1 0V4H15v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4h3.5v-.5a3.5 3.5 0 1 1 7 0M6 9.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1z" />
+                                                    <text id="cart-count" x="10" y="10" fill="#000">0</text>
+                                                </svg>
+                                            </div>
+                                        </a>
+                                    </li>
+
+                                    <div class="wg-menu-item">
+                                        @foreach ($lastMenu->plats as $plat)
+                                            <div class="col-lg-6 menu-item" :data-plat-id="{{ $plat->id }}">
+                                                <div class="flex items-center">
+                                                    <div class="name"><a href="#">{{ $plat->name }}</a></div>
+                                                    <div class="line"></div>
+                                                    <div class="price">{{ $plat->price }} Fcfa</div>
+                                                    <div @click="addToCart({{ $plat->id }})" style="margin-left: 3rem; color:#977644;">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus-square-fill" viewBox="0 0 16 16">
+                                                            <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                                <p>{{ $plat->description }}</p>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+
+                                <script>
+                                    const { createApp } = Vue;
+
+                                    createApp({
+                                        data() {
+                                            return {
+                                                cartCount: 0,
+                                            };
+                                        },
+                                        methods: {
+                                            addToCart(platId) {
+                                                $.ajax({
+                                                    url: '/add-to-cart',
+                                                    method: 'POST',
+                                                    data: {
+                                                        _token: '{{ csrf_token() }}',
+                                                        plat_id: platId,
+                                                    },
+                                                    success: (response) => {
+                                                        this.cartCount++;
+                                                        $('#cart-count').text(this.cartCount);
+                                                        localStorage.setItem('cartCount', this.cartCount);
+                                                    },
+                                                    error: (xhr) => {
+                                                        console.error(xhr.responseText);
+                                                    },
+                                                });
+                                            },
+                                        },
+                                        mounted() {
+                                            this.cartCount = parseInt(localStorage.getItem('cartCount')) || 0;
+                                            $('#cart-count').text(this.cartCount);
+                                        },
+                                    }).mount('#app');
+                                </script>
 
 
                             </ul>
@@ -676,7 +732,7 @@
         });
     </script>
 
-<script src="https://unpkg.com/vue@next"></script>
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
 </body>
 

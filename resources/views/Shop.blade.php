@@ -14,6 +14,9 @@
 
     <meta name="author" content="themesflat.com">
 
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <!-- Mobile Specific Metas -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -278,7 +281,7 @@
             <!-- /banner-page -->
 
             <!-- wg-shop -->
-            <div class="wg-shop">
+            {{-- <div class="wg-shop">
                 <div class="themesflat-container">
                     <div class="row">
                         <div class="col-md-8 col-12">
@@ -323,43 +326,64 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="wg-shop-content">
-                                <div class="row">
-                                    @foreach ($categories as $category)
-                                        @foreach ($category->plats as $plat)
-                                            <div class="col-md-6">
-                                                <div class="shop-item wow fadeInUp">
-                                                    <div class="image">
-                                                        <img src="{{ asset('front/assets/images/box-item/shop-item-1.jpg') }}" alt="">
-                                                        <div class="box-icon">
-                                                            <div class="wrap">
-                                                                <a href="{{ route('shop-detail', ['id' => $plat->id]) }}">
-                                                                    <i class="icon-shopping-bag"></i>
-                                                                </a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="content">
-                                                        <span class="button-wishlist"><span class="icon"></span></span>
-                                                        <div class="price">${{ $plat->price }}</div>
-                                                        <div class="name"><a href="{{ route('shop-detail', ['id' => $plat->id]) }}">{{ $plat->name }}</a></div>
-                                                        <div class="rating">
-                                                            <i class="icon-star"></i>
-                                                            <i class="icon-star"></i>
-                                                            <i class="icon-star"></i>
-                                                            <i class="icon-star"></i>
-                                                            <i class="icon-star"></i>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    @endforeach
+                            <div id="app">
+                                <!-- Your existing HTML -->
+
+                                <div class="wg-shop-content">
+                                    <div class="row" id="cart-items">
+                                        <!-- Items will be loaded here dynamically -->
+                                    </div>
                                 </div>
                             </div>
 
+                            <script>
+                                const { createApp } = Vue;
 
-
+                                createApp({
+                                    data() {
+                                        return {
+                                            cart: [],
+                                        };
+                                    },
+                                    computed: {
+                                        subtotal() {
+                                            return this.cart.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2);
+                                        }
+                                    },
+                                    methods: {
+                                        loadCart() {
+                                            $.ajax({
+                                                url: '/get-cart',
+                                                method: 'GET',
+                                                success: (response) => {
+                                                    this.cart = response.cart;
+                                                },
+                                                error: (xhr) => {
+                                                    console.error(xhr.responseText);
+                                                },
+                                            });
+                                        },
+                                        removeFromCart(itemId) {
+                                            $.ajax({
+                                                url: '/remove-from-cart/' + itemId,
+                                                method: 'POST',
+                                                data: {
+                                                    _token: '{{ csrf_token() }}'
+                                                },
+                                                success: (response) => {
+                                                    this.loadCart();
+                                                },
+                                                error: (xhr) => {
+                                                    console.error(xhr.responseText);
+                                                },
+                                            });
+                                        }
+                                    },
+                                    mounted() {
+                                        this.loadCart();
+                                    },
+                                }).mount('#app');
+                                </script>
 
                         </div>
                         <div class="col-md-4 col-12">
@@ -367,118 +391,145 @@
                                 <div class="sidebar-item cart">
                                     <div class="heading-top">cart</div>
                                     <div class="content">
-                                        <div class="cart-item">
+                                        <div v-for="item in cart" :key="item.id" class="cart-item">
                                             <div class="image">
-                                                <img src="{{asset('front/assets/images/box-item/cart-item-4.jpg')}}" alt="">
+                                                <img :src="item.image_url" alt="Image du plat">
                                             </div>
                                             <div class="content">
-                                                <div class="price">$40.99</div>
-                                                <div class="name"><a href="shop-detail.html">Starter Egg Soup</a></div>
+                                                <div class="price">${{ item.price }}</div>
+                                                <div class="name">
+                                                    <a :href="'/shop-detail/' + item.id">{{ item.name }}</a>
+                                                </div>
                                             </div>
-                                            <div class="close-button"><i class="icon-close"></i></div>
-                                        </div>
-                                        <div class="cart-item">
-                                            <div class="image">
-                                                <img src="{{asset('front/assets/images/box-item/cart-item-5.jpg')}}" alt="">
+                                            <div class="close-button" @click="removeFromCart(item.id)">
+                                                <i class="icon-close"></i>
                                             </div>
-                                            <div class="content">
-                                                <div class="price">$30.15</div>
-                                                <div class="name"><a href="shop-detail.html">Starter Egg Soup</a></div>
-                                            </div>
-                                            <div class="close-button"><i class="icon-close"></i></div>
                                         </div>
                                         <div class="subtotal">
-                                            <div class="title">Subtotal:</div><span class="price">$55.00</span>
+                                            <div class="title">Subtotal:</div>
+                                            <span class="price">${{ subtotal }}</span>
                                         </div>
                                         <div class="bottom">
-                                            <a class="" href="#">view cart <i class="icon-arrow-right"></i></a>
-                                            <a class="" href="#">check out <i class="icon-arrow-right"></i></a>
+                                            <a href="#">view cart <i class="icon-arrow-right"></i></a>
+                                            <a href="#">check out <i class="icon-arrow-right"></i></a>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="sidebar-item category">
-                                    <div class="heading-top">categories</div>
-                                    <div class="content">
-                                        <ul>
-                                            <li><a href="#">Food</a></li>
-                                            <li class="active"><a href="#">Industry expertise</a></li>
-                                            <li><a href="#">Restaurants</a></li>
-                                            <li><a href="#">Fast Casual Restaurants</a></li>
-                                            <li><a href="#">Casual Dining</a></li>
-                                            <li><a href="#">Pizzerias</a></li>
-                                            <li><a href="#">Coffee’s </a></li>
-                                        </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div> --}}
+            <div class="wg-shop">
+                <div class="themesflat-container">
+                    <div class="row">
+                        <div class="col-md-8 col-12">
+                            <div class="top">
+                                <p>Showing 1–12 of 16 results</p>
+                                <div class="option">
+                                    <div class="select t1">
+                                        <select class="style-1">
+                                            <option value="Subject" selected>All Product</option>
+                                            <option value="Subject">Sushi</option>
+                                            <option value="Subject">Sashimi</option>
+                                            <option value="Subject">Noodles</option>
+                                        </select>
+                                    </div>
+                                    <div class="button-list">
+                                        <!-- SVG Icons -->
+                                    </div>
+                                    <div class="button-grid">
+                                        <!-- SVG Icons -->
                                     </div>
                                 </div>
-                                <div class="sidebar-item filter">
-                                    <div class="heading-top">filter by prive</div>
-                                    <div class="content">
-                                        <div id="range-two-val"></div>
-                                        <div class="bottom">
-                                            <a href="#">FILTER</a>
-                                            <div class="total">
-                                                <div id="skip-value-lower"></div>&nbsp;-&nbsp;<div id="skip-value-upper"></div>
+                            </div>
+                            <div id="cart-app">
+                                <div class="wg-shop-content">
+                                    <div class="row">
+                                        @foreach($categories as $category)
+                                            @foreach($category->plats as $plat)
+                                                <div class="col-md-6">
+                                                    <div class="shop-item wow fadeInUp">
+                                                        <div class="image">
+                                                            <img src="{{ asset('front/assets/images/box-item/shop-item-1.jpg') }}" alt="">
+                                                            <div class="box-icon">
+                                                                <div class="wrap">
+                                                                    <a href="#" @click="addToCart({{ $plat->id }}, '{{ $plat->name }}', {{ $plat->price }})">
+                                                                        <i class="icon-shopping-bag"></i>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <span class="button-wishlist"><span class="icon"></span></span>
+                                                            <div class="price">{{ $plat->price }} Fcfa</div>
+                                                            <div class="name"><a href="#">{{ $plat->name }}</a></div>
+                                                            <div class="rating">
+                                                                <i class="icon-star"></i>
+                                                                <i class="icon-star"></i>
+                                                                <i class="icon-star"></i>
+                                                                <i class="icon-star"></i>
+                                                                <i class="icon-star"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        @endforeach
+                                        <div class="col-12">
+                                            <div class="wg-pagination">
+                                                <ul>
+                                                    <li class="active"><a href="#">1</a></li>
+                                                    <li><a href="#">2</a></li>
+                                                    <li><a href="#"><i class="icon-chevrons-right"></i></a></li>
+                                                </ul>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="sidebar-item recent-product">
-                                    <div class="heading-top">recent products</div>
-                                    <div class="content">
-                                        <div class="cart-item">
-                                            <div class="image">
-                                                <img src="{{asset('front/assets/images/box-item/cart-item-1.jpg')}}" alt="">
-                                            </div>
+
+                                <div class="col-md-4 col-12">
+                                    <div class="main-sidebar">
+                                        <div class="sidebar-item cart">
+                                            <div class="heading-top">Cart</div>
                                             <div class="content">
-                                                <div class="flex items-center">
-                                                    <div class="price mb-0">$32.00</div>
-                                                    <div class="rating flex-grow">
-                                                        <i class="icon-star"></i>
-                                                        <i class="icon-star"></i>
-                                                        <i class="icon-star"></i>
-                                                        <i class="icon-star"></i>
-                                                        <i class="icon-star"></i>
+                                                <div id="dynamic-cart-content">
+                                                    <div v-for="(item, index) in cart" :key="index" class="cart-item">
+                                                        <div class="content">
+
+                                                            <div class="cart-item">
+                                                                <div class="image">
+                                                                    <img src="{{asset('front/assets/images/box-item/cart-item-4.jpg')}}" alt="">
+                                                                </div>
+                                                                <div class="content">
+                                                                    <div class="price mb-0">@{{ item.price * item.quantity }} Fcfa</div>
+                                                                    <div class="name"><a href="shop-detail.html">@{{ item.name }}</a></div>
+                                                                </div>
+                                                                <div class="close-button"><i class="icon-close"></i></div>
+
+
+                                                            </div>
+                                                            <div class="quantity-controls">
+                                                                <button @click="decreaseQuantity(index)">-</button>
+                                                                <span>@{{ item.quantity }}</span>
+                                                                <button @click="increaseQuantity(index)">+</button>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
                                                 </div>
+                                                <div class="subtotal">
+                                                    <div class="title">Sous Total:</div>
+                                                    <span class="price">@{{ subtotal }} Fcfa</span>
                                                 </div>
-                                                <div class="name"><a href="shop-detail.html">Salad Dessert Sauce</a></div>
+                                                <div class="bottom">
+                                                    <a href="#">View cart <i class="icon-arrow-right"></i></a>
+                                                    <a href="#">Check out <i class="icon-arrow-right"></i></a>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="cart-item">
-                                            <div class="image">
-                                                <img src="{{asset('front/assets/images/box-item/cart-item-2.jpg')}}" alt="">
-                                            </div>
-                                            <div class="content">
-                                                <div class="flex items-center">
-                                                    <div class="price mb-0">$25.00</div>
-                                                    <div class="rating flex-grow">
-                                                        <i class="icon-star"></i>
-                                                        <i class="icon-star"></i>
-                                                        <i class="icon-star"></i>
-                                                        <i class="icon-star"></i>
-                                                        <i class="icon-star"></i>
-                                                </div>
-                                                </div>
-                                                <div class="name"><a href="shop-detail.html">Salad Dessert Sauce</a></div>
-                                            </div>
-                                        </div>
-                                        <div class="cart-item last">
-                                            <div class="image">
-                                                <img src="{{asset('front/assets/images/box-item/cart-item-3.jpg')}}" alt="">
-                                            </div>
-                                            <div class="content">
-                                                <div class="flex items-center">
-                                                    <div class="price mb-0">$24.19</div>
-                                                    <div class="rating flex-grow">
-                                                        <i class="icon-star"></i>
-                                                        <i class="icon-star"></i>
-                                                        <i class="icon-star"></i>
-                                                        <i class="icon-star"></i>
-                                                        <i class="icon-star"></i>
-                                                </div>
-                                                </div>
-                                                <div class="name"><a href="shop-detail.html">Salad Dessert Sauce</a></div>
-                                            </div>
-                                        </div>
+                                        <!-- Other sidebar items -->
                                     </div>
                                 </div>
                             </div>
@@ -486,6 +537,46 @@
                     </div>
                 </div>
             </div>
+
+            <script>
+                const { createApp } = Vue;
+
+                createApp({
+                    data() {
+                        return {
+                            cart: [],
+                            subtotal: 0,
+                        };
+                    },
+                    methods: {
+                        addToCart(id, name, price) {
+                            let item = this.cart.find(item => item.id === id);
+                            if (item) {
+                                item.quantity++;
+                            } else {
+                                this.cart.push({ id, name, price, quantity: 1 });
+                            }
+                            this.updateSubtotal();
+                        },
+                        increaseQuantity(index) {
+                            this.cart[index].quantity++;
+                            this.updateSubtotal();
+                        },
+                        decreaseQuantity(index) {
+                            if (this.cart[index].quantity > 1) {
+                                this.cart[index].quantity--;
+                                this.updateSubtotal();
+                            } else {
+                                this.cart.splice(index, 1);
+                            }
+                        },
+                        updateSubtotal() {
+                            this.subtotal = this.cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+                        },
+                    },
+                }).mount('#cart-app');
+            </script>
+
             <!-- /wg-shop -->
 
             <!-- footer -->

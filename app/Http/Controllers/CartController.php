@@ -1,31 +1,18 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Restaurant;
 use App\Models\Category;
-
+use App\Models\Plat;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
-    // //
-    // public function addToCart(Request $request)
-    // {
-    //     $platId = $request->input('plat_id');
-    //     // Logique pour ajouter le plat au panier
-    //     // Vous pouvez sauvegarder le panier en session ou dans la base de données
-
-    //     return response()->json(['success' => true]);
-    // }
-
     public function addToCart(Request $request)
     {
         $platId = $request->input('plat_id');
 
-        // Logique pour ajouter le plat au panier
-        // Vous pouvez sauvegarder le panier en session ou dans la base de données
-
-        // Exemple de sauvegarde en session
         $cart = session()->get('cart', []);
         if (isset($cart[$platId])) {
             $cart[$platId]++;
@@ -37,51 +24,40 @@ class CartController extends Controller
         return response()->json(['success' => true]);
     }
 
-//     public function seeShop($id)
-// {
-//     // Récupérer le restaurant par son ID
-//     $restaurant = Restaurant::findOrFail($id);
+    public function seeShop($id)
+    {
+        $restaurant = Restaurant::findOrFail($id);
+        $categories = Category::where('restaurant_id', $id)->with('plats')->get();
+        $cart = session()->get('cart', []);
 
-//     // Récupérer les menus et le dernier menu du restaurant
-//     $menus = $restaurant->menus;
-//     $lastMenu = $menus->last();
+        // Fetch plats in the cart
+        $plats = Plat::whereIn('id', array_keys($cart))->get();
 
-//     // Récupérer les catégories associées à ce restaurant
-//     $categories = Category::where('restaurant_id', $id)->get();
+        // Calculate the subtotal
+        $subtotal = $plats->reduce(function ($carry, $plat) use ($cart) {
+            return $carry + ($plat->price * $cart[$plat->id]);
+        }, 0);
 
-//     // Récupérer le panier depuis la session
-//     $cart = session()->get('cart', []);
-
-//     // Passer les variables à la vue
-//     return view('Shop', compact('lastMenu', 'categories', 'restaurant', 'cart'));
-// }
-
-public function seeShop($id)
-{
-    // Récupérer le restaurant par son ID
-    $restaurant = Restaurant::findOrFail($id);
-
-    // Récupérer les catégories associées à ce restaurant
-    $categories = Category::where('restaurant_id', $id)->with('plats')->get();
-
-    // Récupérer le panier depuis la session
-    $cart = session()->get('cart', []);
-
-    // Passer les variables à la vue
-    return view('Shop', compact('categories', 'restaurant', 'cart'));
-}
-
-
-
-public function getCart()
-{
-    $cart = session()->get('cart');
-    $view = view('partials.cart-items', compact('cart'))->render();
-
-    return response()->json(['html' => $view]);
-}
-
-
-
+        return view('Shop', compact('categories', 'restaurant', 'cart', 'subtotal'));
     }
 
+    public function getCart()
+    {
+        $cart = session()->get('cart', []);
+        $plats = Plat::whereIn('id', array_keys($cart))->get();
+
+        $view = view('partials.cart-items', compact('plats', 'cart'))->render();
+        return response()->json(['html' => $view]);
+    }
+
+    public function removeFromCart($id)
+    {
+        $cart = session()->get('cart', []);
+        if (isset($cart[$id])) {
+            unset($cart[$id]);
+        }
+        session()->put('cart', $cart);
+
+        return response()->json(['success' => true]);
+    }
+}
