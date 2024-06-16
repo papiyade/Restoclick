@@ -236,23 +236,7 @@
                                         </a>
                                     </li>
 
-                                    <div class="wg-menu-item">
-                                        @foreach ($lastMenu->plats as $plat)
-                                            <div class="col-lg-6 menu-item" :data-plat-id="{{ $plat->id }}">
-                                                <div class="flex items-center">
-                                                    <div class="name"><a href="#">{{ $plat->name }}</a></div>
-                                                    <div class="line"></div>
-                                                    <div class="price">{{ $plat->price }} Fcfa</div>
-                                                    <div @click="addToCart({{ $plat->id }})" style="margin-left: 3rem; color:#977644;">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus-square-fill" viewBox="0 0 16 16">
-                                                            <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0" />
-                                                        </svg>
-                                                    </div>
-                                                </div>
-                                                <p>{{ $plat->description }}</p>
-                                            </div>
-                                        @endforeach
-                                    </div>
+
                                 </div>
 
                                 <script>
@@ -265,18 +249,19 @@
                                             };
                                         },
                                         methods: {
-                                            addToCart(platId) {
+                                            addToCart(platId, restaurantId) {
                                                 $.ajax({
                                                     url: '/add-to-cart',
                                                     method: 'POST',
                                                     data: {
                                                         _token: '{{ csrf_token() }}',
                                                         plat_id: platId,
+                                                        restaurant_id: restaurantId,
                                                     },
                                                     success: (response) => {
-                                                        this.cartCount++;
+                                                        this.cartCount = response.cartCount;
                                                         $('#cart-count').text(this.cartCount);
-                                                        localStorage.setItem('cartCount', this.cartCount);
+                                                        localStorage.setItem(`cartCount_${restaurantId}`, this.cartCount);
                                                     },
                                                     error: (xhr) => {
                                                         console.error(xhr.responseText);
@@ -285,12 +270,12 @@
                                             },
                                         },
                                         mounted() {
-                                            this.cartCount = parseInt(localStorage.getItem('cartCount')) || 0;
+                                            const restaurantId = {{ $restaurant->id }};
+                                            this.cartCount = parseInt(localStorage.getItem(`cartCount_${restaurantId}`)) || 0;
                                             $('#cart-count').text(this.cartCount);
                                         },
                                     }).mount('#app');
                                 </script>
-
 
                             </ul>
                         </nav><!-- /main-nav -->
@@ -323,23 +308,7 @@
                                 <span></span>
                             </div>
                         </div><!-- /header-right -->
-
-
-
-
-
-
-
-
                     </div>
-
-
-
-
-
-
-
-
                 </div>
                 <div class="mobile-nav-wrap">
                     <div class="overlay-mobile-nav"></div>
@@ -425,13 +394,8 @@
                         </nav>
                     </div>
                 </div>
-
-
-
-
             </header>
             <!-- /header -->
-
             <!-- banner-page -->
             <div class="banner-page inner-page menu-page">
                 <div class="content">
@@ -441,7 +405,6 @@
                 </div>
             </div>
             <!-- /banner-page -->
-
             <!-- page-menu2-wrap -->
             <div class="page-menu2-wrap relative snare-half">
                 <img class="item-1" src="front/assets/images/item-background/item-1.png" alt="">
@@ -464,7 +427,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="widget-tabs style-1">
                     <div class="top">
                         <ul class="widget-menu-tab">
@@ -499,37 +461,23 @@
                                     <div class="swiper-wrapper">
                                         <div class="swiper-slide">
                                             <div class="wg-menu-item">
-                                                @if ($lastMenu)
-                                                    @foreach ($lastMenu->plats as $plat)
-                                                        <div
-                                                            class="col-lg-6 menu-item filter-{{ $plat->category_id }} menu-grid-item">
-                                                            <div class="flex items-center">
-                                                                <div class="name"><a
-                                                                        href="#">{{ $plat->name }}</a></div>
-                                                                <div class="line"></div>
-
-                                                                <div class="price">{{ $plat->price }} Fcfa</div>
-                                                                <div style="margin-left: 3rem; color:#977644;">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                                                        width="20" height="20"
-                                                                        fill="currentColor"
-                                                                        class="bi bi-plus-square-fill"
-                                                                        viewBox="0 0 16 16">
-                                                                        <path
-                                                                            d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0" />
-                                                                    </svg>
-                                                                </div>
+                                                @foreach ($lastMenu->plats as $plat)
+                                                    <div class="col-lg-6 menu-item filter-{{ $plat->category_id }} menu-grid-item" :data-plat-id="{{ $plat->id }}">
+                                                        <div class="flex items-center">
+                                                            <div class="name"><a href="#">{{ $plat->name }}</a></div>
+                                                            <div class="line"></div>
+                                                            <div class="price">{{ $plat->price }} Fcfa</div>
+                                                            <div @click="addToCart({{ $plat->id }}, {{ $restaurant->id }})" style="margin-left: 3rem; color:#977644;">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus-square-fill" viewBox="0 0 16 16">
+                                                                    <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0" />
+                                                                </svg>
                                                             </div>
-                                                            <p>{{ $plat->description }}</p>
-                                                            <br><br><br>
                                                         </div>
-                                                    @endforeach
-                                                @else
-                                                    <p>Aucun Menu disponible pour le Moment</p>
-                                                @endif
+                                                        <p>{{ $plat->description }}</p>
+                                                    </div>
+                                                @endforeach
                                             </div>
                                         </div>
-
                                     </div>
                                     <div class="swiper-pagination style-dot menu-pagination"></div>
                                 </div>
@@ -541,21 +489,13 @@
                             </div>
                         </div>
                     </div>
-
-
-
                     <div class="button-bot">
                         <a class="button-two-line w-full"
                             href="{{ route('client.book-table', ['id' => $restaurant->id]) }}">BOOK A TABLE TODAY</a>
                     </div>
-
-
-
                 </div>
-
             </div>
             <!-- /page-menu2-wrap -->
-
             <!-- footer -->
             <footer id="footer" class="footer">
                 <div class="themesflat-container">
@@ -610,16 +550,13 @@
                 </div>
             </footer>
             <!-- /footer -->
-
         </div>
         <!-- /#page -->
     </div>
     <!-- /#wrapper -->
-
     <!-- cusor -->
     <div class="tf-mouse tf-mouse-outer"></div>
     <div class="tf-mouse tf-mouse-inner"></div>
-
     <!-- go top button -->
     <div class="progress-wrap active-progress">
         <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
@@ -628,7 +565,6 @@
             </path>
         </svg>
     </div>
-
     <!-- Javascript -->
     <script src="{{ asset('front/assets/js/jquery.min.js') }}"></script>
     <script src="{{ asset('front/assets/js/bootstrap.min.js') }}"></script>
@@ -643,8 +579,6 @@
     <script src="{{ asset('front/assets/js/magnific-popup.min.js') }}"></script>
     <script src="{{ asset('front/assets/js/wow.min.js') }}"></script>
     <script src="{{ asset('front/assets/js/main.js') }}"></script>
-
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
@@ -652,7 +586,6 @@
             $('.widget-menu-tab .item-title').on('click', function() {
                 // Récupérer le filtre de catégorie
                 var filterValue = $(this).attr('data-filter');
-
                 // Ajouter la classe 'active' à l'onglet cliqué et la retirer des autres
                 $('.widget-menu-tab .item-title').removeClass('active');
                 $(this).addClass('active');
@@ -667,35 +600,10 @@
             });
         });
     </script>
-    {{-- <script>
-        $(document).ready(function() {
-            $('.bi-plus-square-fill').on('click', function() {
-                var platId = $(this).closest('.menu-item').data('plat-id');
-
-                $.ajax({
-                    url: '/add-to-cart', // Remplacez par l'URL de votre route pour ajouter au panier
-                    method: 'POST',
-                    data: {
-                        _token: '{{ csrf_token() }}', // Inclure le token CSRF pour la sécurité
-                        plat_id: platId
-                    },
-                    success: function(response) {
-                        // Mettre à jour le compteur du panier
-                        var cartCount = parseInt($('#cart-count').text());
-                        $('#cart-count').text(cartCount + 1);
-                    },
-                    error: function(xhr) {
-                        console.error(xhr.responseText);
-                    }
-                });
-            });
-        });
-    </script> --}}
     <script>
         $(document).ready(function() {
             $('.bi-plus-square-fill').on('click', function() {
                 var platId = $(this).closest('.menu-item').data('plat-id');
-
                 $.ajax({
                     url: '/add-to-cart', // URL de votre route pour ajouter au panier
                     method: 'POST',
@@ -716,7 +624,6 @@
                     }
                 });
             });
-
             function refreshCart() {
                 $.ajax({
                     url: '/get-cart', // URL de votre route pour récupérer le panier
@@ -731,12 +638,7 @@
             }
         });
     </script>
-
 <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-
 </body>
-
-
 <!-- Mirrored from themesflat.co/html/restaurant/luxury/menu-2.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 19 May 2024 02:06:17 GMT -->
-
 </html>

@@ -1,18 +1,16 @@
 <?php
-
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Commande extends Model
 {
-    use HasFactory;
     protected $fillable = [
         'client_id',
-        'serveur_id',
-        'table_id',
+        'client_name',
+        'restaurant_id',
         'statut',
+        'telephone_client'
     ];
 
     public function client()
@@ -23,6 +21,11 @@ class Commande extends Model
     public function serveur()
     {
         return $this->belongsTo(User::class, 'serveur_id');
+    }
+
+    public function restaurant()
+    {
+        return $this->belongsTo(Restaurant::class);
     }
 
     public function table()
@@ -39,4 +42,5 @@ class Commande extends Model
     {
         return $this->hasOne(Paiement::class);
     }
+    
 }

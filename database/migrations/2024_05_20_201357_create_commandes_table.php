@@ -13,11 +13,15 @@ return new class extends Migration
     {
         Schema::create('commandes', function (Blueprint $table) {
             $table->id();
+            $table->string('client_name');
+            $table->string('telephone_client');
             $table->enum('statut', ['en_cours', 'terminee', 'annulee']);
             $table->timestamps();
-            $table->foreignId('client_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('serveur_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('table_id')->constrained('tables')->onDelete('cascade');
+            $table->unsignedBigInteger('client_id')->nullable();
+            $table->unsignedBigInteger('restaurant_id');
+            $table->foreign('client_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('restaurant_id')->references('id')->on('restaurants')->onDelete('cascade');
+
         });
     }
 

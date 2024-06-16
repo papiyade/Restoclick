@@ -36,8 +36,8 @@ return new class extends Migration
         $table->dateTime('date_time');
         $table->integer('num_people');
         $table->unsignedBigInteger('restaurant_id');
+        $table->enum('status',['En Attente' , 'Confirmée'])->default('En Attente');
         $table->timestamps();
-
         // Foreign keys
         $table->foreign('client_id')->references('id')->on('users')->onDelete('cascade');
         $table->foreign('restaurant_id')->references('id')->on('restaurants')->onDelete('cascade');

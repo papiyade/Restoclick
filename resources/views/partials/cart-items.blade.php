@@ -1,4 +1,4 @@
-            @foreach($plats as $plat)
+            {{-- @foreach($plats as $plat)
             <div class="cart-item">
                 <div class="image">
                     <img src="{{ asset('front/assets/images/box-item/shop-item-1.jpg') }}" alt="">                </div>
@@ -12,4 +12,19 @@
                     <i class="icon-close"></i>
                 </div>
             </div>
-        @endforeach
+        @endforeach --}}
+
+
+        @foreach ($cartItems as $cartItem)
+    <div class="cart-item mb-3">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>{{ $cartItem->plat->name }}</div>
+            <div>
+                <button class="btn btn-sm btn-outline-secondary minus-btn" data-plat-id="{{ $cartItem->plat->id }}">-</button>
+                <span class="mx-2 quantity">{{ $cartItem->quantity }}</span>
+                <button class="btn btn-sm btn-outline-secondary plus-btn" data-plat-id="{{ $cartItem->plat->id }}">+</button>
+            </div>
+            <div>{{ $cartItem->plat->price }} Fcfa</div>
+        </div>
+    </div>
+@endforeach

@@ -14,6 +14,9 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\SuperAdminMiddleware;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NewUserCreated;
+use App\Http\Controllers\NotificationController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -79,6 +82,19 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('admin/reservations', [ReservationController::class, 'showReservations'])->name('admin.reservations');
         Route::get('admin/reservation',[ReservationController::class , 'index'])->name('admin.reservation.index');
 
+        Route::get('/admin/reservation/create', [ReservationController::class, 'createReservation'])->name('admin.reservation.create');
+    Route::post('/admin/reservation', [ReservationController::class, 'storeReservation'])->name('admin.reservation.store');
+    Route::post('/admin/reservation/confirm/{id}', [ReservationController::class, 'confirm'])->name('admin.reservation.confirm');
+    
+//     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+//     Route::get('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+//     Route::get('admin/reservations/{page?}/{reservationId?}', [ReservationController::class, 'index'])->name('admin.reservations');
+// Route::get('admin/notification/{id}', [ReservationController::class, 'showReservation'])->name('admin.notification.show');
+Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+Route::get('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+Route::get('admin/reservations/{page?}/{reservationId?}', [ReservationController::class, 'index'])->name('admin.reservations');
+Route::get('admin/notification/{id}', [NotificationController::class, 'markAsRead'])->name('admin.notification.show');
+
         Route::get('/front-menu',function () {
             return view('front-menu');
         });
@@ -103,13 +119,23 @@ Route::post('/reservation', [ReservationController::class, 'makeReservation'])->
 
     });
     Route::get('/reservation', [ReservationController::class, 'showReservationsForm'])->name('client.reservation.form');
-Route::post('/reservation', [ReservationController::class, 'makeReservation'])->name('client.make-reservation');
+    Route::get('/admin/commandes', [OrderController::class, 'showOrders'])->name('admin.commandes.index');
+    Route::get('admin/commandes/{commande}', [OrderController::class, 'show'])->name('admin.commandes.show');
+
+    Route::post('/reservation', [ReservationController::class, 'makeReservation'])->name('client.make-reservation');
 });
 
 Route::get('/front-menu/{id}', [MenuFrontController::class, 'showMenuById'])->name('front-menu.showById');
 Route::get('/Shop/{id}', [CartController::class, 'seeShop'])->name('Shop.showById');
 Route::get('/get-cart', [CartController::class, 'getCart'])->name('cart.get');
 Route::post('/add-to-cart', [CartController::class, 'addToCart']);
+Route::post('/remove-from-cart', [CartController::class, 'removeFromCart']);
+// routes/web.php
+
+// Route::post('/client/place-order', [OrderController::class, 'placeOrder'])->name('client.placeOrder');
+Route::post('/place-order', [OrderController::class, 'placeOrder'])->name('place.order');
+
+
 
 
 Route::get('/shop-detail/{id}', [ShopController::class, 'show'])->name('shop-detail');
@@ -130,3 +156,19 @@ Route::get('restaurant/{id}/reservation', [ReservationController::class, 'showRe
 Route::post('restaurant/reservation', [ReservationController::class, 'makeReservation'])->name('client.reservation.submit');
 Route::get('/Resto/{id}', [MenuFrontController::class, 'showMenuParId'])->name('Resto.showById');
 
+// Route pour récupérer le contenu du panier
+Route::get('/get-cart', [App\Http\Controllers\CartController::class, 'getCartContent'])->name('get-cart');
+
+
+
+Route::get('/test-email', function () {
+    $user = new App\Models\User([
+        'name' => 'Test User',
+        'email' => 'test@example.com',
+    ]);
+    $password = 'password123';
+
+    Mail::to($user->email)->send(new NewUserCreated($user, $password));
+
+    return 'Email has been sent!';
+});

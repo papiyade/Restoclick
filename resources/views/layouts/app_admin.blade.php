@@ -102,7 +102,7 @@
 		<!--**********************************
             Chat box start
         ***********************************-->
-		<div class="chatbox">
+		{{-- <div class="chatbox">
 			<div class="chatbox-close"></div>
 			<div class="custom-tab-1">
 
@@ -597,7 +597,7 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</div> --}}
 		<!--**********************************
             Chat box End
         ***********************************-->
@@ -632,156 +632,45 @@
 								</a></span>
 							</div>
 							<ul class="navbar-nav">
-								<li class="nav-item dropdown notification_dropdown">
-									<a class="nav-link" href="javascript:void(0);" role="button" data-bs-toggle="dropdown">
-										<svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-											<path fill-rule="evenodd" clip-rule="evenodd" d="M17.5 12H19C19.8284 12 20.5 12.6716 20.5 13.5C20.5 14.3284 19.8284 15 19 15H6C5.17157 15 4.5 14.3284 4.5 13.5C4.5 12.6716 5.17157 12 6 12H7.5L8.05827 6.97553C8.30975 4.71226 10.2228 3 12.5 3C14.7772 3 16.6903 4.71226 16.9417 6.97553L17.5 12Z" fill="#222B40"/>
-											<path opacity="0.3" d="M14.5 18C14.5 16.8954 13.6046 16 12.5 16C11.3954 16 10.5 16.8954 10.5 18C10.5 19.1046 11.3954 20 12.5 20C13.6046 20 14.5 19.1046 14.5 18Z" fill="#222B40"/>
-										</svg>
-										<span class="badge light text-white bg-primary rounded-circle">18</span>
-									</a>
-									<div class="dropdown-menu dropdown-menu-end">
-										<div id="DZ_W_Notification1" class="widget-media dz-scroll p-2" style="height:380px;">
-											<ul class="timeline">
-												<li>
-													<div class="timeline-panel">
-														<div class="media me-2">
-															<img alt="image" width="50" src="images/avatar/1.jpg">
-														</div>
-														<div class="media-body">
-															<h6 class="mb-1">Dr sultads Send you Photo</h6>
-															<small class="d-block">29 July 2020 - 02:26 PM</small>
-														</div>
-													</div>
-												</li>
-												<li>
-													<div class="timeline-panel">
-														<div class="media me-2 media-info">
-															KG
-														</div>
-														<div class="media-body">
-															<h6 class="mb-1">Resport created successfully</h6>
-															<small class="d-block">29 July 2020 - 02:26 PM</small>
-														</div>
-													</div>
-												</li>
-												<li>
-													<div class="timeline-panel">
-														<div class="media me-2 media-success">
-															<i class="fa fa-home"></i>
-														</div>
-														<div class="media-body">
-															<h6 class="mb-1">Reminder : Treatment Time!</h6>
-															<small class="d-block">29 July 2020 - 02:26 PM</small>
-														</div>
-													</div>
-												</li>
-												 <li>
-													<div class="timeline-panel">
-														<div class="media me-2">
-															<img alt="image" width="50" src="images/avatar/1.jpg">
-														</div>
-														<div class="media-body">
-															<h6 class="mb-1">Dr sultads Send you Photo</h6>
-															<small class="d-block">29 July 2020 - 02:26 PM</small>
-														</div>
-													</div>
-												</li>
-												<li>
-													<div class="timeline-panel">
-														<div class="media me-2 media-danger">
-															KG
-														</div>
-														<div class="media-body">
-															<h6 class="mb-1">Resport created successfully</h6>
-															<small class="d-block">29 July 2020 - 02:26 PM</small>
-														</div>
-													</div>
-												</li>
-												<li>
-													<div class="timeline-panel">
-														<div class="media me-2 media-primary">
-															<i class="fa fa-home"></i>
-														</div>
-														<div class="media-body">
-															<h6 class="mb-1">Reminder : Treatment Time!</h6>
-															<small class="d-block">29 July 2020 - 02:26 PM</small>
-														</div>
-													</div>
-												</li>
-												<li>
-													<div class="timeline-panel">
-														<div class="media me-2">
-															<img alt="image" width="50" src="images/avatar/1.jpg">
-														</div>
-														<div class="media-body">
-															<h6 class="mb-1">Dr sultads Send you Photo</h6>
-															<small class="d-block">29 July 2020 - 02:26 PM</small>
-														</div>
-													</div>
-												</li>
-												<li>
-													<div class="timeline-panel">
-														<div class="media me-2 media-info">
-															KG
-														</div>
-														<div class="media-body">
-															<h6 class="mb-1">Resport created successfully</h6>
-															<small class="d-block">29 July 2020 - 02:26 PM</small>
-														</div>
-													</div>
-												</li>
-												<li>
-													<div class="timeline-panel">
-														<div class="media me-2 media-success">
-															<i class="fa fa-home"></i>
-														</div>
-														<div class="media-body">
-															<h6 class="mb-1">Reminder : Treatment Time!</h6>
-															<small class="d-block">29 July 2020 - 02:26 PM</small>
-														</div>
-													</div>
-												</li>
-												 <li>
-													<div class="timeline-panel">
-														<div class="media me-2">
-															<img alt="image" width="50" src="images/avatar/1.jpg">
-														</div>
-														<div class="media-body">
-															<h6 class="mb-1">Dr sultads Send you Photo</h6>
-															<small class="d-block">29 July 2020 - 02:26 PM</small>
-														</div>
-													</div>
-												</li>
-												<li>
-													<div class="timeline-panel">
-														<div class="media me-2 media-danger">
-															KG
-														</div>
-														<div class="media-body">
-															<h6 class="mb-1">Resport created successfully</h6>
-															<small class="d-block">29 July 2020 - 02:26 PM</small>
-														</div>
-													</div>
-												</li>
-												<li>
-													<div class="timeline-panel">
-														<div class="media me-2 media-primary">
-															<i class="fa fa-home"></i>
-														</div>
-														<div class="media-body">
-															<h6 class="mb-1">Reminder : Treatment Time!</h6>
-															<small class="d-block">29 July 2020 - 02:26 PM</small>
-														</div>
-													</div>
-												</li>
-											</ul>
-										</div>
-										<a class="all-notification" href="javascript:void(0);">See all notifications <i class="ti-arrow-end"></i></a>
-									</div>
-								</li>
-								<li class="nav-item dropdown notification_dropdown">
-									<a class="nav-link bell-link" href="javascript:void(0);">
+
+
+									<li class=" notification_dropdown">
+                                        <a class="nav-link bell-link" href="javascript:void(0);" role="button" data-bs-toggle="dropdown">
+                                            <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M17.5 12H19C19.8284 12 20.5 12.6716 20.5 13.5C20.5 14.3284 19.8284 15 19 15H6C5.17157 15 4.5 14.3284 4.5 13.5C4.5 12.6716 5.17157 12 6 12H7.5L8.05827 6.97553C8.30975 4.71226 10.2228 3 12.5 3C14.7772 3 16.6903 4.71226 16.9417 6.97553L17.5 12Z" fill="#222B40"/>
+                                                <path opacity="0.3" d="M14.5 18C14.5 16.8954 13.6046 16 12.5 16C11.3954 16 10.5 16.8954 10.5 18C10.5 19.1046 11.3954 20 12.5 20C13.6046 20 14.5 19.1046 14.5 18Z" fill="#222B40"/>
+                                            </svg>
+                                            <span class="badge light text-white bg-primary rounded-circle">{{ \App\Models\Notification::where('is_read', false)->count() }}</span>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-end">
+                                            <div id="DZ_W_Notification1" class="widget-media dz-scroll p-2" style="height:380px;">
+                                                <ul class="timeline">
+                                                    @foreach($notifications as $notification)
+                                                        <li>
+                                                            <div class="timeline-panel">
+                                                                <div class="media me-2">
+                                                                    <img alt="image" width="50" src="{{asset('assets/images/avatar/1.jpg')}}">
+                                                                </div>
+                                                                <div class="media-body">
+                                                                    <h6 class="mb-1">{{ $notification->message }}</h6>
+                                                                    <small class="d-block">{{ $notification->created_at->format('d M Y - H:i') }}</small>
+                                                                    <a href="{{ route('notifications.read', $notification->id) }}">Voir</a>
+                                                                </div>
+
+                                                            </div>
+                                                        </li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+                                            <a class="all-notification" href="{{ route('notifications.index') }}">Voir toutes les notifications <i class="ti-arrow-end"></i></a>
+                                        </div>
+                                    </li>
+
+
+
+
+								<li class=" notification_dropdown">
+									<a class="nav-link bell-link" >
 									<svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 										<g clip-path="url(#clip0_1_463)">
 										<path opacity="0.3" fill-rule="evenodd" clip-rule="evenodd" d="M6.5 2H18.5C19.0523 2 19.5 2.44772 19.5 3V13C19.5 13.5523 19.0523 14 18.5 14H6.5C5.94772 14 5.5 13.5523 5.5 13V3C5.5 2.44772 5.94772 2 6.5 2ZM14.3 4C13.6562 4 12.9033 4.72985 12.5 5.2C12.0967 4.72985 11.3438 4 10.7 4C9.5604 4 8.9 4.88887 8.9 6.02016C8.9 7.27339 10.1 8.6 12.5 10C14.9 8.6 16.1 7.3 16.1 6.1C16.1 4.96871 15.4396 4 14.3 4Z" fill="#222B40"/>
@@ -941,7 +830,7 @@
 									</div>
 								</li>
 							</ul>
-                            <span class="ms-2">Logout </span>
+                            
                         </a>
 
 
@@ -1046,14 +935,11 @@
 
                     <li><a class="has-arrow " href="javascript:void(0);" aria-expanded="false">
 						<div class="menu-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-vinyl-fill" viewBox="0 0 24 24">
-                                <g opacity="0.5">
-                                <path d="M8 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4m0 3a1 1 0 1 1 0-2 1 1 0 0 1 0 2"/>
-                                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M4 8a4 4 0 1 0 8 0 4 4 0 0 0-8 0"/>
-                            </g>
-                            </svg>
-
-
+                            <g opacity="0.5">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-range-fill" viewBox="0 0 16 16">
+                                    <path d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4zM16 7V5H0v5h5a1 1 0 1 1 0 2H0v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9h-6a1 1 0 1 1 0-2z"/>
+                                  </svg>
+                                </g>
 						</div>
 							<span class="nav-text">Réservations</span>
 						</a>
@@ -1063,6 +949,21 @@
 					</li>
 
 
+                    <li><a class="has-arrow " href="javascript:void(0);" aria-expanded="false">
+						<div class="menu-icon">
+                            <g opacity="0.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-cart4" viewBox="0 0 16 16">
+                                <path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5M3.14 5l.5 2H5V5zM6 5v2h2V5zm3 0v2h2V5zm3 0v2h1.36l.5-2zm1.11 3H12v2h.61zM11 8H9v2h2zM8 8H6v2h2zM5 8H3.89l.5 2H5zm0 5a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0m9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0"/>
+                              </svg>
+                            </g>
+
+						</div>
+							<span class="nav-text">Commandes</span>
+						</a>
+						<ul aria-expanded="false">
+							<li><a href="{{route('admin.commandes.index')}}">Liste des commandes</a></li>
+						</ul>
+					</li>
 				</ul>
 				<div class="plus-box">
 					<div class="media">

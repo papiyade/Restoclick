@@ -5,13 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Restaurant;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NewUserCreated;
 
 class AdminController extends Controller
 {
     // Afficher tous les utilisateurs
     public function index()
     {
-
         $users = User::where('role', '!=', 'superadmin')->get();
         $userCount = $users->count();
         $restoCount = Restaurant::count();
@@ -35,14 +36,16 @@ class AdminController extends Controller
             'password' => 'required|string|min:6',
         ]);
 
-        User::create([
+        // Création de l'utilisateur
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
             'role' => 'admin',
-            
-
         ]);
+
+        // Envoi d'un email au nouvel utilisateur
+        Mail::to($request->email)->send(new NewUserCreated($user, $request->password));
 
         return redirect()->route('superadmin.users.index')->with('success', 'Utilisateur créé avec succès.');
     }
