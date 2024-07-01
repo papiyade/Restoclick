@@ -71,6 +71,11 @@
     <!-- Reponsive -->
     <link rel="stylesheet" type="text/css" href="{{asset('front/assets/css/responsive.css')}}">
 
+    <link rel="stylesheet" href="{{asset('assets/vendor/pickadate/themes/default.css')}}">
+<link rel="stylesheet" href="{{asset('assets/vendor/pickadate/themes/default.date.css')}}">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
     <!-- Favicon and Touch Icons  -->
     <link rel="shortcut icon" href="{{asset('front/assets/images/favicon.png')}}">
     <link rel="apple-touch-icon-precomposed" href="{{asset('front/assets/images/favicon.png')}}">
@@ -345,6 +350,9 @@
                             <fieldset class="phone">
                                 <input type="text" placeholder="Phone*" id="phone_number" name="phone_number" class=""  tabindex="2" value="" aria-required="true" required="">
                             </fieldset>
+                            <fieldset class="email">
+                                <input type="email" placeholder="Email*" id="email" name="email" class="" tabindex="2" value="" aria-required="true" required="">
+                            </fieldset>
                         </div>
                         <div class="columns">
                             <fieldset class="hour select">
@@ -354,13 +362,14 @@
                                 <input type="number" id="num_people" name="num_people" required>
                             </fieldset>
                             <fieldset class="time select">
-                                <input placeholder="Nombre de Personnes" type="date" class="" id="date" name="date" tabindex="2" value="2023-06-18" aria-required="true" required="">
+                                <input type="text"  placeholder="set min date" id="min-date" name="date" tabindex="2" value="2024-06-18" aria-required="true" required="">
                             </fieldset>
                         </div>
                         <div class="bot">
                             <button class="button-two-line w-full" type="submit">BOOK NOW</button>
                         </div>
                     </form>
+
                     <br><br>
                     @if (session('success'))
                     <div class="alert alert-success left-icon-big alert-dismissible fade show">
@@ -585,6 +594,30 @@
     <script src="{{asset('front/assets/js/magnific-popup.min.js')}}"></script>
     <script src="{{asset('front/assets/js/wow.min.js')}}"></script>
     <script src="{{asset('front/assets/js/main.js')}}"></script>
+
+
+    <!-- Pickdate -->
+    <script src="{{asset('assets/vendor/bootstrap-select/dist/js/bootstrap-select.min.js')}}"></script>
+<script src="{{asset('assets/vendor/pickadate/picker.js')}}"></script>
+<script src="{{asset('assets/vendor/pickadate/picker.time.js')}}"></script>
+<script src="{{asset('assets/vendor/pickadate/picker.date.js')}}"></script>
+
+<!-- Pickadate init -->
+<script src="{{asset('assets/js/plugins-init/pickadate-init.js')}}"></script>
+
+
+
+
+    <script>
+        // Initialisation de Pickadate pour le champ #min-date
+        $(document).ready(function() {
+            $('#min-date').pickadate({
+                format: 'yyyy-mm-dd',
+                min: new Date() // Définition de la date minimale comme étant aujourd'hui
+            });
+        });
+    </script>
+
 
 </body>
 

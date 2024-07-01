@@ -20,6 +20,10 @@
             <input type="text" class="form-control" id="client_name" name="client_name" value="{{ old('client_name') }}" required>
         </div>
         <div class="form-group">
+            <label for="client_email">Email du Client</label>
+            <input type="email" class="form-control" id="client_email" name="client_email" value="{{ old('client_email')}}" required>
+        </div>
+        <div class="form-group">
             <label for="client_phone_number">Numéro de téléphone</label>
             <input type="text" class="form-control" id="client_phone_number" name="client_phone_number" value="{{ old('client_phone_number') }}" required>
         </div>

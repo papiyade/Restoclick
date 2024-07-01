@@ -7,6 +7,8 @@ use App\Models\Restaurant;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ReservationConfirmed;
 
 class ReservationController extends Controller
 {
@@ -16,15 +18,16 @@ class ReservationController extends Controller
 
         if ($admin && $admin->restaurant_id) {
             $query = $request->input('search');
+            $status = $request->input('status', 'Confirmée');
+
+            $reservationsQuery = Reservation::where('restaurant_id', $admin->restaurant_id)
+                ->where('status', $status);
 
             if ($query) {
-                $reservations = Reservation::where('restaurant_id', $admin->restaurant_id)
-                                            ->where('client_name', 'LIKE', "%{$query}%")
-                                            ->paginate(5);
-            } else {
-                $reservations = Reservation::where('restaurant_id', $admin->restaurant_id)
-                                            ->paginate(5);
+                $reservationsQuery->where('client_name', 'LIKE', "%{$query}%");
             }
+
+            $reservations = $reservationsQuery->paginate(5);
 
             Log::info("Admin ID: {$admin->id}, Restaurant ID: {$admin->restaurant_id}, Reservations Count: " . $reservations->total());
         } else {
@@ -38,8 +41,9 @@ class ReservationController extends Controller
             ]);
         }
 
-        return view('admin.reservation.index', compact('reservations'));
+        return view('admin.reservation.index', compact('reservations', 'status'));
     }
+
 
     public function showReservationForm($id)
     {
@@ -47,36 +51,23 @@ class ReservationController extends Controller
         return view('book-table', compact('restaurant'));
     }
 
-    // public function showReservations()
-    // {
-    //     $admin = auth()->user();
 
-    //     if ($admin && $admin->restaurant_id) {
-    //         $reservations = $admin->restaurantReservations;
-    //         Log::info("Admin ID: {$admin->id}, Restaurant ID: {$admin->restaurant_id}, Reservations Count: " . $reservations->count());
-    //     } else {
-    //         $reservations = collect();
-    //         Log::info("Admin non authentifié ou sans restaurant_id.");
-    //     }
-
-    //     return view('admin.reservations', compact('reservations'));
-    // }
     public function showReservations()
-{
-    $admin = auth()->user();
+    {
+        $admin = auth()->user();
 
-    if ($admin && $admin->restaurant_id) {
-        $restaurant = Restaurant::find($admin->restaurant_id);
-        $reservations = Reservation::where('restaurant_id', $admin->restaurant_id)->get();
-        Log::info("Admin ID: {$admin->id}, Restaurant ID: {$admin->restaurant_id}, Reservations Count: " . $reservations->count());
-    } else {
-        $restaurant = null; // Aucun restaurant
-        $reservations = collect(); // Aucun résultat
-        Log::info("Admin non authentifié ou sans restaurant_id.");
+        if ($admin && $admin->restaurant_id) {
+            $restaurant = Restaurant::find($admin->restaurant_id);
+            $reservations = Reservation::where('restaurant_id', $admin->restaurant_id)->get();
+            Log::info("Admin ID: {$admin->id}, Restaurant ID: {$admin->restaurant_id}, Reservations Count: " . $reservations->count());
+        } else {
+            $restaurant = null; // Aucun restaurant
+            $reservations = collect(); // Aucun résultat
+            Log::info("Admin non authentifié ou sans restaurant_id.");
+        }
+
+        return view('admin.reservations', compact('restaurant', 'reservations'));
     }
-
-    return view('admin.reservations', compact('restaurant', 'reservations'));
-}
 
 
     public function makeReservation(Request $request)
@@ -84,6 +75,7 @@ class ReservationController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'phone_number' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
             'date' => 'required|date',
             'time' => 'required',
             'num_people' => 'required|integer',
@@ -93,6 +85,7 @@ class ReservationController extends Controller
         $reservation = new Reservation();
         $reservation->client_name = $request->name;
         $reservation->client_phone_number = $request->phone_number;
+        $reservation->client_email = $request->email;
         $reservation->date_time = $request->date . ' ' . $request->time;
         $reservation->num_people = $request->num_people;
         $reservation->restaurant_id = $request->restaurant_id;
@@ -104,12 +97,14 @@ class ReservationController extends Controller
             'client_phone_number' => $request->phone_number,
             'date_time' => $request->date . ' ' . $request->time,
             'num_people' => $request->num_people,
+            'client_email' => $request->email,
             'message' => "Client {$request->name} vient de faire une réservation.",
             'link' => route('admin.reservations'), // lien vers la page des réservations
         ]);
 
         return redirect()->route('client.book-table', ['id' => $request->restaurant_id])->with('success', 'Réservation effectuée avec succès!');
     }
+
 
     // Nouvelle méthode pour afficher le formulaire de création de réservation
     public function createReservation()
@@ -131,6 +126,7 @@ class ReservationController extends Controller
             'client_phone_number' => 'required|string|max:255',
             'date_time' => 'required|date_format:Y-m-d\TH:i', // Changement ici
             'num_people' => 'required|integer',
+            'client_email' => 'required|string|max:255',
             'restaurant_id' => 'required|exists:restaurants,id',
         ]);
 
@@ -139,6 +135,7 @@ class ReservationController extends Controller
         $reservation->client_phone_number = $request->client_phone_number;
         $reservation->date_time = \Carbon\Carbon::createFromFormat('Y-m-d\TH:i', $request->date_time)->format('Y-m-d H:i:s'); // Conversion du format
         $reservation->num_people = $request->num_people;
+        $reservation->client_email = $request->client_email;
         $reservation->restaurant_id = $request->restaurant_id;
         $reservation->save();
 
@@ -151,6 +148,48 @@ class ReservationController extends Controller
         $reservation->status = 'Confirmée';
         $reservation->save();
 
+        // Send confirmation email
+        Mail::to($reservation->client_email)->send(new ReservationConfirmed($reservation));
+
         return response()->json(['success' => true]);
     }
+    public function confirmReservation($id)
+    {
+        try {
+            $reservation = Reservation::findOrFail($id);
+            $reservation->status = 'Confirmée';
+            $reservation->save();
+
+            // Créer une notification pour l'admin
+            Notification::create([
+                'reservation_id' => $reservation->id,
+                'message' => 'La réservation a été confirmée.',
+            ]);
+
+            // Envoyer l'email
+            Mail::to($reservation->client_email)->send(new ReservationConfirmed($reservation));
+
+            return response()->json(['success' => 'Réservation confirmée et email envoyé!']);
+        } catch (\Exception $e) {
+            Log::error('Error confirming reservation: ' . $e->getMessage());
+            return response()->json(['error' => 'Erreur lors de la confirmation de la réservation.'], 500);
+        }
+    }
+    public function sendEmail(Request $request)
+{
+    $reservation = Reservation::find($request->reservation_id);
+
+    if (!$reservation) {
+        return response()->json(['success' => false, 'message' => 'Réservation non trouvée.']);
+    }
+
+    // Envoyer l'email
+    try {
+        Mail::to($reservation->client_email)->send(new ReservationConfirmed($reservation, $request->message));
+        return response()->json(['success' => true, 'message' => 'Email envoyé avec succès!']);
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => 'Erreur lors de l\'envoi de l\'email.']);
+    }
+}
+
 }

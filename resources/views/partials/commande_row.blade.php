@@ -1,6 +1,6 @@
 <!-- resources/views/partials/reservation_rows.blade.php -->
 @forelse ($commandes as $commande)
-<tr class="btn-reveal-trigger">
+    <tr class="btn-reveal-trigger">
     <td class="py-2">
         <div class="form-check custom-checkbox mx-2">
             <input type="checkbox" class="form-check-input" id="customCheckBox{{ $commande->id }}">
@@ -43,7 +43,7 @@
     </td>
 </tr>
 @empty
-<tr>
-    <td colspan="7" class="text-center">Aucune Commande pour le moment</td>
-</tr>
+    <tr>
+        <td colspan="7" class="text-center">Aucune commande trouvée.</td>
+    </tr>
 @endforelse

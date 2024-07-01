@@ -23,7 +23,7 @@
                 required>
         </div>
         <div class="row mt-3">
-            @php $colWidth = 8 / count($categories); @endphp <!-- Calcul de la largeur des colonnes -->
+            @php $colWidth = 6 / count($categories); @endphp <!-- Calcul de la largeur des colonnes -->
             @foreach($categories as $category)
             <div class="col-md-{{ $colWidth }}">
                 <div class="form-group">

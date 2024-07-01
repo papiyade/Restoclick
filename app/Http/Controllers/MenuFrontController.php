@@ -92,9 +92,18 @@ class MenuFrontController extends Controller
     $categories = $lastMenu ? Category::whereIn('id', $lastMenu->plats->pluck('category_id'))->get() : collect();
 
     return view('Resto', compact('lastMenu', 'categories', 'restaurant'));
-
-
     }
+
+    public function showeMenuParId($id){
+        $restaurant = Restaurant::findOrFail($id);
+        $menus = $restaurant->menus;
+        $lastMenu = $menus->last();
+
+        $categories = $lastMenu ? Category::whereIn('id', $lastMenu->plats->pluck('category_id'))->get() : collect();
+        $plats = $lastMenu ? $lastMenu->plats : collect();
+        return view('restaurant', compact('lastMenu', 'categories', 'restaurant', 'plats'));
+    }
+
 
 
     /**

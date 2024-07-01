@@ -12,6 +12,7 @@ class Reservation extends Model
         'client_name',
         'client_phone_number',
         'date_time',
+        'client_email',
         'num_people',
         'restaurant_id',
     ];

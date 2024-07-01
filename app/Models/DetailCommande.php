@@ -9,8 +9,7 @@ class DetailCommande extends Model
     protected $fillable = [
         'commande_id',
         'plat_id',
-        'quantite',
-
+        'quantite', // Assurez-vous que cette colonne correspond à celle dans votre table
     ];
 
     public function commande()

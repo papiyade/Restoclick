@@ -17,6 +17,7 @@ use App\Http\Middleware\SuperAdminMiddleware;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\NewUserCreated;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\PanierController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -85,15 +86,17 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/admin/reservation/create', [ReservationController::class, 'createReservation'])->name('admin.reservation.create');
     Route::post('/admin/reservation', [ReservationController::class, 'storeReservation'])->name('admin.reservation.store');
     Route::post('/admin/reservation/confirm/{id}', [ReservationController::class, 'confirm'])->name('admin.reservation.confirm');
-    
-//     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
-//     Route::get('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
-//     Route::get('admin/reservations/{page?}/{reservationId?}', [ReservationController::class, 'index'])->name('admin.reservations');
-// Route::get('admin/notification/{id}', [ReservationController::class, 'showReservation'])->name('admin.notification.show');
+
+    Route::post('/admin/reservation/confirm/{id}', [ReservationController::class, 'confirmReservation']);
+Route::post('/admin/reservation/send-email', [ReservationController::class, 'sendEmail']);
+
+
+
 Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
 Route::get('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
 Route::get('admin/reservations/{page?}/{reservationId?}', [ReservationController::class, 'index'])->name('admin.reservations');
 Route::get('admin/notification/{id}', [NotificationController::class, 'markAsRead'])->name('admin.notification.show');
+Route::get('admin/commandes/{id}', [OrderController::class, 'show'])->name('admin.commandes.show');
 
         Route::get('/front-menu',function () {
             return view('front-menu');
@@ -103,13 +106,13 @@ Route::get('admin/notification/{id}', [NotificationController::class, 'markAsRea
         Route::get('/menu', [MenuController::class, 'showMenu'])->name('client.menu');
 Route::post('/menu/add-to-cart/{plat}', [OrderController::class, 'addToCart'])->name('client.add-to-cart');
 
-Route::post('/client/reservation', [ReservationController::class, 'makeReservation'])->name('client.make-reservation');
+// Route::post('/client/reservation', [ReservationController::class, 'makeReservation'])->name('client.make-reservation');
+
+Route::post('/admin/reservation/confirm/{id}', [ReservationController::class, 'confirmReservation'])->name('admin.reservation.confirm');
+// Route::post('/admin/reservation/sendEmail', [ReservationController::class, 'sendEmail'])->name('admin.reservation.send-email');
+Route::post('/admin/reservation/send-email', [ReservationController::class, 'sendEmail'])->name('admin.reservation.send-email');
 
 
-
-// Route::get('/menu', [MenuController::class, 'showMenu'])->name('client.menu');
-// Route::post('/menu/add-to-cart/{plat}', [OrderController::class, 'addToCart'])->name('client.add-to-cart');
-// Route::post('/order', [OrderController::class, 'placeOrder'])->name('client.place-order');
 
 Route::post('/reservation', [ReservationController::class, 'makeReservation'])->name('client.make-reservation');
 
@@ -122,7 +125,10 @@ Route::post('/reservation', [ReservationController::class, 'makeReservation'])->
     Route::get('/admin/commandes', [OrderController::class, 'showOrders'])->name('admin.commandes.index');
     Route::get('admin/commandes/{commande}', [OrderController::class, 'show'])->name('admin.commandes.show');
 
-    Route::post('/reservation', [ReservationController::class, 'makeReservation'])->name('client.make-reservation');
+    Route::get('admin/commandes/{id}/download-pdf', [OrderController::class, 'downloadPDF'])->name('admin.commandes.downloadPDF');
+
+
+    // Route::post('/reservation', [ReservationController::class, 'makeReservation'])->name('client.make-reservation');
 });
 
 Route::get('/front-menu/{id}', [MenuFrontController::class, 'showMenuById'])->name('front-menu.showById');
@@ -133,7 +139,12 @@ Route::post('/remove-from-cart', [CartController::class, 'removeFromCart']);
 // routes/web.php
 
 // Route::post('/client/place-order', [OrderController::class, 'placeOrder'])->name('client.placeOrder');
+// Route::post('/place-order', [OrderController::class, 'placeOrder'])->name('place.order');
 Route::post('/place-order', [OrderController::class, 'placeOrder'])->name('place.order');
+// routes/web.php
+
+Route::get('/confirmation', 'OrderController@confirmation')->name('confirmation');
+
 
 
 
@@ -146,18 +157,44 @@ Route::get('/Resto', [MenuFrontController::class, 'showthatMenu'])->name('Resto.
 
 Route::get('/Resto/{id}', [MenuFrontController::class, 'showMenuParId'])->name('Resto.showById');
 
-// Route::get('/client/book-table/{id}', [ReservationController::class, 'showReservationForm'])->name('client.book-table');
-// Route::post('/reservation', [ReservationController::class, 'makeReservation'])->name('client.make-reservation');
-// routes/web.php
-// routes/web.php
+
 Route::get('/client/book-table/{id}', [ReservationController::class, 'showReservationForm'])->name('client.book-table');
 Route::post('/reservation', [ReservationController::class, 'makeReservation'])->name('client.make-reservation');
 Route::get('restaurant/{id}/reservation', [ReservationController::class, 'showReservationForm'])->name('client.reservation.form');
 Route::post('restaurant/reservation', [ReservationController::class, 'makeReservation'])->name('client.reservation.submit');
 Route::get('/Resto/{id}', [MenuFrontController::class, 'showMenuParId'])->name('Resto.showById');
-
-// Route pour récupérer le contenu du panier
+Route::get('/restaurant/{id}', [MenuFrontController::class, 'showeMenuParId'])->name('restaurant.showById');
 Route::get('/get-cart', [App\Http\Controllers\CartController::class, 'getCartContent'])->name('get-cart');
+Route::get('/get-cart', [CartController::class, 'getCartDetails'])->name('get-cart');
+
+
+
+
+
+
+
+
+
+
+
+
+Route::get('/panier', [PanierController::class, 'index'])->name('panier.index');
+Route::post('/panier/store', [PanierController::class, 'store'])->name('panier.store');
+Route::post('/panier/destroy', [PanierController::class, 'destroy'])->name('panier.destroy');
+
+
+// routes/web.php
+Route::post('/add-to-cart', [CartController::class, 'addToCart'])->name('add.to.cart');
+Route::delete('/delete-cart-item', [CartController::class, 'deleteCartItem'])->name('delete.cart.item');
+Route::get('/cart/{restaurantId}', [CartController::class, 'showCart'])->name('cart.show');
+Route::post('/update-cart-quantity', [CartController::class, 'updateCartQuantity'])->name('update.cart.quantity');
+
+Route::get('/checkout/{restaurant_id}', [CartController::class, 'checkout'])->name('checkout');
+
+Route::post('/commander', [OrderController::class, 'commander'])->name('commander');
+Route::post('/checkout/initiate', [CartController::class, 'initiateOrder'])->name('checkout.initiate');
+
+
 
 
 

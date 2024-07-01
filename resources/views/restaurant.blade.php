@@ -12,17 +12,20 @@
     <meta charset="utf-8">
     <!--[if IE]><meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'><![endif]-->
     <title>Restaurant HTML Template - Luxury</title>
+
     <meta name="author" content="themesflat.com">
-    {{-- <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script> --}}
-    {{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Inclure jQuery ici --> --}}
 
     <!-- Mobile Specific Metas -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+
+
     <!-- Theme Style -->
     <link rel="stylesheet" type="text/css" href="{{ asset('front/assets/css/style.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('front/assets/css/bootstrap.min.css') }}">
-    <!-- Inclure Bootstrap CSS -->
 
     <!-- Reponsive -->
     <link rel="stylesheet" type="text/css" href="{{ asset('front/assets/css/responsive.css') }}">
@@ -31,51 +34,36 @@
     <link rel="shortcut icon" href="{{ asset('front/assets/images/favicon.png') }}">
     <link rel="apple-touch-icon-precomposed" href="{{ asset('front/assets/images/favicon.png') }}">
 
-
-
-
-
     <style>
-        .line {
-            flex-grow: 0;
+.custom-cart-btn {
+    display: flex; /* Utiliser flexbox pour aligner les éléments */
+    align-items: center; /* Centrer verticalement les éléments */
+    width: 100px; /* Ajustez la largeur selon vos besoins */
+    height: 40px;
+    justify-content: space-between; /* Répartir les éléments avec de l'espace entre eux */
+}
 
-            background-color: #977644;
-            /* Couleur de la ligne */
-            margin: 0 10px;
-            /* Espacement autour de la ligne */
-        }
+.custom-cart-text {
+    margin-left: 6px; /* Ajouter de l'espace entre le texte et le SVG */
+    margin-right: auto; /* Pousse le texte vers la gauche */
+}
 
-        #cart-icon text#cart-count {
-            fill: rgb(255, 255, 255);
-            /* Remplacez 'red' par la couleur de votre choix */
-            font-size: 12px;
-            /* Ajustez la taille de la police si nécessaire */
-        }
+.custom-cart-icon {
+    margin-right: 6px; /* Ajouter de l'espace entre l'icône et le texte */
+}
 
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            padding-top: 60px;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgb(0, 0, 0);
-            background-color: rgba(0, 0, 0, 0.4);
-        }
-
-        .modal-content {
-            background-color: #fefefe;
-            margin: auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-        }
-
-
+.custom-cart-badge {
+    background-color: #8e8558; /* Couleur de fond jaune */
+    border-radius: 50%; /* Pour rendre la forme arrondie */
+    padding: 0.5rem; /* Ajoutez du padding pour agrandir la badge */
+    font-size: 1.5rem; /* Augmente la taille du texte de la badge */
+    color: white; /* Couleur du texte de la badge */
+    min-width: 2rem; /* Largeur minimale pour s'assurer que la badge soit ronde */
+    min-height: 2rem; /* Hauteur minimale pour s'assurer que la badge soit ronde */
+    display: flex; /* Utiliser flexbox pour centrer le texte */
+    align-items: center; /* Centrer verticalement le texte */
+    justify-content: center; /* Centrer horizontalement le texte */
+}
 
 
 
@@ -196,8 +184,8 @@
                                 </svg>
                             </div>
                             <div class="content">
-                                <p class="tf-color">{{ $restaurant->address }}</p>
-                                <p>Roanoke, Portland</p>
+                                <p class="tf-color">{{ $restaurant->name }}</p>
+                                <p>{{ $restaurant->address }}</p>
                             </div>
                         </div>
                         <div class="wg-information">
@@ -210,7 +198,7 @@
                             </div>
                             <div class="content">
                                 <p class="tf-color">Email Contact</p>
-                                <p> {{ $restaurant->email }} </p>
+                                <p>{{ $restaurant->email }}</p>
                             </div>
                         </div>
                     </div>
@@ -225,7 +213,7 @@
                             </div>
                             <div class="content">
                                 <p class="tf-color">Phone Call Us</p>
-                                <p class="number-phone"> {{ $restaurant->phone_number }} </p>
+                                <p class="number-phone">{{ $restaurant->phone_number }}</p>
                             </div>
                         </div>
                         <div class="button-right">
@@ -241,7 +229,7 @@
                                     <a href="index.html" rel="home" class="main-logo">
                                         <img id="logo_header" alt=""
                                             src="{{ asset('front/assets/images/logo/logo.png') }}"
-                                            data-retina="{{ asset('front/assets/images/logo/logo@2x.png') }}">
+                                            data-retina="assets/images/logo/logo@2x.png">
                                     </a>
                                 </div>
                             </div><!-- /logo -->
@@ -311,66 +299,37 @@
                                 <li class="menu-item">
                                     <a href="contact.html">Contact</a>
                                 </li>
+                                <li class="menu-item">
+                                    <div class="container mt-5" style="width: 60%">
+                                        @php
+                                        $totalQuantity = 0;
+                                        $cartKey = "cart_{$restaurant->id}";
+                                        @endphp
 
-                                <div id="app">
-                                    <!-- Your existing HTML -->
+                                        @if(session($cartKey))
+                                            @foreach(session($cartKey) as $item)
+                                                @php
+                                                $totalQuantity += $item['quantity'];
+                                                @endphp
+                                            @endforeach
+                                        @endif
 
-                                    <li class="menu-item">
-                                        <a href="{{ route('Shop.showById', ['id' => $restaurant->id]) }}">
-                                            <div id="cart-icon">
-                                                <svg style="color: #977644;" xmlns="http://www.w3.org/2000/svg"
-                                                    width="24" height="24" fill="currentColor"
-                                                    class="bi bi-bag-dash-fill" viewBox="0 0 16 16">
-                                                    <path fill-rule="evenodd"
-                                                        d="M10.5 3.5a2.5 2.5 0 0 0-5 0V4h5zm1 0V4H15v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4h3.5v-.5a3.5 3.5 0 1 1 7 0M6 9.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1z" />
-                                                    <text id="cart-count" x="10" y="10" fill="#000">0</text>
-                                                </svg>
+                                        <div class="col-12">
+                                            <div class="dropdown">
+                                                <a class="btn btn-outline-dark custom-cart-btn" href="{{ url('cart/' . $restaurant->id) }}">
+                                                    <i class="fa fa-shopping-cart custom-cart-icon" aria-hidden="true"></i>
+                                                    <span class="custom-cart-text">
+                                                        <svg style="color: #8e8558" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-cart-dash-fill" viewBox="0 0 16 16">
+                                                            <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0m7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0M6.5 7h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1 0-1"/>
+                                                        </svg>
+                                                    </span>
+                                                    <span class="badge custom-cart-badge" id="cart-quantity">{{ $totalQuantity }}</span>
+                                                </a>
                                             </div>
-                                        </a>
-                                    </li>
+                                        </div>
+                                    </div>
 
-
-                                </div>
-
-                                <script>
-                                    const {
-                                        createApp
-                                    } = Vue;
-
-                                    createApp({
-                                        data() {
-                                            return {
-                                                cartCount: 0,
-                                            };
-                                        },
-                                        methods: {
-                                            addToCart(platId, restaurantId) {
-                                                $.ajax({
-                                                    url: '/add-to-cart',
-                                                    method: 'POST',
-                                                    data: {
-                                                        _token: '{{ csrf_token() }}',
-                                                        plat_id: platId,
-                                                        restaurant_id: restaurantId,
-                                                    },
-                                                    success: (response) => {
-                                                        this.cartCount = response.cartCount;
-                                                        $('#cart-count').text(this.cartCount);
-                                                        localStorage.setItem(`cartCount_${restaurantId}`, this.cartCount);
-                                                    },
-                                                    error: (xhr) => {
-                                                        console.error(xhr.responseText);
-                                                    },
-                                                });
-                                            },
-                                        },
-                                        mounted() {
-                                            const restaurantId = {{ $restaurant->id }};
-                                            this.cartCount = parseInt(localStorage.getItem(`cartCount_${restaurantId}`)) || 0;
-                                            $('#cart-count').text(this.cartCount);
-                                        },
-                                    }).mount('#app');
-                                </script>
+                                </li>
 
                             </ul>
                         </nav><!-- /main-nav -->
@@ -380,8 +339,7 @@
                                 <div class="wg-welcom">
                                     <div class="inner">
                                         <div class="button-close"><i class="icon-close"></i></div>
-                                        <img src="{{ asset('front/assets/images/logo/logo-ft.png') }}"
-                                            alt="">
+                                        <img src="assets/images/logo/logo-ft.png" alt="">
                                         <div class="text">Drawing on their respective experiences in the hospitality
                                             industry, the duo imagined a place celebrating.</div>
                                         <div class="number-phone">+39 399 461 1608</div>
@@ -413,7 +371,7 @@
                             <a href="index.html" rel="home" class="main-logo">
                                 <img id="mobile-logo_header" alt=""
                                     src="{{ asset('front/assets/images/logo/logo.png') }}"
-                                    data-retina="front/assets/images/logo/logo@2x.png">
+                                    data-retina="assets/images/logo/logo@2x.png">
                             </a>
                             <div class="mobile-nav-close">
                                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -486,12 +444,46 @@
                                 <li class="menu-item">
                                     <a href="contact.html">Contact</a>
                                 </li>
+
+                                <li class="menu-item">
+                                    <div class="container mt-5" style="width: 60%">
+                                        @php
+                                        $totalQuantity = 0;
+                                        $cartKey = "cart_{$restaurant->id}";
+                                        @endphp
+
+                                        @if(session($cartKey))
+                                            @foreach(session($cartKey) as $item)
+                                                @php
+                                                $totalQuantity += $item['quantity'];
+                                                @endphp
+                                            @endforeach
+                                        @endif
+
+                                        <div class="col-12">
+                                            <div class="dropdown">
+                                                <a class="btn btn-outline-dark custom-cart-btn" href="{{ url('cart/' . $restaurant->id) }}">
+                                                    <i class="fa fa-shopping-cart custom-cart-icon" aria-hidden="true"></i>
+                                                    <span class="custom-cart-text">
+                                                        <svg style="color: #8e8558" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-cart-dash-fill" viewBox="0 0 16 16">
+                                                            <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0m7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0M6.5 7h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1 0-1"/>
+                                                        </svg>
+                                                    </span>
+                                                    <span class="badge custom-cart-badge" id="cart-quantity">{{ $totalQuantity }}</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </li>
+
                             </ul>
                         </nav>
                     </div>
                 </div>
             </header>
             <!-- /header -->
+
             <!-- banner-page -->
             <div class="banner-page inner-page menu-page">
                 <div class="content">
@@ -501,6 +493,7 @@
                 </div>
             </div>
             <!-- /banner-page -->
+
             <!-- page-menu2-wrap -->
             <div class="page-menu2-wrap relative snare-half">
                 <img class="item-1" src="{{ asset('front/assets/images/item-background/item-1.png') }}"
@@ -511,7 +504,8 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="heading-section text-center">
-                                <img class=" wow fadeInUp" src="front/assets/images/item-background/menu-1.png"
+                                <img class=" wow fadeInUp"
+                                    src="{{ asset('front/assets/images/item-background/menu-1.png') }}"
                                     alt="">
                                 <div class="sub wow fadeInUp">What food do we have in our restaurant?</div>
                                 <div class="main wow fadeInUp">FROM OUR MENU</div>
@@ -525,6 +519,73 @@
                         </div>
                     </div>
                 </div>
+                {{-- <div class="widget-tabs style-1">
+                    <div class="top">
+                        <ul class="widget-menu-tab">
+                            <li class="item-title active" data-filter="*">
+                                <span class="inner">Tout afficher</span>
+                            </li>
+                            @foreach ($categories as $category)
+                                <li class="item-title" data-filter=".filter-{{ $category->id }}">
+                                    <span class="inner">{{ $category->name }}</span>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    <div class="bottom">
+                        <div class="image image-left">
+                            <div class="wrap">
+                                <img src="{{ asset('front/assets/images/box-item/menu-3.jpg') }}" alt="">
+                            </div>
+                        </div>
+                        <div class="widget-content-tab">
+                            <div class="widget-content-inner active">
+                                <div class="swiper-container"
+                                    data-swiper='{
+                                    "spaceBetween": 0,
+                                    "slidesPerView": 1,
+                                    "pagination": {
+                                        "el": ".menu-pagination",
+                                        "clickable": true
+                                    }
+                                }'
+                                    style="width: 220%;">
+                                    <div class="swiper-wrapper">
+                                        <div class="swiper-slide">
+                                            <div class="wg-menu-item">
+                                                @foreach ($lastMenu->plats as $plat)
+                                                    <div class="col-lg-6 menu-item filter-{{ $plat->category_id }} menu-grid-item" :data-plat-id="{{ $plat->id }}">
+                                                        <div class="flex items-center">
+                                                            <div class="name"><a href="#">{{ $plat->name }}</a></div>
+                                                            <div class="line" style="width: 300px"></div>
+                                                            <div class="price">{{ $plat->price }} Fcfa</div>
+                                                            <div @click="addToCart({{ $plat->id }}, {{ $restaurant->id }})" style="margin-left: 3rem; color:#977644;">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus-square-fill" viewBox="0 0 16 16">
+                                                                    <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0" />
+                                                                </svg>
+                                                            </div>
+                                                        </div>
+                                                        <p>{{ $plat->description }}</p>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="swiper-pagination style-dot menu-pagination"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="image image-right">
+                            <div class="wrap">
+                                <img src="{{ asset('front/assets/images/box-item/menu-4.jpg') }}" alt="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="button-bot">
+                        <a class="button-two-line w-full"
+                            href="{{ route('client.book-table', ['id' => $restaurant->id]) }}">BOOK A TABLE TODAY</a>
+                    </div>
+                </div> --}}
                 <div class="widget-tabs style-1">
                     <div class="top">
                         <ul class="widget-menu-tab">
@@ -574,9 +635,13 @@
                                                                             <p class="menu-item-name">
                                                                                 {{ $plat->name }}</p>
                                                                             <button
-                                                                                class="btn btn-primary btn-add-to-cart">
+                                                                                class="btn btn-primary btn-add-to-cart"
+                                                                                data-plat-id="{{ $plat->id }}"
+                                                                                data-restaurant-id="{{ $restaurant->id }}">
                                                                                 Ajouter à la carte
                                                                             </button>
+
+
                                                                         </div>
                                                                     </div>
                                                                 @endif
@@ -616,341 +681,174 @@
                     </div>
                 </div>
 
-
-                <!-- Icône du panier en bas de page -->
-                <div class="fixed-bottom p-3" style="margin-left: 94%; margin-bottom: 10%;">
-                    <button type="button" class="btn btn-light" @click="openModal">
-                        <svg style="color: #977644;" xmlns="http://www.w3.org/2000/svg" width="24"
-                            height="24" fill="currentColor" class="bi bi-bag-dash-fill" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd"
-                                d="M10.5 3.5a2.5 2.5 0 0 0-5 0V4h5zm1 0V4H15v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4h3.5v-.5a3.5 3.5 0 1 1 7 0M6 9.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1z" />
-                            <text id="cart-count-bottom" x="8" y="7" fill="#000">0</text>
-                            <!-- Identifiant unique pour le compteur -->
-                        </svg>
-                    </button>
+                <div class="container mt-4">
+                    @if(session('success'))
+                        <div class="alert alert-success">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+                    @yield('content')
                 </div>
+                @yield('scripts')
+            </div>
+            <!-- /page-menu2-wrap -->
 
-
-
-
-                <!-- /page-menu2-wrap -->
-                <!-- footer -->
-                <footer id="footer" class="footer">
-                    <div class="themesflat-container">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="logo-footer" id="logo-footer">
-                                    <a href="index.html">
-                                        <img id="logo_footer" alt=""
-                                            src="front/assets/images/logo/logo-ft.png"
-                                            data-retina="assets/images/logo/logo-ft@2x.png">
-                                    </a>
-                                </div>
+            <!-- footer -->
+            <footer id="footer" class="footer">
+                <div class="themesflat-container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="logo-footer" id="logo-footer">
+                                <a href="index.html">
+                                    <img id="logo_footer" alt=""
+                                        src="{{ asset('front/assets/images/logo/logo-ft.png') }}"
+                                        data-retina="assets/images/logo/logo-ft@2x.png">
+                                </a>
                             </div>
-                            <div class="col-md-4">
-                                <div class="footer-left">
-                                    <div class="footer-title">WE ARE HERE</div>
-                                    <p>
-                                        82 Place Charles de Gaulle, Paris <br>
-                                        Brochetterestaurant@gmail.com <br>
-                                        +39-055-123456
-                                    </p>
-                                </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="footer-left">
+                                <div class="footer-title">WE ARE HERE</div>
+                                <p>
+                                    82 Place Charles de Gaulle, Paris <br>
+                                    Brochetterestaurant@gmail.com <br>
+                                    +39-055-123456
+                                </p>
                             </div>
-                            <div class="col-md-4">
-                                <div class="footer-center">
-                                    <p>A distinctive, well-preserved and comfortable space, high-quality products,
-                                        authentic
-                                        cuisine, food and drinks are done flawlessly.</p>
-                                    <div class="widget-social-text">
-                                        <ul class="flex-wrap">
-                                            <li><a href="#">facebook</a></li>
-                                            <li><a href="#">instagram</a></li>
-                                            <li><a href="#">tripadvisor</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="footer-right">
-                                    <div class="footer-title">OPENING TIME</div>
-                                    <p>
-                                        Mon - Fri: 08:00 am - 09:00pm <br>
-                                        Sat - Sun: 10:00 am - 11:00pm <br>
-                                        Holiday: Close
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="footer-bottom">
-                                    <p>Copyright © 2023 themesflat. All Rights Reserved.</p>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="footer-center">
+                                <p>A distinctive, well-preserved and comfortable space, high-quality products, authentic
+                                    cuisine, food and drinks are done flawlessly.</p>
+                                <div class="widget-social-text">
+                                    <ul class="flex-wrap">
+                                        <li><a href="#">facebook</a></li>
+                                        <li><a href="#">instagram</a></li>
+                                        <li><a href="#">tripadvisor</a></li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </footer>
-                <!-- /footer -->
-            </div>
-            <!-- /#page -->
-        </div>
-        <!-- /#wrapper -->
-        <!-- cusor -->
-        <div class="tf-mouse tf-mouse-outer"></div>
-        <div class="tf-mouse tf-mouse-inner"></div>
-
-
-
-
-
-        <!-- go top button -->
-        <div class="progress-wrap active-progress">
-            <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
-                <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"
-                    style="transition: stroke-dashoffset 10ms linear 0s; stroke-dasharray: 307.919, 307.919; stroke-dashoffset: 286.138;">
-                </path>
-            </svg>
-        </div>
-
-
-        <!-- Javascript -->
-        <script src="{{ asset('front/assets/js/jquery.min.js') }}"></script> <!-- Supprimer cette ligne si déjà inclus dans le head -->
-        {{-- <script src="{{ asset('front/assets/js/bootstrap.min.js') }}"></script> --}}
-        <script src="{{ asset('front/assets/js/swiper-bundle.min.js') }}"></script>
-        <script src="{{ asset('front/assets/js/swiper.js') }}"></script>
-        <script src="{{ asset('front/assets/js/map.min.js') }}"></script>
-        <script src="{{ asset('front/assets/js/map.js') }}"></script>
-        <script src="{{ asset('front/assets/js/circletype.min.js') }}"></script>
-        <script src="{{ asset('front/assets/js/countto.js') }}"></script>
-        <script src="{{ asset('front/assets/js/count-down.js') }}"></script>
-        <script src="{{ asset('front/assets/js/nouislider.min.js') }}"></script>
-        <script src="{{ asset('front/assets/js/magnific-popup.min.js') }}"></script>
-        <script src="{{ asset('front/assets/js/wow.min.js') }}"></script>
-        <script src="{{ asset('front/assets/js/main.js') }}"></script>
-        <!-- Supprimer le doublon de jQuery -->
-
-        <script>
-            $(document).ready(function() {
-                // Lorsque l'onglet de catégorie est cliqué
-                $('.widget-menu-tab .item-title').on('click', function() {
-                    // Récupérer le filtre de catégorie
-                    var filterValue = $(this).attr('data-filter');
-                    // Ajouter la classe 'active' à l'onglet cliqué et la retirer des autres
-                    $('.widget-menu-tab .item-title').removeClass('active');
-                    $(this).addClass('active');
-
-                    // Afficher ou masquer les plats en fonction de la catégorie sélectionnée
-                    if (filterValue === '*') {
-                        $('.menu-item').show(); // Afficher tous les plats
-                    } else {
-                        $('.menu-item').hide(); // Masquer tous les plats
-                        $(filterValue).show(); // Afficher les plats de la catégorie sélectionnée
-                    }
-                });
-            });
-        </script>
-        <script>
-            $(document).ready(function() {
-                $('.bi-plus-square-fill').on('click', function() {
-                    var platId = $(this).closest('.menu-item').data('plat-id');
-                    $.ajax({
-                        url: '/add-to-cart', // URL de votre route pour ajouter au panier
-                        method: 'POST',
-                        data: {
-                            _token: '{{ csrf_token() }}', // Token CSRF pour la sécurité
-                            plat_id: platId
-                        },
-                        success: function(response) {
-                            // Mettre à jour le compteur du panier
-                            var cartCount = parseInt($('#cart-count').text());
-                            $('#cart-count').text(cartCount + 1);
-
-                            // Rafraîchir la section de la boutique avec les plats ajoutés au panier
-                            refreshCart();
-                        },
-                        error: function(xhr) {
-                            console.error(xhr.responseText);
-                        }
-                    });
-                });
-
-                function refreshCart() {
-                    $.ajax({
-                        url: '/get-cart', // URL de votre route pour récupérer le panier
-                        method: 'GET',
-                        success: function(response) {
-                            $('.wg-shop-content .row').html(
-                                response); // Remplacer le contenu de la boutique
-                        },
-                        error: function(xhr) {
-                            console.error(xhr.responseText);
-                        }
-                    });
-                }
-            });
-        </script>
-
-
-
-
-
-
-        <script>
-            $(document).ready(function() {
-                // Ajouter au panier
-                $('.btn-add-to-cart').on('click', function() {
-                    var platId = $(this).closest('.menu-item').data('plat-id');
-                    var restaurantId = $(this).closest('.menu-item').data('restaurant-id');
-
-                    // Faire une requête AJAX pour ajouter au panier
-                    $.ajax({
-                        url: '{{ route('panier.store') }}',
-                        type: 'POST',
-                        data: {
-                            _token: '{{ csrf_token() }}',
-                            plat_id: platId,
-                            restaurant_id: restaurantId,
-                        },
-                        success: function(response) {
-                            // Mettre à jour le compteur du panier en bas de page
-                            updateCartIcon();
-                        },
-                        error: function(error) {
-                            console.error('Erreur lors de l\'ajout au panier : ', error);
-                        }
-                    });
-                });
-
-                // Supprimer du panier
-                $('.btn-remove-from-cart').on('click', function() {
-                    var platId = $(this).closest('.cart-item').data('plat-id');
-                    var restaurantId = $(this).closest('.cart-item').data('restaurant-id');
-
-                    // Faire une requête AJAX pour supprimer du panier
-                    $.ajax({
-                        url: '{{ route('panier.destroy') }}',
-                        type: 'POST',
-                        data: {
-                            _token: '{{ csrf_token() }}',
-                            plat_id: platId,
-                            restaurant_id: restaurantId,
-                        },
-                        success: function(response) {
-                            // Mettre à jour le compteur du panier en bas de page
-                            updateCartIcon();
-                        },
-                        error: function(error) {
-                            console.error('Erreur lors de la suppression du panier : ', error);
-                        }
-                    });
-                });
-
-                // Fonction pour mettre à jour le compteur du panier
-                function updateCartIcon() {
-                    // Récupérer le panier depuis localStorage
-                    var cart = JSON.parse(localStorage.getItem('cart')) || [];
-                    var totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
-                    $('#cart-count-bottom').text(totalItems); // Mettre à jour le compteur dans le div en bas de page
-                }
-
-                // Appeler updateCartIcon() lors du chargement de la page pour initialiser le compteur
-                updateCartIcon();
-            });
-        </script>
-
-
-
-
-        <!-- Modal du Panier -->
-        <div class="modal fade" id="cartModal" tabindex="-1" role="dialog" aria-labelledby="cartModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="cartModalLabel">Panier</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <ul id="cart-items-list" class="list-group">
-                            <!-- Les éléments du panier seront ajoutés ici -->
-                        </ul>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                        <button type="button" class="btn btn-primary">Passer la commande</button>
+                        <div class="col-md-4">
+                            <div class="footer-right">
+                                <div class="footer-title">OPENING TIME</div>
+                                <p>
+                                    Mon - Fri: 08:00 am - 09:00pm <br>
+                                    Sat - Sun: 10:00 am - 11:00pm <br>
+                                    Holiday: Close
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="footer-bottom">
+                                <p>Copyright © 2023 themesflat. All Rights Reserved.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </footer>
+            <!-- /footer -->
+
         </div>
+        <!-- /#page -->
+    </div>
+    <!-- /#wrapper -->
 
-        <script>
-            $(document).ready(function() {
-                // Ajouter au panier
-                $('.btn-add-to-cart').on('click', function() {
-                    var platId = $(this).closest('.menu-item').data('plat-id');
-                    var restaurantId = $(this).closest('.menu-item').data('restaurant-id');
+    <!-- cusor -->
+    <div class="tf-mouse tf-mouse-outer"></div>
+    <div class="tf-mouse tf-mouse-inner"></div>
 
-                    // Récupérer le panier depuis localStorage
-                    var cart = JSON.parse(localStorage.getItem('cart')) || [];
+    <!-- go top button -->
+    <div class="progress-wrap active-progress">
+        <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+            <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"
+                style="transition: stroke-dashoffset 10ms linear 0s; stroke-dasharray: 307.919, 307.919; stroke-dashoffset: 286.138;">
+            </path>
+        </svg>
+    </div>
 
-                    // Vérifier si le plat est déjà dans le panier
-                    var existingItem = cart.find(item => item.platId === platId && item.restaurantId ===
-                        restaurantId);
+    <!-- Javascript -->
+    <script src="{{ asset('front/assets/js/jquery.min.js') }}"></script>
+    <script src="{{ asset('front/assets/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('front/assets/js/swiper-bundle.min.js') }}"></script>
+    <script src="{{ asset('front/assets/js/swiper.js') }}"></script>
+    <script src="{{ asset('front/assets/js/map.min.js') }}"></script>
+    <script src="{{ asset('front/assets/js/map.js') }}"></script>
+    <script src="{{ asset('front/assets/js/circletype.min.js') }}"></script>
+    <script src="{{ asset('front/assets/js/countto.js') }}"></script>
+    <script src="{{ asset('front/assets/js/count-down.js') }}"></script>
+    <script src="{{ asset('front/assets/js/nouislider.min.js') }}"></script>
+    <script src="{{ asset('front/assets/js/magnific-popup.min.js') }}"></script>
+    <script src="{{ asset('front/assets/js/wow.min.js') }}"></script>
+    <script src="{{ asset('front/assets/js/main.js') }}"></script>
 
-                    if (existingItem) {
-                        existingItem.quantity++;
-                    } else {
-                        cart.push({
-                            platId: platId,
-                            restaurantId: restaurantId,
-                            quantity: 1
-                        });
-                    }
+    <script>
+        $(document).ready(function() {
+            // Lorsque l'onglet de catégorie est cliqué
+            $('.widget-menu-tab .item-title').on('click', function() {
+                // Récupérer le filtre de catégorie
+                var filterValue = $(this).attr('data-filter');
+                // Ajouter la classe 'active' à l'onglet cliqué et la retirer des autres
+                $('.widget-menu-tab .item-title').removeClass('active');
+                $(this).addClass('active');
 
-                    // Mettre à jour le panier dans localStorage
-                    localStorage.setItem('cart', JSON.stringify(cart));
-
-                    // Mettre à jour le compteur du panier en bas de page
-                    updateCartIcon();
-                });
-
-                // Fonction pour mettre à jour le compteur du panier
-                function updateCartIcon() {
-                    var cart = JSON.parse(localStorage.getItem('cart')) || [];
-                    var totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
-                    $('#cart-count-bottom').text(totalItems); // Mettre à jour le compteur dans le div en bas de page
+                // Afficher ou masquer les plats en fonction de la catégorie sélectionnée
+                if (filterValue === '*') {
+                    $('.menu-item').show(); // Afficher tous les plats
+                } else {
+                    $('.menu-item').hide(); // Masquer tous les plats
+                    $(filterValue).show(); // Afficher les plats de la catégorie sélectionnée
                 }
-
-                // Appeler updateCartIcon() lors du chargement de la page pour initialiser le compteur
-                updateCartIcon();
-
-                // Ouvrir le modal et afficher les plats du panier
-                $('.btn-light').on('click', function() {
-                    var cart = JSON.parse(localStorage.getItem('cart')) || [];
-                    var $cartItemsList = $('#cart-items-list');
-                    $cartItemsList.empty(); // Vider la liste actuelle
-
-                    if (cart.length === 0) {
-                        $cartItemsList.append('<li class="list-group-item">Aucun plat ajouté au panier</li>');
-                    } else {
-                        cart.forEach(function(item) {
-                            var listItem = `
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Plat ID: ${item.platId}, Restaurant ID: ${item.restaurantId}
-                        <span class="badge badge-primary badge-pill">${item.quantity}</span>
-                    </li>
-                `;
-                            $cartItemsList.append(listItem);
-                        });
-                    }
-
-                    $('#cartModal').modal('show'); // Ouvrir le modal
-                });
             });
-        </script>
+        });
+    </script>
+
+<script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).ready(function() {
+        $('.btn-add-to-cart').click(function(e) {
+            e.preventDefault();
+
+            var platId = $(this).data('plat-id');
+            var restaurantId = $(this).data('restaurant-id');
+
+            $.ajax({
+                url: '{{ route('add.to.cart') }}',
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    plat_id: platId,
+                    restaurant_id: restaurantId,
+                    quantity: 1
+                },
+                success: function(response) {
+                    $('#cart-quantity').text(response.cartCount);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Succès!',
+                        text: 'Plat ajouté au panier avec succès!',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    console.log(response);
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erreur',
+                        text: 'Une erreur s\'est produite. Veuillez réessayer.'
+                    });
+                }
+            });
+        });
+    });
+</script>
 
 </body>
+
+
 <!-- Mirrored from themesflat.co/html/restaurant/luxury/menu-2.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 19 May 2024 02:06:17 GMT -->
 
 </html>

@@ -440,7 +440,6 @@
 
                                 <!-- Your existing cart HTML -->
 
-
                                 <!-- Checkout Modal -->
                                 <!-- Modal for Checkout -->
                                 <div v-if="showCheckoutModal" class="modal" tabindex="-1" role="dialog"
@@ -495,47 +494,43 @@
                                                                         </div>
                                                                         <div class="col-lg-8 order-lg-1">
                                                                             <h4 class="mb-3">Billing address</h4>
-                                                                            {{-- <form method="POST" action="{{ route('place.order') }}">
+
+                                                                            <form method="POST"
+                                                                                action="{{ route('place.order') }}">
                                                                                 @csrf
-                                                                                <input type="hidden" name="restaurant_id" value="{{ $restaurant->id }}">
+                                                                                <input type="hidden"
+                                                                                    name="restaurant_id"
+                                                                                    value="{{ $restaurant->id }}">
 
                                                                                 <div class="mb-3">
-                                                                                    <label for="client_name" class="form-label">Nom du client</label>
-                                                                                    <input type="text" class="form-control" id="client_name" name="client_name" required>
+                                                                                    <label for="client_name"
+                                                                                        class="form-label">Nom du
+                                                                                        client</label>
+                                                                                    <input type="text"
+                                                                                        class="form-control"
+                                                                                        id="client_name"
+                                                                                        name="client_name" required>
                                                                                 </div>
 
                                                                                 <div class="mb-3">
-                                                                                    <label for="telephone_client" class="form-label">Numéro de Telephone</label>
-                                                                                    <input type="number" class="form-control" id="telephone_client" name="telephone_client" required>
-                                                                                </div>
-
-                                                                                <div id="cart-items">
-                                                                                    <!-- Dynamically generated cart items will go here -->
-                                                                                    <input type="hidden" name="cart[0][plat_id]" value="1">
-                                                                                    <input type="hidden" name="cart[0][quantity]" value="2">
-                                                                                </div>
-
-                                                                                <button type="submit" class="btn btn-primary">Passer la commande</button>
-                                                                            </form> --}}
-                                                                            <form method="POST" action="{{ route('place.order') }}">
-                                                                                @csrf
-                                                                                <input type="hidden" name="restaurant_id" value="{{ $restaurant->id }}">
-
-                                                                                <div class="mb-3">
-                                                                                    <label for="client_name" class="form-label">Nom du client</label>
-                                                                                    <input type="text" class="form-control" id="client_name" name="client_name" required>
-                                                                                </div>
-
-                                                                                <div class="mb-3">
-                                                                                    <label for="telephone_client" class="form-label">Numéro de Téléphone</label>
-                                                                                    <input type="number" class="form-control" id="telephone_client" name="telephone_client" required>
+                                                                                    <label for="telephone_client"
+                                                                                        class="form-label">Numéro de
+                                                                                        Téléphone</label>
+                                                                                    <input type="number"
+                                                                                        class="form-control"
+                                                                                        id="telephone_client"
+                                                                                        name="telephone_client"
+                                                                                        required>
                                                                                 </div>
 
                                                                                 <div id="cart-items">
                                                                                     <!-- Les éléments du panier seront insérés ici -->
                                                                                 </div>
 
-                                                                                <button type="submit" class="btn btn-primary" @click.prevent="submitOrder">Passer la commande</button>
+                                                                                <button type="submit"
+                                                                                    class="btn btn-primary"
+                                                                                    @click.prevent="submitOrder">Passer
+                                                                                    la commande</button>
                                                                             </form>
 
 
@@ -563,9 +558,8 @@
                 </div>
             </div>
 
-            {{-- <script>
-                // Script Vue.js
 
+            <script>
                 const {
                     createApp
                 } = Vue;
@@ -573,7 +567,7 @@
                 createApp({
                     data() {
                         return {
-                            cart: [],
+                            cart: JSON.parse(sessionStorage.getItem('cart')) || [],
                             subtotal: 0,
                             showCheckoutModal: false,
                             restaurantId: 1 // Assurez-vous de définir l'ID du restaurant
@@ -594,34 +588,26 @@
                                 });
                             }
                             this.updateSubtotal();
+                            sessionStorage.setItem('cart', JSON.stringify(this.cart));
                         },
                         increaseQuantity(index) {
                             this.cart[index].quantity++;
                             this.updateSubtotal();
+                            sessionStorage.setItem('cart', JSON.stringify(this.cart));
                         },
                         decreaseQuantity(index) {
                             if (this.cart[index].quantity > 1) {
                                 this.cart[index].quantity--;
-                                this.updateSubtotal();
                             } else {
                                 this.cart.splice(index, 1);
-                                this.updateSubtotal();
                             }
+                            this.updateSubtotal();
+                            sessionStorage.setItem('cart', JSON.stringify(this.cart));
                         },
-                        removeFromCart(index, platId) {
-                            const restaurantId = this
-                            .restaurantId; // Assurez-vous que cette variable est définie et correspond à l'ID du restaurant actuel.
-                            axios.post('/remove-from-cart', {
-                                plat_id: platId,
-                                restaurant_id: restaurantId
-                            }).then(response => {
-                                if (response.data.success) {
-                                    this.cart.splice(index, 1); // Supprime l'élément du tableau local
-                                    this.updateSubtotal(); // Mettre à jour le sous-total
-                                }
-                            }).catch(error => {
-                                console.error('Error removing item from cart:', error);
-                            });
+                        removeFromCart(index) {
+                            this.cart.splice(index, 1);
+                            this.updateSubtotal();
+                            sessionStorage.setItem('cart', JSON.stringify(this.cart));
                         },
                         updateSubtotal() {
                             this.subtotal = this.cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -632,122 +618,32 @@
                         closeCheckoutModal() {
                             this.showCheckoutModal = false;
                         },
-                        placeOrder() {
-                            // Préparer les données pour l'envoi
-                            const formData = {
-                                restaurant_id: this.restaurantId,
-                                table_id: 1, // Définissez correctement l'ID de la table
-                                first_name: this.first_name,
-                                last_name: this.last_name,
-                                username: this.username,
-                                email: this.email,
-                                address: this.address,
-                                address2: this.address2,
-                                country: this.country,
-                                state: this.state,
-                                zip: this.zip,
-                                paymentMethod: this.paymentMethod,
-                                cc_name: this.cc_name,
-                                cc_number: this.cc_number,
-                                cc_expiration: this.cc_expiration,
-                                cc_cvv: this.cc_cvv,
-                                subtotal: this.subtotal,
-                                cart: this.cart // Assurez-vous que votre panier est correctement formé
-                            };
+                        submitOrder() {
+                            const form = document.querySelector('form[action="{{ route('place.order') }}"]');
+                            const cartItemsContainer = document.getElementById('cart-items');
+                            cartItemsContainer.innerHTML = '';
 
-                            // Envoyer les données à Laravel
-                            axios.post('/client/place-order', formData)
-                                .then(response => {
-                                    console.log(response.data);
-                                    // Répondre à la réussite ici
-                                })
-                                .catch(error => {
-                                    console.error('Error placing order:', error);
-                                    // Gérer les erreurs ici
-                                });
+                            this.cart.forEach((item, index) => {
+                                const inputPlatId = document.createElement('input');
+                                inputPlatId.type = 'hidden';
+                                inputPlatId.name = `cart[${index}][plat_id]`;
+                                inputPlatId.value = item.id;
+                                cartItemsContainer.appendChild(inputPlatId);
+
+                                const inputQuantity = document.createElement('input');
+                                inputQuantity.type = 'hidden';
+                                inputQuantity.name = `cart[${index}][quantity]`;
+                                inputQuantity.value = item.quantity;
+                                cartItemsContainer.appendChild(inputQuantity);
+                            });
+
+                            form.submit();
                         }
+                    },
+                    mounted() {
+                        this.updateSubtotal();
                     }
                 }).mount('#cart-app');
-            </script> --}}
-
-            <script>
-                const { createApp } = Vue;
-
-createApp({
-    data() {
-        return {
-            cart: [],
-            subtotal: 0,
-            showCheckoutModal: false,
-            restaurantId: 1 // Assurez-vous de définir l'ID du restaurant
-        };
-    },
-    methods: {
-        addToCart(id, name, price, image_url) {
-            let item = this.cart.find(item => item.id === id);
-            if (item) {
-                item.quantity++;
-            } else {
-                this.cart.push({
-                    id,
-                    name,
-                    price,
-                    quantity: 1,
-                    image_url
-                });
-            }
-            this.updateSubtotal();
-        },
-        increaseQuantity(index) {
-            this.cart[index].quantity++;
-            this.updateSubtotal();
-        },
-        decreaseQuantity(index) {
-            if (this.cart[index].quantity > 1) {
-                this.cart[index].quantity--;
-                this.updateSubtotal();
-            } else {
-                this.cart.splice(index, 1);
-                this.updateSubtotal();
-            }
-        },
-        removeFromCart(index, platId) {
-            this.cart.splice(index, 1);
-            this.updateSubtotal();
-        },
-        updateSubtotal() {
-            this.subtotal = this.cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-        },
-        openCheckoutModal() {
-            this.showCheckoutModal = true;
-        },
-        closeCheckoutModal() {
-            this.showCheckoutModal = false;
-        },
-        submitOrder() {
-            const form = document.querySelector('form[action="{{ route('place.order') }}"]');
-            const cartItemsContainer = document.getElementById('cart-items');
-            cartItemsContainer.innerHTML = '';
-
-            this.cart.forEach((item, index) => {
-                const inputPlatId = document.createElement('input');
-                inputPlatId.type = 'hidden';
-                inputPlatId.name = `cart[${index}][plat_id]`;
-                inputPlatId.value = item.id;
-                cartItemsContainer.appendChild(inputPlatId);
-
-                const inputQuantity = document.createElement('input');
-                inputQuantity.type = 'hidden';
-                inputQuantity.name = `cart[${index}][quantity]`;
-                inputQuantity.value = item.quantity;
-                cartItemsContainer.appendChild(inputQuantity);
-            });
-
-            form.submit();
-        }
-    }
-}).mount('#cart-app');
-
             </script>
 
 
@@ -850,8 +746,7 @@ createApp({
             event.preventDefault();
 
             let formData = new FormData(this);
-            formData.append('cart', JSON.stringify(sessionStorage.getItem(
-            'cart'))); // Assuming cart is stored in sessionStorage
+            formData.append('cart', JSON.stringify(sessionStorage.getItem('cart')));
 
             fetch('{{ route('place.order') }}', {
                     method: 'POST',
@@ -866,7 +761,6 @@ createApp({
                 .then(data => {
                     if (data.success) {
                         alert(data.message);
-                        // Clear the cart and close the modal
                         sessionStorage.removeItem('cart');
                         $('#orderModal').modal('hide');
                     } else {
