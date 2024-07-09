@@ -35,7 +35,6 @@ return new class extends Migration
             $table->string('cc_number')->nullable();
             $table->string('cc_expiration')->nullable();
             $table->string('cc_cvv')->nullable();
-
             $table->foreign('commande_id')->references('id')->on('commandes')->onDelete('cascade');
         });
     }

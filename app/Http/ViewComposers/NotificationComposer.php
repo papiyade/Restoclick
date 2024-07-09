@@ -4,12 +4,23 @@ namespace App\Http\ViewComposers;
 
 use Illuminate\View\View;
 use App\Models\Notification;
+use Illuminate\Support\Facades\Auth;
 
 class NotificationComposer
 {
     public function compose(View $view)
     {
-        $notifications = Notification::where('is_read', false)->orderBy('created_at', 'desc')->get();
+        $user = Auth::user();
+
+        if ($user) {
+            $notifications = Notification::where('is_read', false)
+                ->where('restaurant_id', $user->restaurant_id)
+                ->orderBy('created_at', 'desc')
+                ->get();
+        } else {
+            $notifications = collect(); // Retourner une collection vide si l'utilisateur n'est pas connecté
+        }
+
         $view->with('notifications', $notifications);
     }
 }

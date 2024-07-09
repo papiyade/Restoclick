@@ -207,6 +207,3 @@ span.onclick = function() {
 
     </style>
 @endsection
-
-
-

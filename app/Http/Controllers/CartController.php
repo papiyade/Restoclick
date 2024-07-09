@@ -91,45 +91,45 @@ class CartController extends Controller
         return response()->json(['success' => true]);
     }
     public function checkout($restaurantId)
-{
-    $cartKey = "cart_$restaurantId";
-    $cart = session()->get($cartKey, []);
+    {
+        $cartKey = "cart_$restaurantId";
+        $cart = session()->get($cartKey, []);
 
-    // Vérifiez si $cart est vide ou non défini
-    if (empty($cart)) {
-        return redirect()->back()->with('error', 'Votre panier est vide.');
+        // Vérifiez si $cart est vide ou non défini
+        if (empty($cart)) {
+            return redirect()->back()->with('error', 'Votre panier est vide.');
+        }
+
+        // Récupérez les plats correspondants aux ID dans le panier
+        $plats = Plat::whereIn('id', array_keys($cart))->get();
+
+        // Ajoutez les quantités choisies à chaque plat
+        foreach ($plats as $plat) {
+            $plat->quantity = $cart[$plat->id]['quantity'];
+        }
+
+        // Calculer le total de la commande
+        $totalOrderPrice = 0;
+        foreach ($plats as $plat) {
+            $totalOrderPrice += $plat->price * $plat->quantity;
+        }
+
+        // Récupérez le restaurant correspondant à $restaurantId
+        $restaurant = Restaurant::find($restaurantId);
+
+        if (!$restaurant) {
+            // Gérer le cas où aucun restaurant correspondant n'est trouvé
+            return redirect()->back()->with('error', 'Restaurant non trouvé.');
+        }
+
+        return view('checkout', [
+            'cartItems' => $plats, // Passer les plats avec les quantités choisies
+            'totalPrice' => $totalOrderPrice, // Total de la commande
+            'cart' => $cart, // Passer le panier à la vue
+            'restaurantId' => $restaurantId, // Passer l'ID du restaurant à la vue
+            'restaurant' => $restaurant, // Passer le restaurant à la vue
+        ]);
     }
-
-    // Récupérez les plats correspondants aux ID dans le panier
-    $plats = Plat::whereIn('id', array_keys($cart))->get();
-
-    // Ajoutez les quantités choisies à chaque plat
-    foreach ($plats as $plat) {
-        $plat->quantity = $cart[$plat->id]['quantity'];
-    }
-
-    // Calculer le total de la commande
-    $totalOrderPrice = 0;
-    foreach ($plats as $plat) {
-        $totalOrderPrice += $plat->price * $plat->quantity;
-    }
-
-    // Récupérez le restaurant correspondant à $restaurantId
-    $restaurant = Restaurant::find($restaurantId);
-
-    if (!$restaurant) {
-        // Gérer le cas où aucun restaurant correspondant n'est trouvé
-        return redirect()->back()->with('error', 'Restaurant non trouvé.');
-    }
-
-    return view('checkout', [
-        'cartItems' => $plats, // Passer les plats avec les quantités choisies
-        'totalPrice' => $totalOrderPrice, // Total de la commande
-        'cart' => $cart, // Passer le panier à la vue
-        'restaurantId' => $restaurantId, // Passer l'ID du restaurant à la vue
-        'restaurant' => $restaurant, // Passer le restaurant à la vue
-    ]);
-}
 
 
     public function getCartDetails()

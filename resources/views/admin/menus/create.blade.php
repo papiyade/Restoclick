@@ -19,7 +19,7 @@
         </div>
         <div class="form-group">
             <label for="price">Prix</label>
-            <input type="number" name="prix" id="prix" class="form-control" step="0.01"
+            <input type="number" name="prix" id="prix" style="width: 50%;" class="form-control" step="0.01"
                 required>
         </div>
         <div class="row mt-3">

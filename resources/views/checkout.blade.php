@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -13,19 +12,16 @@
     <meta property="og:description" content="Salero:Restaurant Admin Bootstrap 5 Template">
     <meta property="og:image" content="page-error-404.html">
     <meta name="format-detection" content="telephone=no">
-
     <!-- PAGE TITLE HERE -->
     <title>Salero Restaurant Admin Bootstrap 5 Template</title>
-
     <!-- FAVICONS ICON -->
     <link rel="shortcut icon" type="image/png" href="{{ asset('assets/images/favicon.png') }}">
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
     <link href="{{ asset('assets/vendor/bootstrap-select/dist/css/bootstrap-select.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
-
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 
 </head>
-
 <body>
     <div class="nav-header" style="background-color: rgb(160, 132, 16)">
         <a href="index.html" class="brand-logo">
@@ -61,7 +57,6 @@
             </div>
         </div>
     </div>
-
     <div class="header" style="background-color: rgb(160, 132, 16)">
         <div class="header-content">
             <nav class="navbar navbar-expand">
@@ -93,7 +88,6 @@
             </nav>
         </div>
     </div>
-
     <div class="container" style="margin-top: 30px;">
         <h2 class="mt-10">Validation de la commande</h2>
 
@@ -120,7 +114,6 @@
                                 <strong>{{ $item->quantity }}</strong>
                             </li>
                         @endforeach
-
                         <li style="background-color: rgb(160, 132, 16)"
                             class="list-group-item d-flex justify-content-between">
                             <span style="color: white">Total (Fcfa)</span>
@@ -128,50 +121,148 @@
                         </li>
                     </ul>
                 </div>
-
                 <div class="col-lg-8 order-lg-1">
                     <h4 class="mb-3">Adresse de Facturation</h4>
-
                     <form id="orderForm" method="POST" action="{{ route('commander') }}">
                         @csrf
                         <input type="hidden" name="restaurant_id" value="{{ $restaurantId }}">
                         <!-- Champs pour le nom du client et le numéro de téléphone -->
                         <div class="mb-3">
                             <label for="client_name" class="form-label">Nom du client</label>
-                            <input type="text" class="form-control" id="client_name" name="client_name" required>
+                            <input type="text" style="width: 60%" class="form-control" id="client_name" name="client_name" required>
                         </div>
                         <div class="mb-3">
                             <label for="telephone_client" class="form-label">Numéro de Téléphone</label>
-                            <input type="text" class="form-control" id="telephone_client" name="telephone_client" required>
+                            <input type="text" style="width: 60%" class="form-control" id="telephone_client" name="telephone_client"
+                                required>
                         </div>
                         <!-- Champ caché pour le panier (cart) -->
                         <input type="hidden" name="cart" id="cartData" value="{{ json_encode($cartItems) }}">
 
-                        <button type="submit" class="btn btn-primary">Passer la commande</button>
+<div class="form-group">
+    <h3>Mode de Paiement</h3>
+    <div class="d-flex flex-wrap">
+        <div class="form-check form-check-inline text-center mr-4">
+            <input style="margin-top: 89%" class="form-check-input" type="radio" id="especes" name="mode_paiement" value="especes" required>
+            <label class="form-check-label" for="especes">
+                <img src="{{asset('assets/images/espèce.png')}}" style="width: 65px;" class="form-check-img" alt="Espèces">
+                <br>Espèces
+            </label>
+        </div>
+        <div class="form-check form-check-inline text-center mr-4">
+            <input style="margin-top: 60%" class="form-check-input" type="radio" id="om" name="mode_paiement" value="om" required>
+            <label class="form-check-label" for="om">
+                <img src="{{asset('assets/images/om.png')}}" style="width: 65px;" class="form-check-img" alt="Orange Money">
+                <br>Orange Money
+            </label>
+        </div>
+        <div class="form-check form-check-inline text-center mr-4">
+            <input style="margin-top: 50%" class="form-check-input" type="radio" id="wave" name="mode_paiement" value="wave" required>
+            <label class="form-check-label" for="wave">
+                <img src="{{asset('assets/images/wave.png')}}" style="width: 130px;" class="form-check-img" alt="Wave">
+                <br>Wave
+            </label>
+        </div>
+        <div class="form-check form-check-inline text-center mr-4">
+            <input style="margin-top: 56%" class="form-check-input" type="radio" id="carte_credit" name="mode_paiement" value="carte_credit" required>
+            <label class="form-check-label" for="carte_credit">
+                <img src="{{asset('assets/images/credit_card.png')}}" style="width: 65px;" class="form-check-img" alt="Carte de Crédit">
+                <br>Carte de Crédit
+            </label>
+        </div>
+    </div>
+</div>
+<div id="code-pin-div" style="display:inline-block; margin-top:2%;" class="row">
+    <label for="code_pin">Code Pin</label>
+    <input class="form-control" style="width: 60%;" type="text" id="code_pin" name="code_pin">
+</div>
+
+                        <div id="code-pin-div" style="display:none;">
+                            <label for="code_pin">Code Pin</label>
+                            <input class="form-control" style="width: 20%;" type="text" id="code_pin" name="code_pin">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary mt-3">Passer la commande</button>
                     </form>
-
-
-
+                </div>
+                <div class="alert alert-success mt-4" id="success-alert" style="display: none;">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <strong>Succès!</strong> La commande a été passée avec succès.
                 </div>
             </div>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
-
     <script>
-        document.getElementById('orderForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            // Récupérer le panier depuis sessionStorage
-            let cartItems = JSON.parse(sessionStorage.getItem('cart'));
-            document.getElementById('cartData').value = JSON.stringify(cartItems);
-
-            // Envoyer le formulaire
-            this.submit();
+        $(document).ready(function() {
+            $('#commandeForm').submit(function(event) {
+                event.preventDefault();
+                $.ajax({
+                    url: '{{ route('commander') }}',
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        $('#success-alert').fadeIn();
+                        $('#commandeForm')[0].reset();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(error);
+                        alert('Erreur lors de la soumission de la commande.');
+                    }
+                });
+            });
         });
     </script>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function() {
+            $('#checkout-form').on('submit', function(e) {
+                e.preventDefault();
 
+                $.ajax({
+                    url: '{{ route("commander") }}', // Assurez-vous que cette route est définie dans vos routes web
+                    method: 'POST',
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire(
+                                'Succès!',
+                                response.message,
+                                'success'
+                            );
+                            // Redirigez vers la page de confirmation de commande si nécessaire
+                        } else {
+                            Swal.fire(
+                                'Erreur!',
+                                response.message,
+                                'error'
+                            );
+                        }
+                    },
+                    error: function(xhr) {
+                        Swal.fire(
+                            'Erreur!',
+                            'Une erreur est survenue lors de l\'envoi de la commande.',
+                            'error'
+                        );
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('input[name="mode_paiement"]').change(function() {
+                if ($(this).val() == 'om' || $(this).val() == 'wave' || $(this).val() == 'carte_credit') {
+                    $('#code-pin-div').show();
+                    $('#code_pin').attr('required', true);
+                } else {
+                    $('#code-pin-div').hide();
+                    $('#code_pin').removeAttr('required');
+                }
+            });
+        });
+    </script>
 </body>
-
 </html>

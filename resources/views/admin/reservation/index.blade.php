@@ -119,25 +119,26 @@
                                                     <td style="text-align:center" class="py-2">
                                                         {{ $reservation->client_phone_number }}</td>
 
-                                                    <td class="py-2 text-end">
-                                                        @if ($reservation->status === 'En Attente')
-                                                            <button class="btn btn-primary btn-sm confirm-reservation"
-                                                                data-reservation-id="{{ $reservation->id }}">Confirmer</button>
-
-                                                            <button class="btn btn-secondary btn-sm" data-bs-toggle="modal"
-                                                                data-bs-target="#emailModal"
-                                                                onclick="setReservationDetails({{ $reservation->id }}, '{{ $reservation->client_name }}', '{{ $reservation->client_email }}', '{{ \Carbon\Carbon::parse($reservation->date_time)->format('d/m/Y H:i') }}', '{{ $reservation->num_people }}')">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16"
-                                                                    height="16" fill="currentColor"
-                                                                    class="bi bi-envelope-arrow-up-fill"
-                                                                    viewBox="0 0 16 16">
-                                                                    <path
-                                                                        d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414zM0 4.697v7.104l5.803-3.558zm.192 8.159 6.57-4.027L8 9.586l1.239-.757.367.225A4.49 4.49 0 0 0 8 12.5c0 .526.09 1.03.256 1.5H2a2 2 0 0 1-1.808-1.144M16 4.697v4.974A4.5 4.5 0 0 0 12.5 8a4.5 4.5 0 0 0-1.965.45l-.338-.207z" />
-                                                                    <path
-                                                                        d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.354-5.854a.5.5 0 1 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-1-1a.5.5 0 0 1 .708-.708L11.5 12.293l1.646-1.647z" />
-                                                                </svg>
-                                                            </button>
-                                                        @endif
+                                                        <td class="py-2 text-end">
+                                                            @if ($reservation->status === 'En Attente')
+                                                                <button class="btn btn-primary btn-sm confirm-reservation"
+                                                                    data-reservation-id="{{ $reservation->id }}">Confirmer</button>
+                                                                <button class="btn btn-secondary btn-sm" data-bs-toggle="modal"
+                                                                    data-bs-target="#emailModal"
+                                                                    onclick="setReservationDetails({{ $reservation->id }}, '{{ $reservation->client_name }}', '{{ $reservation->client_email }}', '{{ \Carbon\Carbon::parse($reservation->date_time)->format('d/m/Y H:i') }}', '{{ $reservation->num_people }}')">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                                        height="16" fill="currentColor"
+                                                                        class="bi bi-envelope-arrow-up-fill"
+                                                                        viewBox="0 0 16 16">
+                                                                        <path
+                                                                            d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414zM0 4.697v7.104l5.803-3.558zm.192 8.159 6.57-4.027L8 9.586l1.239-.757.367.225A4.49 4.49 0 0 0 8 12.5c0 .526.09 1.03.256 1.5H2a2 2 0 0 1-1.808-1.144M16 4.697v4.974A4.5 4.5 0 0 0 12.5 8a4.5 4.5 0 0 0-1.965.45l-.338-.207z" />
+                                                                        <path
+                                                                            d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.354-5.854a.5.5 0 1 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-1-1a.5.5 0 0 1 .708-.708L11.5 12.293l1.646-1.647z" />
+                                                                    </svg>
+                                                                </button>
+                                                            @elseif ($reservation->status === 'Confirmée')
+                                                                <span class="badge badge-success badge-confirmed">Confirmée</span>
+                                                            @endif
 
                                                     </td>
                                                 </tr>
@@ -222,7 +223,7 @@
                                              <div class="mb-3">
                                                 <label for="emailMessage" class="form-label">Message</label>
                                                 <textarea class="form-control" id="emailMessage" rows="3"></textarea>
-                                            </div> 
+                                            </div>
                                             <button type="button" class="btn btn-primary"
                                                 id="sendEmailButton">Envoyer</button>
                                         </form>

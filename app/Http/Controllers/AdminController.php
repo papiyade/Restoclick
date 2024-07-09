@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\NewUserCreated;
+use App\Models\Commande;
 
 class AdminController extends Controller
 {
@@ -83,8 +84,6 @@ class AdminController extends Controller
 
         return redirect()->route('superadmin.users.index')->with('success', 'Informations utilisateur mises à jour avec succès.');
     }
-
-    // Supprimer un utilisateur de la base de données
     public function destroy($id)
     {
         $user = User::findOrFail($id);
@@ -92,4 +91,21 @@ class AdminController extends Controller
 
         return redirect()->route('superadmin.users.index')->with('success', 'Utilisateur supprimé avec succès.');
     }
+    // Dans votre contrôleur
+public function dashboard()
+{
+    // Récupérer les commandes associées à l'utilisateur connecté (administrateur du restaurant)
+    $restaurantId = auth()->user()->restaurant->id;
+    $commandes = Commande::where('restaurant_id', $restaurantId)->get();
+
+    // Compter les commandes par statut
+    $statuts = [
+        'En cours' => $commandes->where('statut', 'En cours')->count(),
+        'Terminée' => $commandes->where('statut', 'Terminée')->count(),
+        'Annulée' => $commandes->where('statut', 'Annulée')->count(),
+    ];
+
+    return view('dashboard', compact('statuts'));
+}
+
 }
