@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Restaurant;
 use App\Models\User;
+use App\Models\Category;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\AdminAssignedToRestaurant;
 
@@ -50,10 +51,7 @@ class RestaurantController extends Controller
         return redirect()->route('superadmin.restaurants.index')->with('success', 'Restaurant ajouté avec succès');
     }
 
-    public function show(string $id)
-    {
-        //
-    }
+
 
     public function edit($id)
     {
@@ -74,6 +72,26 @@ class RestaurantController extends Controller
         $restaurant->update($validatedData);
 
         return redirect()->route('superadmin.restaurants.index')->with('success', 'Restaurant modifié avec succès');
+    }
+
+    public function showAllRestaurants()
+    {
+        $restaurants = Restaurant::all(); // Récupère tous les restaurants de la base de données
+        return view('webmaster-resto', compact('restaurants'));
+    }
+    public function show($id)
+    {
+        $restaurant = Restaurant::findOrFail($id);
+        return view('restaurant.show', compact('restaurant'));
+    }
+    public function showeMenuParId($id){
+        $restaurant = Restaurant::findOrFail($id);
+        $menus = $restaurant->menus;
+        $lastMenu = $menus->last();
+
+        $categories = $lastMenu ? Category::whereIn('id', $lastMenu->plats->pluck('category_id'))->get() : collect();
+        $plats = $lastMenu ? $lastMenu->plats : collect();
+        return view('restaurant', compact('lastMenu', 'categories', 'restaurant', 'plats'));
     }
 
     public function destroy($id)

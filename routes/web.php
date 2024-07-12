@@ -196,6 +196,10 @@ Route::get('/checkout/{restaurant_id}', [CartController::class, 'checkout'])->na
 Route::post('/commander', [OrderController::class, 'commander'])->name('commander');
 Route::post('/checkout/initiate', [CartController::class, 'initiateOrder'])->name('checkout.initiate');
 
+
+Route::get('/webmaster-resto', [RestaurantController::class, 'showAllRestaurants'])->name('webmaster-resto');
+Route::get('/restaurant/{id}', [RestaurantController::class, 'showeMenuParId'])->name('restaurant.showById');
+
 Route::get('/test-email', function () {
     $user = new App\Models\User([
         'name' => 'Test User',

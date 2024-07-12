@@ -67,7 +67,7 @@
                 <div class="collapse navbar-collapse justify-content-between">
                     <div class="header-left">
                         <div class="dashboard_bar">
-                            {{-- <span style="color: white">Checkout</span> --}}
+
                             <h2 class="mb-3">Votre Panier</h2>
                         </div>
                     </div>
@@ -131,7 +131,7 @@
                             </td>
                             <td data-th="Total" class="text-center">{{ $item['price'] * $item['quantity'] }} Fcfa</td>
                             <td class="actions">
-                                <a class="dropdown-item text-danger ms-2"
+                                <a class="dropdown-item text-danger ms-2 delete-item"
                                                         href="javascript:void(0);">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="20"
                                                             height="20" fill="currentColor"
@@ -246,3 +246,176 @@
 </body>
 
 </html>
+
+{{-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizzas Menu</title>
+    <link href="{{ asset('assets/vendor/bootstrap-select/dist/css/bootstrap-select.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
+    <style>
+        .quantity-container {
+            display: flex;
+            align-items: center;
+            justify-content: start;
+        }
+        .quantity-container .btn {
+            margin: 0 5px;
+        }
+        .quantity {
+            font-size: 1.2em;
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="my-4">
+            <h1>Pizzas</h1>
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <label class="btn btn-secondary active">
+                    <input type="radio" name="options" id="option1" autocomplete="off" checked> Classic pizzas
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" id="option2" autocomplete="off"> Gourmet Pizzas
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" id="option3" autocomplete="off"> Exotic Pizzas
+                </label>
+            </div>
+        </header>
+
+        <table id="cart" class="table table-bordered" style="width: 60%; border-radius: ">
+            <thead>
+                <tr>
+                    <th>Plat</th>
+                    <th>Prix</th>
+                    <th>Quantité</th>
+                    <th>Total</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @php $total = 0; @endphp
+                @if($cart)
+                    @foreach($cart as $id => $item)
+                        <tr rowId="{{ $id }}">
+                            <td data-th="Plat">
+                                <div class="row">
+                                    <div class="col-sm-3 hidden-xs">
+                                        <img style="width: 40%" src="{{ isset($item['image_url']) ? asset('storage/' . $item['image_url']) : 'N/A' }}" class="img-responsive" />
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <h4 class="nomargin">{{ $item['name'] }}</h4>
+                                    </div>
+                                </div>
+                            </td>
+                            <td data-th="Prix">{{ $item['price'] }} €</td>
+                            <td data-th="Quantité">
+                                <button class="btn btn-outline-secondary btn-sm decrease-quantity">-</button>
+                                <span>{{ $item['quantity'] }}</span>
+                                <button class="btn btn-outline-secondary btn-sm increase-quantity">+</button>
+                            </td>
+                            <td data-th="Total" class="text-center">{{ $item['price'] * $item['quantity'] }} €</td>
+                            <td class="actions">
+                                <a class="dropdown-item text-danger ms-2 delete-item" href="javascript:void(0);">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                        <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
+                                    </svg>
+                                </a>
+                            </td>
+                        </tr>
+                        @php $total += $item['price'] * $item['quantity']; @endphp
+                    @endforeach
+                @else
+                    <tr>
+                        <td colspan="5" class="text-center">Votre panier est vide.
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-cart-x-fill" viewBox="0 0 16 16">
+                                <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0m7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0M7.354 5.646 8.5 6.793l1.146-1.147a.5.5 0 0 1 .708.708L9.207 7.5l1.147 1.146a.5.5 0 0 1-.708.708L8.5 8.207 7.354 9.354a.5.5 0 1 1-.708-.708L7.793 7.5 6.646 6.354a.5.5 0 1 1 .708-.708"/>
+                            </svg>
+                        </td>
+                    </tr>
+                @endif
+            </tbody>
+            @if($cart)
+                <tfoot>
+                    <tr>
+                        <td colspan="5">
+                            <a href="{{ url('/restaurant/' . $restaurantId) }}" class="btn btn-primary">
+                                <i class="fa fa-angle-left"></i> Continuer vos achats
+                            </a>
+                            <a href="{{ route('checkout', ['restaurant_id' => $restaurantId]) }}" class="btn btn-success">
+                                Valider la commande
+                            </a>
+                        </td>
+                    </tr>
+                </tfoot>
+            @endif
+        </table>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+    <script type="text/javascript">
+        $(".delete-item").click(function(e) {
+            e.preventDefault();
+            var ele = $(this);
+            if (confirm("Voulez-vous vraiment supprimer cet article ?")) {
+                $.ajax({
+                    url: '{{ route('delete.cart.item') }}',
+                    method: "DELETE",
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        id: ele.parents("tr").attr("rowId"),
+                        restaurant_id: {{ $restaurantId }}
+                    },
+                    success: function(response) {
+                        window.location.reload();
+                    }
+                });
+            }
+        });
+
+        $(".increase-quantity").click(function(e) {
+            e.preventDefault();
+            var ele = $(this);
+            var id = ele.parents("tr").attr("rowId");
+
+            $.ajax({
+                url: '{{ route('update.cart.quantity') }}',
+                method: "POST",
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    id: id,
+                    action: 'increase',
+                    restaurant_id: {{ $restaurantId }}
+                },
+                success: function(response) {
+                    window.location.reload();
+                }
+            });
+        });
+
+        $(".decrease-quantity").click(function(e) {
+            e.preventDefault();
+            var ele = $(this);
+            var id = ele.parents("tr").attr("rowId");
+
+            $.ajax({
+                url: '{{ route('update.cart.quantity') }}',
+                method: "POST",
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    id: id,
+                    action: 'decrease',
+                    restaurant_id: {{ $restaurantId }}
+                },
+                success: function(response) {
+                    window.location.reload();
+                }
+            });
+        });
+    </script>
+</body>
+</html> --}}
