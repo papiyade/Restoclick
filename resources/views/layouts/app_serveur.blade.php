@@ -141,7 +141,7 @@
 
 
 
-                                <li class="notification_dropdown">
+                                {{-- <li class="notification_dropdown">
                                     <a class="nav-link bell-link" href="javascript:void(0);" role="button" data-bs-toggle="dropdown">
                                         <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd" clip-rule="evenodd" d="M17.5 12H19C19.8284 12 20.5 12.6716 20.5 13.5C20.5 14.3284 19.8284 15 19 15H6C5.17157 15 4.5 14.3284 4.5 13.5C4.5 12.6716 5.17157 12 6 12H7.5L8.05827 6.97553C8.30975 4.71226 10.2228 3 12.5 3C14.7772 3 16.6903 4.71226 16.9417 6.97553L17.5 12Z" fill="#222B40"/>
@@ -187,7 +187,7 @@
                                         </div>
                                         <a class="all-notification" href="{{ route('notifications.index') }}">Voir toutes les notifications <i class="ti-arrow-end"></i></a>
                                     </div>
-                                </li>
+                                </li> --}}
 
 
 
@@ -378,65 +378,27 @@
 						</ul>
 					</li>
 					<li class="menu-title">OUR FEATURES</li>
-					<li><a class="has-arrow " href="javascript:void(0);" aria-expanded="false">
-						<div class="menu-icon">
 
+
+
+					</li>
+
+                    <li><a class="has-arrow " href="javascript:void(0);" aria-expanded="false">
+						<div class="menu-icon">
                             <g opacity="0.5">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-bookmark-star-fill" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd" d="M2 15.5V2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.74.439L8 13.069l-5.26 2.87A.5.5 0 0 1 2 15.5M8.16 4.1a.178.178 0 0 0-.32 0l-.634 1.285a.18.18 0 0 1-.134.098l-1.42.206a.178.178 0 0 0-.098.303L6.58 6.993c.042.041.061.1.051.158L6.39 8.565a.178.178 0 0 0 .258.187l1.27-.668a.18.18 0 0 1 .165 0l1.27.668a.178.178 0 0 0 .257-.187L9.368 7.15a.18.18 0 0 1 .05-.158l1.028-1.001a.178.178 0 0 0-.098-.303l-1.42-.206a.18.18 0 0 1-.134-.098z"/>
-                              </svg>
-                            </g>
-
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-range-fill" viewBox="0 0 16 16">
+                                    <path d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4zM16 7V5H0v5h5a1 1 0 1 1 0 2H0v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9h-6a1 1 0 1 1 0-2z"/>
+                                  </svg>
+                                </g>
 						</div>
-						<span class="nav-text">Catégories</span>
+							<span class="nav-text">Calendrier</span>
 						</a>
 						<ul aria-expanded="false">
-
-
-							<li><a href="{{route('admin.categories.index')}}">Liste des catégories</a></li>
-							<li><a href="{{route('admin.categories.create')}}">Créer une catégorie</a></li>
+							<li><a href="/calendrier">Calendrier</a></li>
 						</ul>
 					</li>
 
 
-					</li>
-					<li><a class="has-arrow " href="javascript:void(0);" aria-expanded="false">
-						<div class="menu-icon">
-
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-journal-bookmark-fill" viewBox="0 0 24 24">
-                                <g opacity="0.5">
-                                <path fill-rule="evenodd" d="M6 1h6v7a.5.5 0 0 1-.757.429L9 7.083 6.757 8.43A.5.5 0 0 1 6 8z"/>
-                                <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2"/>
-                                <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1z"/>
-                            </g>
-                            </svg>
-						</div>
-							<span class="nav-text">Menus</span>
-						</a>
-						<ul aria-expanded="false">
-							<li><a href="{{route('admin.menus.index')}}">Liste des Menus</a></li>
-							<li><a href="{{route('admin.menus.create')}}">Créer le Menu du jour</a></li>
-						</ul>
-					</li>
-					<li><a class="has-arrow " href="javascript:void(0);" aria-expanded="false">
-						<div class="menu-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-vinyl-fill" viewBox="0 0 24 24">
-                                <g opacity="0.5">
-                                <path d="M8 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4m0 3a1 1 0 1 1 0-2 1 1 0 0 1 0 2"/>
-                                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M4 8a4 4 0 1 0 8 0 4 4 0 0 0-8 0"/>
-                            </g>
-                            </svg>
-
-
-						</div>
-							<span class="nav-text">Plats</span>
-						</a>
-						<ul aria-expanded="false">
-							<li><a href="{{route('admin.plats.index')}}">Liste des Plats</a></li>
-							<li><a href="{{route('admin.plats.create')}}">Créer un Plat</a></li>
-
-						</ul>
-					</li>
 
                     <li><a class="has-arrow " href="javascript:void(0);" aria-expanded="false">
 						<div class="menu-icon">
@@ -469,22 +431,7 @@
 							<li><a href="{{route('admin.commandes.index')}}">Liste des commandes</a></li>
 						</ul>
 					</li>
-                    <li><a class="has-arrow " href="javascript:void(0);" aria-expanded="false">
-						<div class="menu-icon">
-                            <g opacity="0.5">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-cart4" viewBox="0 0 16 16">
-                                <path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5M3.14 5l.5 2H5V5zM6 5v2h2V5zm3 0v2h2V5zm3 0v2h1.36l.5-2zm1.11 3H12v2h.61zM11 8H9v2h2zM8 8H6v2h2zM5 8H3.89l.5 2H5zm0 5a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0m9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0"/>
-                              </svg>
-                            </g>
 
-						</div>
-							<span class="nav-text">Serveurs</span>
-						</a>
-						<ul aria-expanded="false">
-							<li><a href="{{route('serveurs.index')}}">Liste des Serveurs</a></li>
-                            <li><a href="{{route('serveurs.create')}}">Ajouter un Serveur</a></li>
-						</ul>
-					</li>
 				</ul>
 				<div class="plus-box">
 					<div class="media">

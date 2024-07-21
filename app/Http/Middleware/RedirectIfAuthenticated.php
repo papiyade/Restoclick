@@ -12,8 +12,14 @@ class RedirectIfAuthenticated
     {
         $user = Auth::user();
 
-        if ($user && $user->role === 'superadmin') {
-            return redirect()->route('superadmin.users.index');
+        if ($user) {
+            if ($user->role === 'superadmin') {
+                return redirect()->route('superadmin.users.index');
+            } elseif ($user->role === 'admin') {
+                return redirect()->route('admin.dashboard');
+            } elseif ($user->role === 'serveur') {
+                return redirect()->route('layouts.app_serveur');
+            }
         }
 
         return $next($request);

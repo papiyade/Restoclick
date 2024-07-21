@@ -8,6 +8,8 @@ use App\Models\User;
 use App\Models\Category;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\AdminAssignedToRestaurant;
+use App\Models\Plat;
+use App\Models\Menu;
 
 class RestaurantController extends Controller
 {
@@ -75,10 +77,13 @@ class RestaurantController extends Controller
     }
 
     public function showAllRestaurants()
-    {
-        $restaurants = Restaurant::all(); // Récupère tous les restaurants de la base de données
-        return view('webmaster-resto', compact('restaurants'));
-    }
+{
+    $restaurants = Restaurant::all();
+    $menus = Menu::with('plats.restaurant')->get();
+    return view('webmaster-resto', compact('restaurants', 'menus'));
+}
+
+
     public function show($id)
     {
         $restaurant = Restaurant::findOrFail($id);

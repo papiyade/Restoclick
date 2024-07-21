@@ -791,6 +791,31 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <style>
+        .text-green {
+    color: green;
+}
+      .btn-add-to-cart {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    bottom: 10px;
+    right: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); 
+}
+
+.position-absolute {
+    position: absolute;
+}
+
+.plat-image {
+    position: relative;
+    width: 100%;
+}
+
+
         .icon-right {
             position: absolute;
             right: 15px;
@@ -913,7 +938,7 @@
         </div>
     </nav>
 
-    <a href="{{ route('webmaster-resto') }}">Tous les Restaurants</a>
+    {{-- <a href="{{ route('webmaster-resto') }}">Tous les Restaurants</a> --}}
 
 
 
@@ -1048,29 +1073,30 @@
                     <!-- Liste des plats -->
                     <div class="menu-list">
                         @foreach ($plats as $plat)
-                            <div class="menu-item filter-{{ $plat->category_id }}">
-                                <div class="row">
-                                    <div class="col-md-8">
-                                        <h5>{{ $plat->name }}</h5>
-                                        <p>{{ $plat->description }}</p>
-                                        <p>{{ $plat->price }} Fcfa</p>
-                                        <button class="btn btn-dark btn-add-to-cart" style="background-color: rgb(44, 44, 44);"
+                        <div class="menu-item filter-{{ $plat->category_id }}">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h5>{{ $plat->name }}</h5>
+                                    <p>{{ $plat->description }}</p>
+                                    <p>{{ $plat->price }} Fcfa</p>
+                                </div>
+                                <div class="col-md-4 position-relative">
+                                    <img src="{{ asset('storage/' . $plat->image_url) }}" alt="Image du plat" class="img-fluid plat-image">
+                                    <button class="btn btn-dark btn-add-to-cart position-absolute" style="background-color: rgb(255, 255, 255); margin-right: 75%; border: none"
                                         data-plat-id="{{ $plat->id }}"
                                         data-restaurant-id="{{ $restaurant->id }}">
-                                        Ajouter au panier
+                                        <strong>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" style="color: #000" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                                                <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
+                                              </svg>
+                                        </strong>
+
                                     </button>
-
-
-
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <img src="{{ asset('storage/' . $plat->image_url) }}" alt="Image du plat"
-                                            class="img-fluid plat-image">
-                                    </div>
                                 </div>
-                                <hr>
                             </div>
+                            <hr>
+                        </div>
+
                         @endforeach
                     </div>
 
@@ -1141,7 +1167,7 @@
             // Remplacez le bouton par un badge
             $button.removeClass('btn btn-primary')
                    .addClass('badge badge-success')
-                   .text('Plat ajouté au panier')
+                   .html('<span class="text-green">Ajouté</span>')
                    .prop('disabled', true);
 
             Swal.fire({

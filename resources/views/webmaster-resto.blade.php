@@ -5,6 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Restaurants</title>
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+
+<!-- Include Swiper JS -->
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
     <link href="{{ asset('assets/vendor/bootstrap-select/dist/css/bootstrap-select.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/vendor/swiper/css/swiper-bundle.min.css') }}" rel="stylesheet">
 
@@ -168,7 +172,7 @@
             align-items: center;
             gap: 2rem;
         }
-
+/*
         .btn {
             padding: 1rem 1.5rem;
             border: none;
@@ -184,7 +188,7 @@
             background: transparent;
             border: .1rem solid var(--secondary-color);
             color: var(--secondary-text-color);
-        }
+        } */
 
         .hero-action-btn-container .or {
             color: var(--secondary-text-color);
@@ -476,12 +480,12 @@
             @foreach ($restaurants as $restaurant)
                 <div class="col-md-4">
                     <div class="card restaurant-box">
-                        <img src="{{ asset('assets/images/plat.jpg.crdownload') }}" class="card-img-top" alt="{{ $restaurant->name }}">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ $restaurant->name }}</h5>
-                            <p class="card-text">{{ $restaurant->description }}</p>
-                            <a href="{{ route('restaurant.showById', ['id' => $restaurant->id]) }}" class="btn btn-primary">
-                                <span style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif">
+                        <img src="{{ asset('assets/images/blog/professional.jpg') }}" class="card-img-top" alt="{{ $restaurant->name }}">
+                        <div class="card-body d-flex flex-column align-items-center">
+                            <h4 class="card-title text-center">{{ $restaurant->name }}</h4>
+                            <p class="card-text text-center">{{ $restaurant->description }}</p>
+                            <a href="{{ route('restaurant.showById', ['id' => $restaurant->id]) }}" class="btn btn-warning mt-auto">
+                                <span style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; text-align:center">
                                     Voir le menu
                                 </span>
                             </a>
@@ -491,276 +495,73 @@
             @endforeach
         </div>
 
+
     </div>
     <div class="col-xl-12">
         <div class="card">
             <div class="card-header pb-0 border-0">
-                <h3 class="h-title">Most Selling Menus</h3>
+                <h3 class="h-title">Commande rapide</h3>
             </div>
             <div class="card-body border-0 pb-0">
                 <div class="swiper mySwiper">
                     <div class="swiper-wrapper">
-                        <div class="swiper-slide">
-                            <div class="card">
-                                <div class="card-body selling-menu pt-0 px-0 pb-0">
-                                    <div class="card-media">
-                                        <img src="{{ asset('assets/images/menu/menu1.jpg') }}" alt="">
-                                    </div>
-                                    <div class="media-data">
-                                        <div class="d-flex justify-content-between align-items-baseline">
-                                            <div>
-                                                <h4 class="mb-0">Chicken Roll</h4>
-                                                <span>Apple Juice, Beef Roast</span>
+                        @foreach($menus as $menu)
+                            @foreach($menu->plats as $plat)
+                                <div class="swiper-slide">
+                                    <div class="card">
+                                        <div class="card-body selling-menu pt-0 px-0 pb-0">
+                                            <div class="card-media">
+                                                <img src="{{ asset('assets/images/menu/menu1.jpg') }}" alt="">
                                             </div>
-                                            <i class="fa-solid fa-heart ms-auto c-heart c-pointer"></i>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex align-items-center justify-content-between my-2 media-data">
-                                        <h4>$52</h4>
-                                        <ul class="star-rating">
-                                            <li><i class="fa fa-star"></i></li>
-                                            <li><i class="fa fa-star"></i></li>
-                                            <li><i class="fa fa-star"></i></li>
-                                            <li><i class="fa-solid fa-star-half-stroke"></i></li>
-                                            <li><i class="fa-solid fa-star-half-stroke"></i></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="media-data card-footer order-now">
-                                    <div class="d-flex justify-content-between align-items-baseline">
-                                        <div>
-                                            <span><i class="fa-solid fa-location-dot me-2"></i>Bristol, Bristol</span>
-                                            <div>
-                                                <span class="me-1"><i class="fa-solid fa-bicycle me-2"></i>10
-                                                    Min</span>
-                                                <span class="ms-1"><i class="fas fa-bell me-2"></i>15 Min</span>
-
+                                            <div class="media-data">
+                                                <div class="d-flex justify-content-between align-items-baseline">
+                                                    <div>
+                                                        <h4 class="mb-0">{{ $plat->name }}</h4>
+                                                        <span>{{ $plat->description }}</span>
+                                                    </div>
+                                                    <i style="color: #e11a27" class="fa-solid fa-heart ms-auto c-heart c-pointer"></i>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex align-items-center justify-content-between my-2 media-data">
+                                                <h4>{{ $plat->price }} F</h4>
+                                                <ul class="star-rating">
+                                                    <li><i style="color: #e1a21a" class="fa fa-star"></i></li>
+                                                    <li><i style="color: #e1a21a" class="fa fa-star"></i></li>
+                                                    <li><i style="color: #e1a21a"class="fa fa-star"></i></li>
+                                                    <li><i style="color: #e1a21a"class="fa-solid fa-star-half-stroke"></i></li>
+                                                    <li><i style="color: #e1a21a"class="fa-solid fa-star-half-stroke"></i></li>
+                                                </ul>
                                             </div>
                                         </div>
-                                        <a href="ecom-product-detail.html" class="btn btn-primary btn-sm">Order
-                                            now</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="swiper-slide">
-                            <div class="card">
-                                <div class="card-body selling-menu pt-0 px-0 pb-0">
-                                    <div class="card-media">
-                                        <img src="{{ asset('assets/images/menu/menu2.jpg') }}" alt="">
-                                    </div>
-                                    <div class="media-data">
-                                        <div class="d-flex justify-content-between align-items-baseline">
-                                            <div>
-                                                <h4 class="mb-0">Chicken Grill</h4>
-                                                <span>Apple Juice, Beef Roast</span>
-                                            </div>
-                                            <i class="fa-solid fa-heart ms-auto c-heart c-pointer"></i>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex align-items-center justify-content-between my-2 media-data">
-                                        <h4>$25</h4>
-                                        <ul class="star-rating">
-                                            <li><i class="fa fa-star"></i></li>
-                                            <li><i class="fa fa-star"></i></li>
-                                            <li><i class="fa fa-star"></i></li>
-                                            <li><i class="fa-solid fa-star-half-stroke"></i></li>
-                                            <li><i class="fa-solid fa-star-half-stroke"></i></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="media-data card-footer order-now">
-                                    <div class="d-flex justify-content-between align-items-baseline">
-                                        <div>
-                                            <span><i class="fa-solid fa-location-dot me-2"></i>Bristol, Bristol</span>
-                                            <div>
-                                                <span class="me-1"><i class="fa-solid fa-bicycle me-2"></i>20
-                                                    Min</span>
-                                                <span class="ms-1"><i class="fas fa-bell me-2"></i>10 Min</span>
-
+                                        <div class="media-data card-footer order-now">
+                                            <div class="d-flex justify-content-between align-items-baseline">
+                                                <div>
+                                                    @if($plat->menus->first() && $plat->menus->first()->restaurant)
+                                                        <span><i class="fa-solid fa-location-dot me-2"></i> {{$plat->menus->first()->restaurant->name}} , {{ $plat->menus->first()->restaurant->address }}</span>
+                                                    @else
+                                                        <span><i class="fa-solid fa-location-dot me-2"></i>Adresse non disponible</span>
+                                                    @endif
+                                                    <div>
+                                                        <span class="me-1"><i class="fa-solid fa-bicycle me-2"></i>10 Min</span>
+                                                        <span class="ms-1"><i class="fas fa-bell me-2"></i>15 Min</span>
+                                                    </div>
+                                                </div>
+                                                <a href="ecom-product-detail.html" class="btn btn-primary btn-sm">Commander</a>
                                             </div>
                                         </div>
-                                        <a href="ecom-product-detail.html" class="btn btn-primary btn-sm">Order
-                                            now</a>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="swiper-slide">
-                            <div class="card">
-                                <div class="card-body selling-menu pt-0 px-0 pb-0">
-                                    <div class="card-media">
-                                        <img src="{{ asset('assets/images/menu/menu6.jpg') }}" alt="">
-                                    </div>
-                                    <div class="media-data">
-                                        <div class="d-flex justify-content-between align-items-baseline">
-                                            <div>
-                                                <h4 class="mb-0">Chicken Wings</h4>
-                                                <span>Apple Juice, Beef Roast</span>
-                                            </div>
-                                            <i class="fa-solid fa-heart ms-auto c-heart c-pointer"></i>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex align-items-center justify-content-between my-2 media-data">
-                                        <h4>$52</h4>
-                                        <ul class="star-rating">
-                                            <li><i class="fa fa-star"></i></li>
-                                            <li><i class="fa fa-star"></i></li>
-                                            <li><i class="fa fa-star"></i></li>
-                                            <li><i class="fa-solid fa-star-half-stroke"></i></li>
-                                            <li><i class="fa-solid fa-star-half-stroke"></i></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="media-data card-footer order-now">
-                                    <div class="d-flex justify-content-between align-items-baseline">
-                                        <div>
-                                            <span><i class="fa-solid fa-location-dot me-2"></i>Bristol, Bristol</span>
-                                            <div>
-                                                <span class="me-1"><i class="fa-solid fa-bicycle me-2"></i>30
-                                                    Min</span>
-                                                <span class="ms-1"><i class="fas fa-bell me-2"></i>05 Min</span>
-
-                                            </div>
-                                        </div>
-                                        <a href="ecom-product-detail.html" class="btn btn-primary btn-sm">Order
-                                            now</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="swiper-slide">
-                            <div class="card">
-                                <div class="card-body selling-menu pt-0 px-0 pb-0">
-                                    <div class="card-media">
-                                        <img src="{{ asset('assets/images/menu/menu3.jpg') }}" alt="">
-                                    </div>
-                                    <div class="media-data">
-                                        <div class="d-flex justify-content-between align-items-baseline">
-                                            <div>
-                                                <h4 class="mb-0">Masala Chicken Fried</h4>
-                                                <span>Apple Juice, Beef Roast</span>
-                                            </div>
-                                            <i class="fa-solid fa-heart ms-auto c-heart c-pointer"></i>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex align-items-center justify-content-between my-2 media-data">
-                                        <h4>$26</h4>
-                                        <ul class="star-rating">
-                                            <li><i class="fa fa-star"></i></li>
-                                            <li><i class="fa fa-star"></i></li>
-                                            <li><i class="fa fa-star"></i></li>
-                                            <li><i class="fa-solid fa-star-half-stroke"></i></li>
-                                            <li><i class="fa-solid fa-star-half-stroke"></i></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="media-data card-footer order-now">
-                                    <div class="d-flex justify-content-between align-items-baseline">
-                                        <div>
-                                            <span><i class="fa-solid fa-location-dot me-2"></i>Bristol, Bristol</span>
-                                            <div>
-                                                <span class="me-1"><i class="fa-solid fa-bicycle me-2"></i>16
-                                                    Min</span>
-                                                <span class="ms-1"><i class="fas fa-bell me-2"></i>08 Min</span>
-
-                                            </div>
-                                        </div>
-                                        <a href="ecom-product-detail.html" class="btn btn-primary btn-sm">Order
-                                            now</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="swiper-slide">
-                            <div class="card">
-                                <div class="card-body selling-menu pt-0 px-0 pb-0">
-                                    <div class="card-media">
-                                        <img src="{{ asset('assets/images/menu/menu4.jpg') }}" alt="">
-                                    </div>
-                                    <div class="media-data">
-                                        <div class="d-flex justify-content-between align-items-baseline">
-                                            <div>
-                                                <h4 class="mb-0">Masala Chicken Fried</h4>
-                                                <span>Apple Juice, Beef Roast</span>
-                                            </div>
-                                            <i class="fa-solid fa-heart ms-auto c-heart c-pointer"></i>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex align-items-center justify-content-between my-2 media-data">
-                                        <h4>$26</h4>
-                                        <ul class="star-rating">
-                                            <li><i class="fa fa-star"></i></li>
-                                            <li><i class="fa fa-star"></i></li>
-                                            <li><i class="fa fa-star"></i></li>
-                                            <li><i class="fa-solid fa-star-half-stroke"></i></li>
-                                            <li><i class="fa-solid fa-star-half-stroke"></i></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="media-data card-footer order-now">
-                                    <div class="d-flex justify-content-between align-items-baseline">
-                                        <div>
-                                            <span><i class="fa-solid fa-location-dot me-2"></i>Bristol, Bristol</span>
-                                            <div>
-                                                <span class="me-1"><i class="fa-solid fa-bicycle me-2"></i>08
-                                                    Min</span>
-                                                <span class="ms-1"><i class="fas fa-bell me-2"></i>03 Min</span>
-
-                                            </div>
-                                        </div>
-                                        <a href="ecom-product-detail.html" class="btn btn-primary btn-sm">Order
-                                            now</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="swiper-slide">
-                            <div class="card">
-                                <div class="card-body selling-menu pt-0 px-0 pb-0">
-                                    <div class="card-media">
-                                        <img src="{{ asset('assets/images/menu/menu6.jpg') }}" alt="">
-                                    </div>
-                                    <div class="media-data">
-                                        <div class="d-flex justify-content-between align-items-baseline">
-                                            <div>
-                                                <h4 class="mb-0">Chicken Roll</h4>
-                                                <span>Apple Juice, Beef Roast</span>
-                                            </div>
-                                            <i class="fa-solid fa-heart ms-auto c-heart c-pointer"></i>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex align-items-center justify-content-between my-2 media-data">
-                                        <h4>$26</h4>
-                                        <ul class="star-rating">
-                                            <li><i class="fa fa-star"></i></li>
-                                            <li><i class="fa fa-star"></i></li>
-                                            <li><i class="fa fa-star"></i></li>
-                                            <li><i class="fa-solid fa-star-half-stroke"></i></li>
-                                            <li><i class="fa-solid fa-star-half-stroke"></i></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="media-data card-footer order-now">
-                                    <div class="d-flex justify-content-between align-items-baseline">
-                                        <div>
-                                            <span><i class="fa-solid fa-location-dot me-2"></i>Bristol, Bristol</span>
-                                            <div>
-                                                <span class="me-1"><i class="fa-solid fa-bicycle me-2"></i>18
-                                                    Min</span>
-                                                <span class="ms-1"><i class="fas fa-bell me-2"></i>03 Min</span>
-
-                                            </div>
-                                        </div>
-                                        <a href="ecom-product-detail.html" class="btn btn-primary btn-sm">Order
-                                            now</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                            @endforeach
+                        @endforeach
                     </div>
+                    <!-- Add Pagination, Navigation, etc. here -->
                 </div>
             </div>
+
+
+
+
+
         </div>
     </div>
 
@@ -804,6 +605,37 @@
         var faScript = document.createElement('script');
         faScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js';
         document.head.appendChild(faScript);
+    </script>
+    <script>
+        var swiper = new Swiper(".mySwiper", {
+            slidesPerView: 1,
+            spaceBetween: 10,
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+            },
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+            breakpoints: {
+                // when window width is >= 640px
+                640: {
+                    slidesPerView: 2,
+                    spaceBetween: 20
+                },
+                // when window width is >= 768px
+                768: {
+                    slidesPerView: 3,
+                    spaceBetween: 30
+                },
+                // when window width is >= 1024px
+                1024: {
+                    slidesPerView: 4,
+                    spaceBetween: 40
+                }
+            }
+        });
     </script>
 </body>
 

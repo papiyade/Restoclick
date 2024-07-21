@@ -18,4 +18,8 @@ class Plat extends Model
     {
         return $this->belongsTo(Restaurant::class);
     }
+    public function menus()
+    {
+        return $this->belongsToMany(Menu::class, 'menus_plats'); // Spécifiez le nom de la table pivot
+    }
 }

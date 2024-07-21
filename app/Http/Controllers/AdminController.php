@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\NewUserCreated;
 use App\Models\Commande;
+use App\Models\Reservation;
 
 class AdminController extends Controller
 {
@@ -18,8 +19,10 @@ class AdminController extends Controller
         $userCount = $users->count();
         $restoCount = Restaurant::count();
         $restaurants = Restaurant::all();
+        $orderCount = Commande::count();
+        $reservationCount = Reservation::count();
 
-        return view('superadmin.users.index', compact('users', 'restaurants', 'userCount','restoCount'));
+        return view('superadmin.users.index', compact('users', 'restaurants', 'userCount', 'restoCount','orderCount','reservationCount'));
     }
 
     // Afficher le formulaire de création d'utilisateur
@@ -92,20 +95,119 @@ class AdminController extends Controller
         return redirect()->route('superadmin.users.index')->with('success', 'Utilisateur supprimé avec succès.');
     }
     // Dans votre contrôleur
-public function dashboard()
-{
-    // Récupérer les commandes associées à l'utilisateur connecté (administrateur du restaurant)
-    $restaurantId = auth()->user()->restaurant->id;
-    $commandes = Commande::where('restaurant_id', $restaurantId)->get();
+    public function dashboard()
+    {
+        // Récupérer les commandes associées à l'utilisateur connecté (administrateur du restaurant)
+        $restaurantId = auth()->user()->restaurant->id;
+        $commandes = Commande::where('restaurant_id', $restaurantId)->get();
 
-    // Compter les commandes par statut
-    $statuts = [
-        'En cours' => $commandes->where('statut', 'En cours')->count(),
-        'Terminée' => $commandes->where('statut', 'Terminée')->count(),
-        'Annulée' => $commandes->where('statut', 'Annulée')->count(),
-    ];
+        // Compter les commandes par statut
+        $statuts = [
+            'En cours' => $commandes->where('statut', 'En cours')->count(),
+            'Terminée' => $commandes->where('statut', 'Terminée')->count(),
+            'Annulée' => $commandes->where('statut', 'Annulée')->count(),
+        ];
 
-    return view('dashboard', compact('statuts'));
-}
+        return view('dashboard', compact('statuts'));
+    }
 
+
+
+    public function indexServeurs()
+    {
+        $serveurs = User::where('role', 'serveur')
+                        ->where('restaurant_id', auth()->user()->restaurant->id)
+                        ->get();
+
+        return view('serveur.index', compact('serveurs'));
+    }
+
+    // Afficher le formulaire de création de serveur
+    public function createServeur()
+    {
+        return view('serveur.create');
+    }
+
+    // Enregistrer un nouveau serveur dans la base de données
+    public function storeServeur(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6',
+        ]);
+
+        // Création du serveur
+        $serveur = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'restaurant_id' => auth()->user()->restaurant->id,
+            'role' => 'serveur',
+        ]);
+
+        // Envoi d'un email au nouveau serveur
+        Mail::to($request->email)->send(new NewUserCreated($serveur, $request->password));
+
+        return redirect()->route('serveurs.index')->with('success', 'Serveur créé avec succès.');
+    }
+
+    // Afficher les détails d'un serveur spécifique
+    public function showServeur($id)
+    {
+        $serveur = User::where('id', $id)
+                        ->where('role', 'serveur')
+                        ->where('restaurant_id', auth()->user()->restaurant->id)
+                        ->firstOrFail();
+
+        return view('serveur.show', compact('serveur'));
+    }
+
+    // Afficher le formulaire de modification de serveur
+    public function editServeur($id)
+    {
+        $serveur = User::where('id', $id)
+                        ->where('role', 'serveur')
+                        ->where('restaurant_id', auth()->user()->restaurant->id)
+                        ->firstOrFail();
+
+        return view('serveur.edit', compact('serveur'));
+    }
+
+    // Mettre à jour les informations d'un serveur dans la base de données
+    public function updateServeur(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|email|unique:users,email,' . $id,
+            'password' => 'nullable|string|min:6',
+        ]);
+
+        $serveur = User::where('id', $id)
+                        ->where('role', 'serveur')
+                        ->where('restaurant_id', auth()->user()->restaurant->id)
+                        ->firstOrFail();
+
+        $serveur->name = $request->name;
+        $serveur->email = $request->email;
+        if ($request->password) {
+            $serveur->password = bcrypt($request->password);
+        }
+        $serveur->save();
+
+        return redirect()->route('serveurs.index')->with('success', 'Informations serveur mises à jour avec succès.');
+    }
+
+    // Supprimer un serveur
+    public function destroyServeur($id)
+    {
+        $serveur = User::where('id', $id)
+                        ->where('role', 'serveur')
+                        ->where('restaurant_id', auth()->user()->restaurant->id)
+                        ->firstOrFail();
+
+        $serveur->delete();
+
+        return redirect()->route('serveurs.index')->with('success', 'Serveur supprimé avec succès.');
+    }
 }

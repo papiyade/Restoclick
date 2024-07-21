@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -22,6 +23,7 @@
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 
 </head>
+
 <body>
     <div class="nav-header" style="background-color: rgb(160, 132, 16)">
         <a href="index.html" class="brand-logo">
@@ -129,57 +131,68 @@
                         <!-- Champs pour le nom du client et le numéro de téléphone -->
                         <div class="mb-3">
                             <label for="client_name" class="form-label">Nom du client</label>
-                            <input type="text" style="width: 60%" class="form-control" id="client_name" name="client_name" required>
+                            <input type="text" style="width: 60%" class="form-control" id="client_name"
+                                name="client_name" required>
                         </div>
                         <div class="mb-3">
                             <label for="telephone_client" class="form-label">Numéro de Téléphone</label>
-                            <input type="text" style="width: 60%" class="form-control" id="telephone_client" name="telephone_client"
-                                required>
+                            <input type="text" style="width: 60%" class="form-control" id="telephone_client"
+                                name="telephone_client" required>
                         </div>
                         <!-- Champ caché pour le panier (cart) -->
                         <input type="hidden" name="cart" id="cartData" value="{{ json_encode($cartItems) }}">
 
-<div class="form-group">
-    <h3>Mode de Paiement</h3>
-    <div class="d-flex flex-wrap">
-        <div class="form-check form-check-inline text-center mr-4">
-            <input style="margin-top: 89%" class="form-check-input" type="radio" id="especes" name="mode_paiement" value="especes" required>
-            <label class="form-check-label" for="especes">
-                <img src="{{asset('assets/images/espèce.png')}}" style="width: 65px;" class="form-check-img" alt="Espèces">
-                <br>Espèces
-            </label>
-        </div>
-        <div class="form-check form-check-inline text-center mr-4">
-            <input style="margin-top: 60%" class="form-check-input" type="radio" id="om" name="mode_paiement" value="om" required>
-            <label class="form-check-label" for="om">
-                <img src="{{asset('assets/images/om.png')}}" style="width: 65px;" class="form-check-img" alt="Orange Money">
-                <br>Orange Money
-            </label>
-        </div>
-        <div class="form-check form-check-inline text-center mr-4">
-            <input style="margin-top: 50%" class="form-check-input" type="radio" id="wave" name="mode_paiement" value="wave" required>
-            <label class="form-check-label" for="wave">
-                <img src="{{asset('assets/images/wave.png')}}" style="width: 130px;" class="form-check-img" alt="Wave">
-                <br>Wave
-            </label>
-        </div>
-        <div class="form-check form-check-inline text-center mr-4">
-            <input style="margin-top: 56%" class="form-check-input" type="radio" id="carte_credit" name="mode_paiement" value="carte_credit" required>
-            <label class="form-check-label" for="carte_credit">
-                <img src="{{asset('assets/images/credit_card.png')}}" style="width: 65px;" class="form-check-img" alt="Carte de Crédit">
-                <br>Carte de Crédit
-            </label>
-        </div>
-    </div>
-</div>
-<div id="code-pin-div" style="display:inline-block; margin-top:2%;" class="row">
-    <label for="code_pin">Code Pin</label>
-    <input class="form-control" style="width: 60%;" type="text" id="code_pin" name="code_pin">
-</div>
+                        <div class="form-group">
+                            <h3>Mode de Paiement</h3>
+                            <div class="d-flex flex-wrap">
+                                <div class="form-check form-check-inline text-center mr-4">
+                                    <input style="margin-top: 89%" class="form-check-input" type="radio"
+                                        id="especes" name="mode_paiement" value="especes" required>
+                                    <label class="form-check-label" for="especes">
+                                        <img src="{{ asset('assets/images/espèce.png') }}" style="width: 65px;"
+                                            class="form-check-img" alt="Espèces">
+                                        <br>Espèces
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline text-center mr-4">
+                                    <input style="margin-top: 60%" class="form-check-input" type="radio"
+                                        id="om" name="mode_paiement" value="om" required>
+                                    <label class="form-check-label" for="om">
+                                        <img src="{{ asset('assets/images/om.png') }}" style="width: 65px;"
+                                            class="form-check-img" alt="Orange Money">
+                                        <br>Orange Money
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline text-center mr-4">
+                                    <input style="margin-top: 50%" class="form-check-input" type="radio"
+                                        id="wave" name="mode_paiement" value="wave" required>
+                                    <label class="form-check-label" for="wave">
+                                        <img src="{{ asset('assets/images/wave.png') }}" style="width: 130px;"
+                                            class="form-check-img" alt="Wave">
+                                        <br>Wave
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline text-center mr-4">
+                                    <input style="margin-top: 56%" class="form-check-input" type="radio"
+                                        id="carte_credit" name="mode_paiement" value="carte_credit" required>
+                                    <label class="form-check-label" for="carte_credit">
+                                        <img src="{{ asset('assets/images/credit_card.png') }}" style="width: 65px;"
+                                            class="form-check-img" alt="Carte de Crédit">
+                                        <br>Carte de Crédit
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="code-pin-div" style="display:inline-block; margin-top:2%;" class="row">
+                            <label for="code_pin">Code Pin</label>
+                            <input class="form-control" style="width: 60%;" type="text" id="code_pin"
+                                name="code_pin">
+                        </div>
 
                         <div id="code-pin-div" style="display:none;">
                             <label for="code_pin">Code Pin</label>
-                            <input class="form-control" style="width: 20%;" type="text" id="code_pin" name="code_pin">
+                            <input class="form-control" style="width: 20%;" type="text" id="code_pin"
+                                name="code_pin">
                         </div>
 
                         <button type="submit" class="btn btn-primary mt-3">Passer la commande</button>
@@ -214,43 +227,22 @@
         });
     </script>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        $(document).ready(function() {
-            $('#checkout-form').on('submit', function(e) {
-                e.preventDefault();
-
-                $.ajax({
-                    url: '{{ route("commander") }}', // Assurez-vous que cette route est définie dans vos routes web
-                    method: 'POST',
-                    data: $(this).serialize(),
-                    success: function(response) {
-                        if (response.success) {
-                            Swal.fire(
-                                'Succès!',
-                                response.message,
-                                'success'
-                            );
-                            // Redirigez vers la page de confirmation de commande si nécessaire
-                        } else {
-                            Swal.fire(
-                                'Erreur!',
-                                response.message,
-                                'error'
-                            );
-                        }
-                    },
-                    error: function(xhr) {
-                        Swal.fire(
-                            'Erreur!',
-                            'Une erreur est survenue lors de l\'envoi de la commande.',
-                            'error'
-                        );
-                    }
-                });
-            });
-        });
-    </script>
+ <!-- Scripts -->
+ <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+ <script>
+     // Vérifier s'il y a un message de succès dans la session (affiché après la redirection)
+     @if(session('success'))
+         Swal.fire({
+             icon: 'success',
+             title: 'Commande passée avec succès!',
+             showConfirmButton: false,
+             timer: 1500  // Durée de l'alerte en millisecondes
+         }).then(function () {
+             // Redirection vers la page wemaster-resto.blade.php après l'alerte
+             window.location.href = "{{ route('webmaster-resto') }}";
+         });
+     @endif
+ </script>
     <script>
         $(document).ready(function() {
             $('input[name="mode_paiement"]').change(function() {
@@ -265,4 +257,5 @@
         });
     </script>
 </body>
+
 </html>

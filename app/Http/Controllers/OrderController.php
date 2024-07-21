@@ -186,11 +186,10 @@ class OrderController extends Controller
             ]);
 
             // Retournez une réponse JSON pour indiquer le succès
-            return response()->json([
-                'success' => true,
-                'message' => 'Commande enregistrée avec succès!',
-                'commande_id' => $commande->id, // Optionnel : retournez l'ID de la commande
-            ]);
+            // Retourner une redirection vers la page de checkout avec un message de succès
+return redirect()->route('checkout', ['restaurant_id' => $restaurantId])->with('success', 'Commande enregistrée avec succès!');
+
+
         } catch (\Exception $e) {
             // Retournez une réponse JSON pour indiquer l'échec avec l'erreur
             return response()->json([

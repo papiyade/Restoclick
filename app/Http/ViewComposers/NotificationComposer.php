@@ -18,7 +18,7 @@ class NotificationComposer
                 ->orderBy('created_at', 'desc')
                 ->get();
         } else {
-            $notifications = collect(); // Retourner une collection vide si l'utilisateur n'est pas connecté
+            $notifications = collect();
         }
 
         $view->with('notifications', $notifications);

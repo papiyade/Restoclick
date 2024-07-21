@@ -12,6 +12,7 @@ class Kernel extends HttpKernel
         // Autres middlewares...
         'admin' => \App\Http\Middleware\AdminMiddleware::class,
         'superadmin' => \App\Http\Middleware\SuperAdminMiddleware::class,
+        'serveur' => \App\Http\Middleware\ServeurMiddleware::class,
     ];
 
     // Autres configurations...
