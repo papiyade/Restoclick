@@ -48,18 +48,18 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
             $commandesAnnulees = Commande::where('restaurant_id', $restaurantId)->where('statut', 'annulee')->get();
 
             $totalPrices = [
-                'En cours' => $commandesEnCours->sum(function($commande) {
-                    return $commande->details->sum(function($detail) {
+                'En cours' => $commandesEnCours->sum(function ($commande) {
+                    return $commande->details->sum(function ($detail) {
                         return $detail->quantite * $detail->plat->price;
                     });
                 }),
-                'Terminée' => $commandesTerminees->sum(function($commande) {
-                    return $commande->details->sum(function($detail) {
+                'Terminée' => $commandesTerminees->sum(function ($commande) {
+                    return $commande->details->sum(function ($detail) {
                         return $detail->quantite * $detail->plat->price;
                     });
                 }),
-                'Annulée' => $commandesAnnulees->sum(function($commande) {
-                    return $commande->details->sum(function($detail) {
+                'Annulée' => $commandesAnnulees->sum(function ($commande) {
+                    return $commande->details->sum(function ($detail) {
                         return $detail->quantite * $detail->plat->price;
                     });
                 }),
@@ -67,7 +67,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
             // Calculer le nombre total de commandes
             $totalOrders = Commande::where('restaurant_id', $restaurantId)->count();
-            $totalReservations = Reservation::where('restaurant_id' , $restaurantId)->count();
+            $totalReservations = Reservation::where('restaurant_id', $restaurantId)->count();
 
             return view('dashboard', compact('statuts', 'totalPrices', 'totalOrders', 'totalReservations'));
         })->name('dashboard');
@@ -80,64 +80,62 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
 
 
-        Route::middleware([ServeurMiddleware::class])->group(function () {
-            Route::get('serveur-dashboard', [AdminController::class, 'dashboard'])->name('serveur.dashboard');
-            Route::get('/calendrier', function () {
-              // Récupérer l'identifiant du restaurant de l'utilisateur connecté
-    $restaurantId = auth()->user()->restaurant_id;
+    Route::middleware([ServeurMiddleware::class])->group(function () {
+        Route::get('serveur-dashboard', [AdminController::class, 'dashboard'])->name('serveur.dashboard');
+        Route::get('/calendrier', function () {
+            // Récupérer l'identifiant du restaurant de l'utilisateur connecté
+            $restaurantId = auth()->user()->restaurant_id;
 
-    // Récupérer les réservations futures pour ce restaurant
-    $reservations = Reservation::where('restaurant_id', $restaurantId)
-        ->where('date_time', '>=', now())
-        ->get();
+            // Récupérer les réservations futures pour ce restaurant
+            $reservations = Reservation::where('restaurant_id', $restaurantId)
+                ->where('date_time', '>=', now())
+                ->get();
 
-    // Transformez les réservations en une structure JSON-compatible
-    $reservationEvents = $reservations->map(function($reservation) {
-        return [
-            'title' => 'Réservation de ' . $reservation->client_name,
-            'start' => $reservation->date_time,
-            'description' => 'Nouvelle réservation',
-            'backgroundColor' => '#ff0000',
-            'borderColor' => '#ff0000',
-            'textColor' => '#ffffff'
-        ];
+            // Transformez les réservations en une structure JSON-compatible
+            $reservationEvents = $reservations->map(function ($reservation) {
+                return [
+                    'title' => 'Réservation de ' . $reservation->client_name,
+                    'start' => $reservation->date_time,
+                    'description' => 'Nouvelle réservation',
+                    'backgroundColor' => '#ff0000',
+                    'borderColor' => '#ff0000',
+                    'textColor' => '#ffffff'
+                ];
+            });
+
+            return view('serveur.calendrier', ['reservationEvents' => $reservationEvents]);
+        });
+        Route::resource('admin/plats', PlatController::class)->except('show');
+        Route::resource('admin/menus', MenuController::class)->except('show');
+        Route::get('admin/plats/trier', [PlatController::class, 'trierPlats'])->name('admin.plats.trier');
+        Route::get('admin/reservations', [ReservationController::class, 'showReservations'])->name('admin.reservations');
+        Route::get('admin/reservation', [ReservationController::class, 'index'])->name('admin.reservation.index');
+        Route::get('/errors/error-403', function () {
+            return view('errors.error-403');
+        })->name('errors.error-403');
     });
 
-    return view('serveur.calendrier', ['reservationEvents' => $reservationEvents]);
-            });
-            Route::resource('admin/plats', PlatController::class)->except('show');
-            Route::resource('admin/menus', MenuController::class)->except('show');
-            Route::get('admin/plats/trier', [PlatController::class, 'trierPlats'])->name('admin.plats.trier');
-            Route::get('admin/reservations', [ReservationController::class, 'showReservations'])->name('admin.reservations');
-            Route::get('admin/reservation', [ReservationController::class, 'index'])->name('admin.reservation.index');
-             Route::get('/errors/error-403', function () {
-                return view('errors.error-403');
-            })->name('errors.error-403');
-
-        });
-
-        Route::middleware([SuperAdminMiddleware::class])->group(function () {
-            // Placez ici les routes du SuperAdmin
-            Route::get('superadmin/index', [SuperAdminController::class, 'index'])->name('superadmin.index');
-            Route::get('superadmin/restaurants/create', [RestaurantController::class, 'create'])->name('superadmin.restaurants.create');
-            Route::post('admin/restaurants', [RestaurantController::class, 'store'])->name('admin.restaurants.store');
-            Route::get('superadmin/restaurants/index', [RestaurantController::class, 'index'])->name('superadmin.restaurants.index');
-            Route::get('superadmin/users/index', [AdminController::class, 'index'])->name('superadmin.users.index');
-            Route::get('/superadmin/users/create', [AdminController::class, 'create'])->name('superadmin.users.create');
-            Route::post('/superadmin/users', [AdminController::class, 'store'])->name('superadmin.users.store');
-            Route::get('/superadmin/restaurants/create', [RestaurantController::class, 'create'])->name('superadmin.restaurants.create');
-            Route::post('/superadmin/restaurants', [RestaurantController::class, 'store'])->name('superadmin.restaurants.store');
-            Route::get('superadmin/users/{id}/edit', [AdminController::class, 'edit'])->name('superadmin.users.edit');
-            Route::put('superadmin/users/{id}', [AdminController::class, 'update'])->name('superadmin.users.update');
-            Route::delete('superadmin/users/{id}', [AdminController::class,'destroy'])->name('superadmin.users.destroy');
-            Route::get('superadmin/restaurants/{id}/edit', [RestaurantController::class , 'edit'])->name('superadmin.restaurants.edit');
-            Route::put('superadmin/restaurants/{id}', [RestaurantController::class, 'update'])->name('superadmin.restaurants.update');
-            Route::delete('superadmin/restaurants/{id}', [RestaurantController::class,'destroy'])->name('superadmin.restaurants.destroy');
-            Route::get('/errors/error-403', function () {
-                return view('errors.error-403');
-            })->name('errors.error-403');
-
-        });
+    Route::middleware([SuperAdminMiddleware::class])->group(function () {
+        // Placez ici les routes du SuperAdmin
+        Route::get('superadmin/index', [SuperAdminController::class, 'index'])->name('superadmin.index');
+        Route::get('superadmin/restaurants/create', [RestaurantController::class, 'create'])->name('superadmin.restaurants.create');
+        Route::post('admin/restaurants', [RestaurantController::class, 'store'])->name('admin.restaurants.store');
+        Route::get('superadmin/restaurants/index', [RestaurantController::class, 'index'])->name('superadmin.restaurants.index');
+        Route::get('superadmin/users/index', [AdminController::class, 'index'])->name('superadmin.users.index');
+        Route::get('/superadmin/users/create', [AdminController::class, 'create'])->name('superadmin.users.create');
+        Route::post('/superadmin/users', [AdminController::class, 'store'])->name('superadmin.users.store');
+        Route::get('/superadmin/restaurants/create', [RestaurantController::class, 'create'])->name('superadmin.restaurants.create');
+        Route::post('/superadmin/restaurants', [RestaurantController::class, 'store'])->name('superadmin.restaurants.store');
+        Route::get('superadmin/users/{id}/edit', [AdminController::class, 'edit'])->name('superadmin.users.edit');
+        Route::put('superadmin/users/{id}', [AdminController::class, 'update'])->name('superadmin.users.update');
+        Route::delete('superadmin/users/{id}', [AdminController::class, 'destroy'])->name('superadmin.users.destroy');
+        Route::get('superadmin/restaurants/{id}/edit', [RestaurantController::class, 'edit'])->name('superadmin.restaurants.edit');
+        Route::put('superadmin/restaurants/{id}', [RestaurantController::class, 'update'])->name('superadmin.restaurants.update');
+        Route::delete('superadmin/restaurants/{id}', [RestaurantController::class, 'destroy'])->name('superadmin.restaurants.destroy');
+        Route::get('/errors/error-403', function () {
+            return view('errors.error-403');
+        })->name('errors.error-403');
+    });
 
 
     // Routes de l'Admin
@@ -196,19 +194,18 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
 
         Route::get('serveurs', [AdminController::class, 'indexServeurs'])->name('serveurs.index');
-    Route::get('serveurs/create', [AdminController::class, 'createServeur'])->name('serveurs.create');
-    Route::post('serveurs', [AdminController::class, 'storeServeur'])->name('serveurs.store');
-    Route::get('serveurs/{serveur}', [AdminController::class, 'showServeur'])->name('serveurs.show');
-    Route::get('serveurs/{serveur}/edit', [AdminController::class, 'editServeur'])->name('serveurs.edit');
-    Route::put('serveurs/{serveur}', [AdminController::class, 'updateServeur'])->name('serveurs.update');
-    Route::delete('serveurs/{serveur}', [AdminController::class, 'destroyServeur'])->name('serveurs.destroy');
+        Route::get('serveurs/create', [AdminController::class, 'createServeur'])->name('serveurs.create');
+        Route::post('serveurs', [AdminController::class, 'storeServeur'])->name('serveurs.store');
+        Route::get('serveurs/{serveur}', [AdminController::class, 'showServeur'])->name('serveurs.show');
+        Route::get('serveurs/{serveur}/edit', [AdminController::class, 'editServeur'])->name('serveurs.edit');
+        Route::put('serveurs/{serveur}', [AdminController::class, 'updateServeur'])->name('serveurs.update');
+        Route::delete('serveurs/{serveur}', [AdminController::class, 'destroyServeur'])->name('serveurs.destroy');
     });
     Route::get('/reservation', [ReservationController::class, 'showReservationsForm'])->name('client.reservation.form');
     Route::get('/admin/commandes', [OrderController::class, 'showOrders'])->name('admin.commandes.index');
     Route::get('admin/commandes/{commande}', [OrderController::class, 'show'])->name('admin.commandes.show');
     Route::get('admin/commandes/{id}/download-pdf', [OrderController::class, 'downloadPDF'])->name('admin.commandes.downloadPDF');
     Route::post('/change-status/{id}/{status}', [OrderController::class, 'changeStatus'])->name('order.changeStatus');
-
 });
 
 Route::get('/front-menu/{id}', [MenuFrontController::class, 'showMenuById'])->name('front-menu.showById');
@@ -227,7 +224,7 @@ Route::get('/Resto', [MenuFrontController::class, 'showthatMenu'])->name('Resto.
 
 Route::get('/Resto/{id}', [MenuFrontController::class, 'showMenuParId'])->name('Resto.showById');
 
-Route::get('/client/book-table/{id}', [ReservationController::class, 'showReservationForm'])->name('client.book-table');
+Route::get('/client/restaurant/{id}', [ReservationController::class, 'showReservationForm'])->name('client.restaurant');
 Route::post('/reservation', [ReservationController::class, 'makeReservation'])->name('client.make-reservation');
 Route::get('restaurant/{id}/reservation', [ReservationController::class, 'showReservationForm'])->name('client.reservation.form');
 Route::post('restaurant/reservation', [ReservationController::class, 'makeReservation'])->name('client.reservation.submit');
@@ -265,6 +262,6 @@ Route::get('/test-email', function () {
     return 'Email has been sent!';
 });
 
-Route::get('number',  function(){
+Route::get('number',  function () {
     return view("number");
 });

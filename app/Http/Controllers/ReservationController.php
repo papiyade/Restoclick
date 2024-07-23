@@ -71,40 +71,41 @@ class ReservationController extends Controller
 
 
     public function makeReservation(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'phone_number' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'date' => 'required|date',
-            'time' => 'required',
-            'num_people' => 'required|integer',
-            'restaurant_id' => 'required|exists:restaurants,id',
-        ]);
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'phone_number' => 'required|string|max:255',
+        'email' => 'required|email|max:255',
+        'date' => 'required|date',
+        'time' => 'required',
+        'num_people' => 'required|integer|min:1|max:5',
+        'restaurant_id' => 'required|exists:restaurants,id',
+    ]);
 
-        $reservation = new Reservation();
-        $reservation->client_name = $request->name;
-        $reservation->client_phone_number = $request->phone_number;
-        $reservation->client_email = $request->email;
-        $reservation->date_time = $request->date . ' ' . $request->time;
-        $reservation->num_people = $request->num_people;
-        $reservation->restaurant_id = $request->restaurant_id; // Associer la réservation au restaurant
-        $reservation->save();
+    $reservation = new Reservation();
+    $reservation->client_name = $request->name;
+    $reservation->client_phone_number = $request->phone_number;
+    $reservation->client_email = $request->email;
+    $reservation->date_time = $request->date . ' ' . $request->time;
+    $reservation->num_people = $request->num_people;
+    $reservation->restaurant_id = $request->restaurant_id;
+    $reservation->save();
 
-        // Ajouter une notification pour l'admin du restaurant
-        Notification::create([
-            'client_name' => $request->name,
-            'client_phone_number' => $request->phone_number,
-            'date_time' => $request->date . ' ' . $request->time,
-            'num_people' => $request->num_people,
-            'client_email' => $request->email,
-            'message' => "Client {$request->name} vient de faire une réservation.",
-            'link' => route('admin.reservations'), // lien vers la page des réservations
-            'restaurant_id' => $request->restaurant_id, // Ajouter l'ID du restaurant associé à la notification
-        ]);
+    // Ajouter une notification pour l'admin du restaurant
+    Notification::create([
+        'client_name' => $request->name,
+        'client_phone_number' => $request->phone_number,
+        'date_time' => $request->date . ' ' . $request->time,
+        'num_people' => $request->num_people,
+        'client_email' => $request->email,
+        'message' => "Client {$request->name} vient de faire une réservation.",
+        'link' => route('admin.reservations'),
+        'restaurant_id' => $request->restaurant_id,
+    ]);
 
-        return redirect()->route('client.book-table', ['id' => $request->restaurant_id])->with('success', 'Réservation effectuée avec succès!');
-    }
+    return response()->json(['success' => 'Réservation effectuée avec succès! Vous serez notifié pour la confirmation par E-mail']);
+}
+
 
 
 

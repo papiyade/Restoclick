@@ -783,6 +783,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Web Master Resto | {{ $restaurant->name }}</title>
+    <link href="{{asset('assets/vendor/bootstrap-select/dist/css/bootstrap-select.min.css')}}" rel="stylesheet">
+
     <!-- Leaflet CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 <!-- Leaflet JS -->
@@ -790,6 +792,17 @@
 
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{asset('assets/vendor/pickadate/themes/default.css')}}">
+    <link rel="stylesheet" href="{{asset('assets/vendor/pickadate/themes/default.date.css')}}">
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.9/dist/sweetalert2.min.css">
+
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.9/dist/sweetalert2.min.js"></script>
+
+
+
     <style>
         .text-green {
     color: green;
@@ -803,7 +816,7 @@
     justify-content: center;
     bottom: 10px;
     right: 10px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); 
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .position-absolute {
@@ -836,7 +849,9 @@
 
         .modal-lg-centered {
             max-width: 80%;
+
         }
+
 
         .close-bar {
             width: 100%;
@@ -983,7 +998,7 @@
                     <button class="btn btn-link btn-block text-left" type="button" data-toggle="modal"
                         data-target="#modalPizzas">
                         <div class="card-header" id="headingTwo">
-                            <i class="fa fa-pizza-slice"></i> <span style="margin-left: 10px;">Pizzas</span>
+                            <i class="fa fa-calendar"></i> <span style="margin-left: 10px;">Réservation</span>
                         </div>
                     </button>
                 </div>
@@ -1107,20 +1122,62 @@
     </div>
 
     <!-- Modal Pizzas -->
-    <div class="modal fade" id="modalPizzas" tabindex="-1" role="dialog" aria-labelledby="modalPizzasLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="modalPizzas" tabindex="-1" role="dialog" aria-labelledby="modalPizzasLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="close-bar" data-dismiss="modal"><span></span></div>
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalPizzasLabel">Pizzas</h5>
+                    <h5 class="modal-title" id="modalPizzasLabel">Faire une réservation</h5>
                 </div>
                 <div class="modal-body">
-                    Contenu pour Pizzas...
+                    <form id="reservationForm" method="POST">
+                        @csrf
+                        <input type="hidden" name="restaurant_id" value="{{ $restaurant->id }}">
+
+                        <div class="form-group">
+                            <label for="name">Votre nom complet*</label>
+                            <input type="text" class="form-control" id="name" name="name" placeholder="Name*" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone_number">Téléphone*</label>
+                            <input type="text" class="form-control" id="phone_number" name="phone_number" placeholder="Phone*" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Adresse Email*</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Email*" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="time">Heure*</label>
+                            <input type="time" class="form-control" id="time" name="time" value="19:00" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="num_people">Nombre de personnes*</label>
+                            <input type="number" value="1" class="form-control" id="num_people" name="num_people" min="1" max="5" required oninput="validatePeople()">
+                            <div id="num_people_error" class="text-danger" style="display: none;">Le nombre de personnes par table doit être entre 1 et 5</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="min-date">Date*</label>
+                            <input type="text" class="form-control" id="min-date" name="date" placeholder="Set min date" value="2024-06-18" required>
+                        </div>
+
+                        <div class="form-group">
+                            <button class="btn btn-warning w-100" type="submit"><span class="fs-21">Réserver</span></button>
+                        </div>
+                    </form>
+                    <div id="error-messages" class="text-danger"></div>
                 </div>
             </div>
         </div>
     </div>
+
+
+
+
 
     <!-- Modal Vins -->
     <div class="modal fade" id="modalVins" tabindex="-1" role="dialog" aria-labelledby="modalVinsLabel"
@@ -1137,6 +1194,9 @@
             </div>
         </div>
     </div>
+
+    <!-- SweetAlert2 CSS -->
+
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
@@ -1250,6 +1310,75 @@
             });
         });
     </script>
+
+<script>
+    function validatePeople() {
+        var numPeople = document.getElementById("num_people");
+        var errorDiv = document.getElementById("num_people_error");
+
+        if (numPeople.value < 1 || numPeople.value > 5) {
+            errorDiv.style.display = "block";
+        } else {
+            errorDiv.style.display = "none";
+        }
+    }
+
+    document.getElementById("num_people").addEventListener("input", validatePeople);
+    </script>
+
+
+        <!-- Pickdate -->
+        <script src="{{asset('assets/vendor/bootstrap-select/dist/js/bootstrap-select.min.js')}}"></script>
+        <script src="{{asset('assets/vendor/pickadate/picker.js')}}"></script>
+        <script src="{{asset('assets/vendor/pickadate/picker.time.js')}}"></script>
+        <script src="{{asset('assets/vendor/pickadate/picker.date.js')}}"></script>
+
+        <!-- Pickadate init -->
+        <script src="{{asset('assets/js/plugins-init/pickadate-init.js')}}"></script>
+
+
+
+
+            <script>
+                // Initialisation de Pickadate pour le champ #min-date
+                $(document).ready(function() {
+                    $('#min-date').pickadate({
+                        format: 'yyyy-mm-dd',
+                        min: new Date() // Définition de la date minimale comme étant aujourd'hui
+                    });
+                });
+
+
+
+     $('#reservationForm').on('submit', function(event) {
+        event.preventDefault();
+
+        $.ajax({
+            url: '{{ route("client.reservation.submit") }}',
+            method: 'POST',
+            data: $(this).serialize(),
+            success: function(response) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Réservation effectuée avec succès!',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                $('#modalPizzas').modal('hide'); // Fermer le modal
+                $('#reservationForm')[0].reset(); // Réinitialiser le formulaire
+            },
+            error: function(response) {
+                $('#error-messages').html('');
+                var errors = response.responseJSON.errors;
+                $.each(errors, function(key, value) {
+                    $('#error-messages').append('<p>' + value + '</p>');
+                });
+            }
+        });
+    });
+
+
+            </script>
 </body>
 
 </html>
