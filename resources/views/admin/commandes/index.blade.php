@@ -56,11 +56,12 @@
                     tabindex="0">
                     <div class="card mt-2">
                         <div class="card-body p-0">
+                        
                             <div class="table-responsive active-projects style-1 ItemsCheckboxSec shorting">
                                 <div class="p-3" style="width: 40%;">
-                                    <input type="text" id="search" class="form-control"
-                                        placeholder="Rechercher un client...">
+                                    <input type="text" id="search-commandes" class="form-control" placeholder="Rechercher un client...">
                                 </div>
+
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>

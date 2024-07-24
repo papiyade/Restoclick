@@ -30,6 +30,14 @@
                                     <input type="email" class="form-control" id="email" name="email" required>
                                 </div>
                                 <div class="mb-3">
+                                    <label for="opening_time" class="form-label">Heure d'ouverture</label>
+                                    <input type="time" class="form-control" id="opening_time" name="opening_time">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="closing_time" class="form-label">Heure de fermeture</label>
+                                    <input type="time" class="form-control" id="closing_time" name="closing_time">
+                                </div>
+                                <div class="mb-3">
                                     <label for="admin_id" class="form-label">Administrateur</label>
                                     <select name="admin_id" class="form-control">
                                         <option value="">Sélectionnez un administrateur</option>

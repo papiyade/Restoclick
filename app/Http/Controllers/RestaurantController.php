@@ -33,6 +33,8 @@ class RestaurantController extends Controller
             'phone_number' => 'required|string',
             'email' => 'required|email',
             'admin_id' => 'required|exists:users,id',
+            'opening_time' => 'nullable|date_format:H:i',
+            'closing_time' => 'nullable|date_format:H:i',
         ]);
 
         $restaurant = Restaurant::create([
@@ -41,6 +43,8 @@ class RestaurantController extends Controller
             'phone_number' => $validatedData['phone_number'],
             'email' => $validatedData['email'],
             'admin_id' => $validatedData['admin_id'],
+            'opening_time' => $validatedData['opening_time'],
+            'closing_time' => $validatedData['closing_time']
         ]);
 
         $admin = User::findOrFail($request->admin_id);
@@ -68,6 +72,8 @@ class RestaurantController extends Controller
             'address' => 'required|string',
             'phone_number' => 'required|string',
             'email' => 'required|email',
+            'opening_time' => 'nullable|date_format:H:i',
+            'closing_time' => 'nullable|date_format:H:i',
         ]);
 
         $restaurant = Restaurant::findOrFail($id);

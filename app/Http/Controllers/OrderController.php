@@ -47,7 +47,6 @@ class OrderController extends Controller
 
 
 
-
     public function showOrders()
     {
         $admin = auth()->user();
@@ -71,7 +70,7 @@ class OrderController extends Controller
 
         if ($admin && $admin->restaurant_id) {
             $query = $request->input('search');
-            $status = $request->input('status');
+            $status = $request->input('status', 'En Cours');
 
             $commandesQuery = Commande::where('restaurant_id', $admin->restaurant_id);
 
@@ -97,8 +96,9 @@ class OrderController extends Controller
             ]);
         }
 
-        return view('admin.commandes.index', compact('commandes'));
+        return view('admin.commandes.index', compact('commandes', 'status'));
     }
+
 
     public function show($id)
     {
@@ -185,11 +185,8 @@ class OrderController extends Controller
                 'restaurant_id' => $restaurantId, // Ajouter l'ID du restaurant associé à la notification
             ]);
 
-            // Retournez une réponse JSON pour indiquer le succès
-            // Retourner une redirection vers la page de checkout avec un message de succès
-return redirect()->route('checkout', ['restaurant_id' => $restaurantId])->with('success', 'Commande enregistrée avec succès!');
 
-
+            return redirect()->route('checkout', ['restaurant_id' => $restaurantId])->with('success', 'Commande enregistrée avec succès!');
         } catch (\Exception $e) {
             // Retournez une réponse JSON pour indiquer l'échec avec l'erreur
             return response()->json([

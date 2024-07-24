@@ -43,8 +43,8 @@
                                         <th><strong>NOM</strong></th>
                                         <th><strong>ADRESSE</strong></th>
                                         <th><strong>TELEPHONE</strong></th>
-
                                         <th><strong>EMAIL</strong></th>
+                                        <th><strong>Horaire</strong></th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -56,6 +56,7 @@
                                             <td>{{ $restaurant->address }}</td>
                                             <td>{{ $restaurant->phone_number }}</td>
                                             <td>{{ $restaurant->email }}</td>
+                                            <td>De {{ $restaurant->opening_time}} à {{$restaurant->closing_time}}</td>
                                             <td>
                                                 <div class="dropdown">
                                                     <button type="button" class="btn btn-success light sharp"

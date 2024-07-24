@@ -1,49 +1,35 @@
 <!-- resources/views/partials/reservation_rows.blade.php -->
-@forelse ($commandes as $commande)
-    <tr class="btn-reveal-trigger">
-    <td class="py-2">
-        <div class="form-check custom-checkbox mx-2">
-            <input type="checkbox" class="form-check-input" id="customCheckBox{{ $commande->id }}">
-            <label class="form-check-label" for="customCheckBox{{ $commande->id }}"></label>
-        </div>
-    </td>
-    <td class="py-2">
-        <div class="d-flex align-items-center">
-            <div class="avatar-circle">
-                {{ strtoupper(substr($commande->client_name, 0, 1)) }}
-            </div>
-            <span class="ms-2">{{ $commande->client_name }}</span>
-        </div>
-    </td>
-    <td class="py-2">{{ $commande->statut }}</td>
-    <td class="py-2">Créé le </td>
-    <td class="py-2">Téléphone</td>
-    <td class="py-2">A</td>
-    <td class="py-2 text-end">
-        <div class="dropdown">
-            <button class="btn btn-primary tp-btn-light sharp" type="button" data-bs-toggle="dropdown">
-                <span class="fs--1">
-                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px" viewBox="0 0 24 24" version="1.1">
-                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                            <rect x="0" y="0" width="24" height="24"></rect>
-                            <circle fill="#000000" cx="5" cy="12" r="2"></circle>
-                            <circle fill="#000000" cx="12" cy="12" r="2"></circle>
-                            <circle fill="#000000" cx="19" cy="12" r="2"></circle>
-                        </g>
-                    </svg>
-                </span>
-            </button>
-            <div class="dropdown-menu dropdown-menu-end border py-0">
-                <div class="py-2">
-                    <a class="dropdown-item" href="javascript:void(0);">Edit</a>
-                    <a class="dropdown-item text-danger" href="javascript:void(0);">Delete</a>
-                </div>
-            </div>
-        </div>
-    </td>
-</tr>
-@empty
+@foreach ($commandes as $commande)
     <tr>
-        <td colspan="7" class="text-center">Aucune commande trouvée.</td>
+        <td>{{ $commande->id }}</td>
+        <td>{{ $commande->client_name }}</td>
+        <td>
+            @php
+                $badgeClass = match($commande->statut) {
+                    'En Cours' => 'bg-warning',
+                    'Terminée' => 'bg-success',
+                    'Annulée' => 'bg-danger',
+                    default => 'bg-secondary',
+                };
+            @endphp
+            <span class="badge {{ $badgeClass }}">{{ $commande->statut }}</span>
+        </td>
+        <td>{{ $commande->created_at->format('d/m/Y H:i') }}</td>
+        <td>{{ $commande->telephone_client }}</td>
+        <td class="py-2">
+            <div class="d-flex align-items-center">
+                <a class="dropdown-item view-order-details" href="javascript:void(0);" data-order-id="{{ $commande->id }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" style="color: rgb(9, 100, 185);" class="bi bi-eye-fill" viewBox="0 0 16 16">
+                        <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0"/>
+                        <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7"/>
+                    </svg>
+                </a>
+                <a class="dropdown-item text-danger ms-2" href="javascript:void(0);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                        <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
+                    </svg>
+                </a>
+            </div>
+        </td>
     </tr>
-@endforelse
+@endforeach

@@ -119,26 +119,27 @@
                                                     <td style="text-align:center" class="py-2">
                                                         {{ $reservation->client_phone_number }}</td>
 
-                                                        <td class="py-2 text-end">
-                                                            @if ($reservation->status === 'En Attente')
-                                                                <button class="btn btn-primary btn-sm confirm-reservation"
-                                                                    data-reservation-id="{{ $reservation->id }}">Confirmer</button>
-                                                                <button class="btn btn-secondary btn-sm" data-bs-toggle="modal"
-                                                                    data-bs-target="#emailModal"
-                                                                    onclick="setReservationDetails({{ $reservation->id }}, '{{ $reservation->client_name }}', '{{ $reservation->client_email }}', '{{ \Carbon\Carbon::parse($reservation->date_time)->format('d/m/Y H:i') }}', '{{ $reservation->num_people }}')">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16"
-                                                                        height="16" fill="currentColor"
-                                                                        class="bi bi-envelope-arrow-up-fill"
-                                                                        viewBox="0 0 16 16">
-                                                                        <path
-                                                                            d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414zM0 4.697v7.104l5.803-3.558zm.192 8.159 6.57-4.027L8 9.586l1.239-.757.367.225A4.49 4.49 0 0 0 8 12.5c0 .526.09 1.03.256 1.5H2a2 2 0 0 1-1.808-1.144M16 4.697v4.974A4.5 4.5 0 0 0 12.5 8a4.5 4.5 0 0 0-1.965.45l-.338-.207z" />
-                                                                        <path
-                                                                            d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.354-5.854a.5.5 0 1 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-1-1a.5.5 0 0 1 .708-.708L11.5 12.293l1.646-1.647z" />
-                                                                    </svg>
-                                                                </button>
-                                                            @elseif ($reservation->status === 'Confirmée')
-                                                                <span class="badge badge-success badge-confirmed">Confirmée</span>
-                                                            @endif
+                                                    <td class="py-2 text-end">
+                                                        @if ($reservation->status === 'En Attente')
+                                                            <button class="btn btn-primary btn-sm confirm-reservation"
+                                                                data-reservation-id="{{ $reservation->id }}">Confirmer</button>
+                                                            <button class="btn btn-secondary btn-sm" data-bs-toggle="modal"
+                                                                data-bs-target="#emailModal"
+                                                                onclick="setReservationDetails({{ $reservation->id }}, '{{ $reservation->client_name }}', '{{ $reservation->client_email }}', '{{ \Carbon\Carbon::parse($reservation->date_time)->format('d/m/Y H:i') }}', '{{ $reservation->num_people }}')">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                                    height="16" fill="currentColor"
+                                                                    class="bi bi-envelope-arrow-up-fill"
+                                                                    viewBox="0 0 16 16">
+                                                                    <path
+                                                                        d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414zM0 4.697v7.104l5.803-3.558zm.192 8.159 6.57-4.027L8 9.586l1.239-.757.367.225A4.49 4.49 0 0 0 8 12.5c0 .526.09 1.03.256 1.5H2a2 2 0 0 1-1.808-1.144M16 4.697v4.974A4.5 4.5 0 0 0 12.5 8a4.5 4.5 0 0 0-1.965.45l-.338-.207z" />
+                                                                    <path
+                                                                        d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.354-5.854a.5.5 0 1 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-1-1a.5.5 0 0 1 .708-.708L11.5 12.293l1.646-1.647z" />
+                                                                </svg>
+                                                            </button>
+                                                        @elseif ($reservation->status === 'Confirmée')
+                                                            <span
+                                                                class="badge badge-success badge-confirmed">Confirmée</span>
+                                                        @endif
 
                                                     </td>
                                                 </tr>
@@ -220,7 +221,7 @@
                                                 <label for="numPeople" class="form-label">Nombre de personnes</label>
                                                 <input type="text" class="form-control" id="numPeople" readonly>
                                             </div>
-                                             <div class="mb-3">
+                                            <div class="mb-3">
                                                 <label for="emailMessage" class="form-label">Message</label>
                                                 <textarea class="form-control" id="emailMessage" rows="3"></textarea>
                                             </div>
@@ -243,116 +244,117 @@
                                 document.getElementById('reservationDateTime').value = reservationDateTime;
                                 document.getElementById('numPeople').value = numPeople;
                             }
-                            document.addEventListener('DOMContentLoaded', function () {
-    // Recherche en temps réel
-    document.getElementById('search').addEventListener('input', function () {
-        var filter = this.value.toUpperCase();
-        var rows = document.querySelectorAll('#customers tr');
-        rows.forEach(row => {
-            var td = row.getElementsByTagName('td')[1];
-            if (td) {
-                var txtValue = td.textContent || td.innerText;
-                row.style.display = txtValue.toUpperCase().indexOf(filter) > -1 ? "" : "none";
-            }
-        });
-    });
+                            document.addEventListener('DOMContentLoaded', function() {
+                                // Recherche en temps réel
+                                document.getElementById('search').addEventListener('input', function() {
+                                    var filter = this.value.toUpperCase();
+                                    var rows = document.querySelectorAll('#customers tr');
+                                    rows.forEach(row => {
+                                        var td = row.getElementsByTagName('td')[1];
+                                        if (td) {
+                                            var txtValue = td.textContent || td.innerText;
+                                            row.style.display = txtValue.toUpperCase().indexOf(filter) > -1 ? "" :
+                                                "none";
+                                        }
+                                    });
+                                });
 
-    // Confirmer la réservation
-    document.querySelectorAll('.confirm-reservation').forEach(button => {
-        button.addEventListener('click', function () {
-            var reservationId = this.getAttribute('data-reservation-id');
-            fetch(`/admin/reservation/confirm/${reservationId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    var row = document.getElementById(`reservation-${reservationId}`);
-                    row.querySelector('.confirm-reservation').remove();
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Réservation confirmée!',
-                        text: data.message,
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Erreur',
-                        text: data.message,
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                }
-            })
-            .catch(error => {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Erreur',
-                    text: 'Une erreur est survenue lors de la confirmation.',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            });
-        });
-    });
+                                // Confirmer la réservation
+                                document.querySelectorAll('.confirm-reservation').forEach(button => {
+                                    button.addEventListener('click', function() {
+                                        var reservationId = this.getAttribute('data-reservation-id');
+                                        fetch(`/admin/reservation/confirm/${reservationId}`, {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                                }
+                                            })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                if (data.success) {
+                                                    var row = document.getElementById(
+                                                        `reservation-${reservationId}`);
+                                                    row.querySelector('.confirm-reservation').remove();
+                                                    Swal.fire({
+                                                        icon: 'success',
+                                                        title: 'Réservation confirmée!',
+                                                        text: data.message,
+                                                        showConfirmButton: false,
+                                                        timer: 1500
+                                                    });
+                                                } else {
+                                                    Swal.fire({
+                                                        icon: 'error',
+                                                        title: 'Erreur',
+                                                        text: data.message,
+                                                        showConfirmButton: false,
+                                                        timer: 1500
+                                                    });
+                                                }
+                                            })
+                                            .catch(error => {
+                                                Swal.fire({
+                                                    icon: 'error',
+                                                    title: 'Erreur',
+                                                    text: 'Une erreur est survenue lors de la confirmation.',
+                                                    showConfirmButton: false,
+                                                    timer: 1500
+                                                });
+                                            });
+                                    });
+                                });
 
-    // Envoyer un email
-    document.getElementById('sendEmailButton').addEventListener('click', function () {
-        var reservationId = document.getElementById('reservationId').value;
-        var emailMessage = document.getElementById('emailMessage').value;
+                                // Envoyer un email
+                                document.getElementById('sendEmailButton').addEventListener('click', function() {
+                                    var reservationId = document.getElementById('reservationId').value;
+                                    var emailMessage = document.getElementById('emailMessage').value;
 
-        fetch('{{ route('admin.reservation.send-email') }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({
-                reservation_id: reservationId,
-                message: emailMessage
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Email envoyé!',
-                    text: data.message,
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-                document.getElementById('emailMessage').value = '';
-                var emailModal = new bootstrap.Modal(document.getElementById('emailModal'));
-                emailModal.hide();
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Erreur',
-                    text: data.message,
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            }
-        })
-        .catch(error => {
-            Swal.fire({
-                icon: 'error',
-                title: 'Erreur',
-                text: 'Une erreur est survenue lors de l\'envoi de l\'email.',
-                showConfirmButton: false,
-                timer: 1500
-            });
-        });
-    });
-});
-
+                                    fetch('{{ route('admin.reservation.send-email') }}', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                            },
+                                            body: JSON.stringify({
+                                                reservation_id: reservationId,
+                                                message: emailMessage
+                                            })
+                                        })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            if (data.success) {
+                                                Swal.fire({
+                                                    icon: 'success',
+                                                    title: 'Email envoyé!',
+                                                    text: data.message,
+                                                    showConfirmButton: false,
+                                                    timer: 1500
+                                                });
+                                                document.getElementById('emailMessage').value = '';
+                                                var emailModal = new bootstrap.Modal(document.getElementById('emailModal'));
+                                                emailModal.hide();
+                                            } else {
+                                                Swal.fire({
+                                                    icon: 'error',
+                                                    title: 'Erreur',
+                                                    text: data.message,
+                                                    showConfirmButton: false,
+                                                    timer: 1500
+                                                });
+                                            }
+                                        })
+                                        .catch(error => {
+                                            Swal.fire({
+                                                icon: 'error',
+                                                title: 'Erreur',
+                                                text: 'Une erreur est survenue lors de l\'envoi de l\'email.',
+                                                showConfirmButton: false,
+                                                timer: 1500
+                                            });
+                                        });
+                                });
+                            });
                         </script>
                     @endsection
 </body>

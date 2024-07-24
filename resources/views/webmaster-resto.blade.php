@@ -478,14 +478,26 @@
         <h1 class="text-left my-4" style="text-decoration: underline">Commander auprès de </h1>
         <div class="row">
             @foreach ($restaurants as $restaurant)
+                @php
+                    $now = \Carbon\Carbon::now();
+                    $openingTime = $restaurant->opening_time ? \Carbon\Carbon::createFromTimeString($restaurant->opening_time) : null;
+                    $closingTime = $restaurant->closing_time ? \Carbon\Carbon::createFromTimeString($restaurant->closing_time) : null;
+                    $isOpen = $openingTime && $closingTime && $now->between($openingTime, $closingTime);
+                @endphp
                 <div class="col-md-4">
                     <div class="card restaurant-box">
-                        <img src="{{ asset('assets/images/blog/professional.jpg') }}" class="card-img-top" alt="{{ $restaurant->name }}">
+                        <div class="position-relative">
+                            <img src="{{ asset('assets/images/blog/professional.jpg') }}" class="card-img-top" alt="{{ $restaurant->name }}">
+                            <span class="badge position-absolute top-0 end-0"
+                                  style="height: 14%; width: 28%; background-color: {{ $isOpen ? '#0F8A21' : '#D51E20' }}; color: white;">
+                             <strong style="font-family: Helvetica, sans-serif; text-align:center; font-size: 15px;"> {{ $isOpen ? 'Ouvert' : 'Fermé' }} </strong>
+                            </span>
+                        </div>
                         <div class="card-body d-flex flex-column align-items-center">
                             <h4 class="card-title text-center">{{ $restaurant->name }}</h4>
                             <p class="card-text text-center">{{ $restaurant->description }}</p>
                             <a href="{{ route('restaurant.showById', ['id' => $restaurant->id]) }}" class="btn btn-warning mt-auto">
-                                <span style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; text-align:center">
+                                <span style="font-family: Helvetica, sans-serif; text-align:center">
                                     Voir le menu
                                 </span>
                             </a>
@@ -495,8 +507,9 @@
             @endforeach
         </div>
 
-
     </div>
+
+
     <div class="col-xl-12">
         <div class="card">
             <div class="card-header pb-0 border-0">

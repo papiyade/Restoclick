@@ -29,6 +29,15 @@
                         <label for="email" class="form-label">Email</label>
                         <input type="email" class="form-control" id="email" name="email" value="{{ $restaurant->email }}">
                     </div>
+                    <div class="mb-3">
+                        <label for="opening_time" class="form-label">Heure d'ouverture</label>
+                        <input type="time" class="form-control" id="opening_time" name="opening_time" value="{{ $restaurant->opening_time }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="closing_time" class="form-label">Heure de fermeture</label>
+                        <input type="time" class="form-control" id="closing_time" name="closing_time" value="{{ $restaurant->closing_time }}">
+                    </div>
+
                     <button type="submit" class="btn btn-primary">Modifier</button>
                 </form>
             </div>
