@@ -420,7 +420,7 @@
         <nav class="navbar">
             <!-- Logo -->
             <a href="{{ route('webmaster-resto') }}">
-                <h3>Web Master Resto <i class="fa-solid fa-utensils"></i></h3>
+                <h3>Restolink <i class="fa-solid fa-utensils"></i></h3>
             </a>
 
             <!-- Links -->
