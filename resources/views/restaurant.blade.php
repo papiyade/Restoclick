@@ -65,8 +65,6 @@
         }
 
 
-
-
         .icon-right {
             position: absolute;
             right: 15px;
@@ -89,7 +87,6 @@
             max-width: 80%;
 
         }
-
 
         .close-bar {
             width: 100%;
@@ -117,7 +114,6 @@
             display: inline-block;
             transition: transform 0.9s ease;
         }
-
 
         .widget-menu-tab {
             display: flex;
@@ -456,15 +452,26 @@
                         <div class="form-group">
                             <label for="num_people">Nombre de personnes*</label>
                             <input type="number" value="1" class="form-control" id="num_people"
-                                name="num_people" min="1" max="5" required oninput="validatePeople()">
-                            <div id="num_people_error" class="text-danger" style="display: none;">Le nombre de
-                                personnes par table doit être entre 1 et 5</div>
+                                name="num_people" min="1" max="5" required>
+                            <div id="num_people_error" class="text-danger" style="display: none;">
+                                Le nombre de personnes par table doit commencer par 1
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="table_id">Sélectionner une table disponible*</label>
+                            <select class="form-control" id="table_id" name="table_id" required>
+                                <option value="" disabled selected>Choisissez une table</option>
+                                @foreach ($tables as $table)
+                                    <option value="{{ $table->id }}">Table {{ $table->id }} </option>
+                                @endforeach
+                            </select>
                         </div>
 
                         <div class="form-group">
                             <label for="min-date">Date*</label>
                             <input type="text" class="form-control" id="min-date" name="date"
-                                placeholder="Set min date" value="2024-06-18" required>
+                                placeholder="Set min date" value="{{ date('Y-m-d') }}" required>
                         </div>
 
                         <div class="form-group">
@@ -472,6 +479,7 @@
                                     class="fs-21">Réserver</span></button>
                         </div>
                     </form>
+
                     <div id="error-messages" class="text-danger"></div>
                 </div>
             </div>
@@ -582,7 +590,7 @@
                     const lng = data[0].lon;
                     initMap(lat, lng);
                 } else {
-                    console.error("Address not found");
+                    console.error("Adresse non retrouvée");
                 }
             }
 
@@ -639,7 +647,7 @@
             var numPeople = document.getElementById("num_people");
             var errorDiv = document.getElementById("num_people_error");
 
-            if (numPeople.value < 1 || numPeople.value > 5) {
+            if (numPeople.value < 1 || numPeople.value > 100) {
                 errorDiv.style.display = "block";
             } else {
                 errorDiv.style.display = "none";

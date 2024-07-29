@@ -12,6 +12,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\TableController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\SuperAdminMiddleware;
 use Illuminate\Support\Facades\Mail;
@@ -161,6 +162,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('admin/plats/trier', [PlatController::class, 'trierPlats'])->name('admin.plats.trier');
         Route::get('admin/reservations', [ReservationController::class, 'showReservations'])->name('admin.reservations');
         Route::get('admin/reservation', [ReservationController::class, 'index'])->name('admin.reservation.index');
+        Route::get('/admin/tables', [TableController::class, 'index'])->name('admin.tables.index');
+        Route::get('/admin/tables/create', [TableController::class, 'create'])->name('admin.tables.create');
+        Route::post('/admin/tables', [TableController::class, 'store'])->name('admin.tables.store');
+        Route::get('/admin/tables/{table}/edit', [TableController::class, 'edit'])->name('admin.tables.edit');
+        Route::put('/admin/tables/{table}', [TableController::class, 'update'])->name('admin.tables.update');
+        Route::delete('/admin/tables/{table}', [TableController::class, 'destroy'])->name('admin.tables.destroy');
 
         Route::get('/admin/reservation/create', [ReservationController::class, 'createReservation'])->name('admin.reservation.create');
         Route::post('/admin/reservation', [ReservationController::class, 'storeReservation'])->name('admin.reservation.store');

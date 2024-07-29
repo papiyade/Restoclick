@@ -9,6 +9,7 @@ use App\Models\Category;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\AdminAssignedToRestaurant;
 use App\Models\Plat;
+use App\Models\Table;
 use App\Models\Menu;
 
 class RestaurantController extends Controller
@@ -99,10 +100,12 @@ class RestaurantController extends Controller
         $restaurant = Restaurant::findOrFail($id);
         $menus = $restaurant->menus;
         $lastMenu = $menus->last();
+        $tables = $restaurant->tables()->where('statut', 'disponible')->get();
+
 
         $categories = $lastMenu ? Category::whereIn('id', $lastMenu->plats->pluck('category_id'))->get() : collect();
         $plats = $lastMenu ? $lastMenu->plats : collect();
-        return view('restaurant', compact('lastMenu', 'categories', 'restaurant', 'plats'));
+        return view('restaurant', compact('lastMenu', 'categories', 'restaurant', 'plats','tables'));
     }
 
     public function destroy($id)

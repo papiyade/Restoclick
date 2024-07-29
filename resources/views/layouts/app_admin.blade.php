@@ -278,7 +278,7 @@
 										<a class="nav-link" href="javascript:void(0);" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 											<div class="header-info2 d-flex align-items-center">
 												<div class="header-media">
-													<img src="{{asset('assets/images/user.jpg')}}" alt="">
+                                                    <img src="{{asset('assets/images/avatar/1.png')}}" class="avatar avatar-sm" alt="">
 												</div>
 											</div>
 										</a>
@@ -286,7 +286,7 @@
 											<div class="card border-0 mb-0">
 												<div class="card-header py-2">
 													<div class="products">
-														<img src="{{asset('assets/images/user.jpg')}}" class="avatar avatar-md" alt="">
+														<img src="{{asset('assets/images/avatar/1.png')}}" class="avatar avatar-md" alt="">
 														<div>
 															<h6>{{ Auth::user()->name }}</h6>
 															{{-- <span>Web Designer</span> --}}
@@ -414,8 +414,8 @@
 							<span class="nav-text">Menus</span>
 						</a>
 						<ul aria-expanded="false">
-							<li><a href="{{route('admin.menus.index')}}">Liste des Menus</a></li>
-							<li><a href="{{route('admin.menus.create')}}">Créer le Menu du jour</a></li>
+							<li><a href="{{route('admin.menus.index')}}">Voir Menu</a></li>
+							<li><a href="{{route('admin.menus.create')}}">Créer Menu</a></li>
 						</ul>
 					</li>
 					<li><a class="has-arrow " href="javascript:void(0);" aria-expanded="false">
@@ -434,6 +434,26 @@
 						<ul aria-expanded="false">
 							<li><a href="{{route('admin.plats.index')}}">Liste des Plats</a></li>
 							<li><a href="{{route('admin.plats.create')}}">Créer un Plat</a></li>
+
+						</ul>
+					</li>
+
+                    <li><a class="has-arrow " href="javascript:void(0);" aria-expanded="false">
+						<div class="menu-icon">
+                            
+                            <g opacity="0.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-spreadsheet" viewBox="0 0 16 16">
+                                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v4h10V2a1 1 0 0 0-1-1zm9 6h-3v2h3zm0 3h-3v2h3zm0 3h-3v2h2a1 1 0 0 0 1-1zm-4 2v-2H6v2zm-4 0v-2H3v1a1 1 0 0 0 1 1zm-2-3h2v-2H3zm0-3h2V7H3zm3-2v2h3V7zm3 3H6v2h3z"/>
+                              </svg>
+
+                            </g>
+
+						</div>
+							<span class="nav-text">Tables</span>
+						</a>
+						<ul aria-expanded="false">
+							<li><a href="{{route('admin.tables.index')}}">Liste des Tables</a></li>
+							<li><a href="{{route('admin.tables.create')}}">Créer une table</a></li>
 
 						</ul>
 					</li>

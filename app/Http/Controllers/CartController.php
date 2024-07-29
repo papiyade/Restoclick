@@ -31,6 +31,8 @@ class CartController extends Controller
                     'quantity' => $quantity,
                     'restaurant_id' => $restaurantId,
                     'image_url' => $plat->image_url,
+                    'description' => $plat->description, // Ajouter cette ligne
+
                 ];
             }
         }

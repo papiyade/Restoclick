@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Table extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'numero_table',
         'qr_code',
@@ -22,5 +23,10 @@ class Table extends Model
     public function reservations()
     {
         return $this->hasMany(Reservation::class);
+    }
+
+    public function restaurant()
+    {
+        return $this->belongsTo(Restaurant::class);
     }
 }
