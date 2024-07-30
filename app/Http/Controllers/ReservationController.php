@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ReservationConfirmed;
+use Twilio\Rest\Client;
 
 class ReservationController extends Controller
 {
@@ -181,6 +182,22 @@ class ReservationController extends Controller
             return response()->json(['error' => 'Erreur lors de la confirmation de la réservation.'], 500);
         }
     }
+    // public function sendEmail(Request $request)
+    // {
+    //     $reservation = Reservation::find($request->reservation_id);
+
+    //     if (!$reservation) {
+    //         return response()->json(['success' => false, 'message' => 'Réservation non trouvée.']);
+    //     }
+
+    //     // Envoyer l'email
+    //     try {
+    //         Mail::to($reservation->client_email)->send(new ReservationConfirmed($reservation, $request->message));
+    //         return response()->json(['success' => true, 'message' => 'Email envoyé avec succès!']);
+    //     } catch (\Exception $e) {
+    //         return response()->json(['success' => false, 'message' => 'Erreur lors de l\'envoi de l\'email.']);
+    //     }
+    // }
     public function sendEmail(Request $request)
     {
         $reservation = Reservation::find($request->reservation_id);
@@ -192,9 +209,25 @@ class ReservationController extends Controller
         // Envoyer l'email
         try {
             Mail::to($reservation->client_email)->send(new ReservationConfirmed($reservation, $request->message));
-            return response()->json(['success' => true, 'message' => 'Email envoyé avec succès!']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Erreur lors de l\'envoi de l\'email.']);
+        }
+
+        // Envoyer un message WhatsApp
+        try {
+            $client = new Client(env('TWILIO_SID'), env('TWILIO_AUTH_TOKEN'));
+
+            $client->messages->create(
+                'whatsapp:' . $reservation->client_phone_number,
+                [
+                    'from' => env('TWILIO_WHATSAPP_NUMBER'),
+                    'body' => "Bonjour {$reservation->client_name}, votre réservation a été confirmée pour le {$reservation->date_time} pour {$reservation->num_people} personne(s)."
+                ]
+            );
+
+            return response()->json(['success' => true, 'message' => 'Email et message WhatsApp envoyés avec succès!']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Erreur lors de l\'envoi du message WhatsApp: ' . $e->getMessage()]);
         }
     }
 }

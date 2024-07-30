@@ -84,6 +84,7 @@
                                                 <th>Nombre de Personnes</th>
                                                 <th>Email</th>
                                                 <th>Téléphone</th>
+                                                <th>Numéro de Table</th> <!-- Nouvelle colonne pour le numéro de table -->
                                                 <th></th>
                                             </tr>
                                         </thead>
@@ -118,7 +119,13 @@
                                                         {{ $reservation->client_email }}</td>
                                                     <td style="text-align:center" class="py-2">
                                                         {{ $reservation->client_phone_number }}</td>
-
+                                                    <td style="text-align:center" class="py-2">
+                                                        @if ($reservation->table)
+                                                            Table {{ $reservation->table->numero_table }}
+                                                        @else
+                                                            Pas de table attribuée
+                                                        @endif
+                                                    </td>
                                                     <td class="py-2 text-end">
                                                         @if ($reservation->status === 'En Attente')
                                                             <button class="btn btn-primary btn-sm confirm-reservation"
@@ -140,12 +147,11 @@
                                                             <span
                                                                 class="badge badge-success badge-confirmed">Confirmée</span>
                                                         @endif
-
                                                     </td>
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td colspan="8" class="text-center">Aucune réservation trouvée</td>
+                                                    <td colspan="9" class="text-center">Aucune réservation trouvée</td> <!-- Update colspan to 9 -->
                                                 </tr>
                                             @endforelse
                                         </tbody>
