@@ -22,7 +22,7 @@ class AdminController extends Controller
         $orderCount = Commande::count();
         $reservationCount = Reservation::count();
 
-        return view('superadmin.users.index', compact('users', 'restaurants', 'userCount', 'restoCount','orderCount','reservationCount'));
+        return view('superadmin.users.index', compact('users', 'restaurants', 'userCount', 'restoCount', 'orderCount', 'reservationCount'));
     }
 
     // Afficher le formulaire de création d'utilisateur
@@ -116,8 +116,8 @@ class AdminController extends Controller
     public function indexServeurs()
     {
         $serveurs = User::where('role', 'serveur')
-                        ->where('restaurant_id', auth()->user()->restaurant->id)
-                        ->get();
+            ->where('restaurant_id', auth()->user()->restaurant->id)
+            ->get();
 
         return view('serveur.index', compact('serveurs'));
     }
@@ -156,9 +156,9 @@ class AdminController extends Controller
     public function showServeur($id)
     {
         $serveur = User::where('id', $id)
-                        ->where('role', 'serveur')
-                        ->where('restaurant_id', auth()->user()->restaurant->id)
-                        ->firstOrFail();
+            ->where('role', 'serveur')
+            ->where('restaurant_id', auth()->user()->restaurant->id)
+            ->firstOrFail();
 
         return view('serveur.show', compact('serveur'));
     }
@@ -167,9 +167,9 @@ class AdminController extends Controller
     public function editServeur($id)
     {
         $serveur = User::where('id', $id)
-                        ->where('role', 'serveur')
-                        ->where('restaurant_id', auth()->user()->restaurant->id)
-                        ->firstOrFail();
+            ->where('role', 'serveur')
+            ->where('restaurant_id', auth()->user()->restaurant->id)
+            ->firstOrFail();
 
         return view('serveur.edit', compact('serveur'));
     }
@@ -184,9 +184,9 @@ class AdminController extends Controller
         ]);
 
         $serveur = User::where('id', $id)
-                        ->where('role', 'serveur')
-                        ->where('restaurant_id', auth()->user()->restaurant->id)
-                        ->firstOrFail();
+            ->where('role', 'serveur')
+            ->where('restaurant_id', auth()->user()->restaurant->id)
+            ->firstOrFail();
 
         $serveur->name = $request->name;
         $serveur->email = $request->email;
@@ -202,12 +202,103 @@ class AdminController extends Controller
     public function destroyServeur($id)
     {
         $serveur = User::where('id', $id)
-                        ->where('role', 'serveur')
-                        ->where('restaurant_id', auth()->user()->restaurant->id)
-                        ->firstOrFail();
+            ->where('role', 'serveur')
+            ->where('restaurant_id', auth()->user()->restaurant->id)
+            ->firstOrFail();
 
         $serveur->delete();
 
         return redirect()->route('serveurs.index')->with('success', 'Serveur supprimé avec succès.');
+    }
+
+
+    public function indexCuisiniers()
+    {
+        $cuisiniers = User::where('role', 'cuisinier')
+            ->where('restaurant_id', auth()->user()->restaurant->id)
+            ->get();
+        return view('cuisinier.index', compact('cuisiniers'));
+    }
+
+    public function createCuisinier()
+    {
+        return view('cuisinier.create');
+    }
+
+    public function storeCuisinier(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6',
+        ]);
+
+        // Création du serveur
+        $cuisinier = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'restaurant_id' => auth()->user()->restaurant->id,
+            'role' => 'cuisinier',
+        ]);
+
+        // Envoi d'un email au nouveau serveur
+        Mail::to($request->email)->send(new NewUserCreated($cuisinier, $request->password));
+
+        return redirect()->route('cuisinier.index')->with('success', 'Cuisinier créé avec succès.');
+    }
+
+    public function showCuisinier($id)
+    {
+        $cuisinier = User::where('id', $id)
+            ->where('role', 'cuisinier')
+            ->where('restaurant_id', auth()->user()->restaurant->id)
+            ->firstOrFail();
+
+        return view('cuisinier.show', compact('cuisinier'));
+    }
+
+    public function editCuisinier($id)
+    {
+        $cuisinier = User::where('id', $id)
+            ->where('role', 'cuisinier')
+            ->where('restaurant_id', auth()->user()->restaurant->id)
+            ->firstOrFail();
+
+        return view('cuisinier.edit', compact('cuisinier'));
+
+    }
+
+    public function updateCuisinier(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|email|unique:users,email,' . $id,
+            'password' => 'nullable|string|min:6',
+        ]);
+
+        $cuisinier = User::where('id', $id)
+            ->where('role', 'cuisinier')
+            ->where('restaurant_id', auth()->user()->restaurant->id)
+            ->firstOrFail();
+
+        $cuisinier->name = $request->name;
+        $cuisinier->email = $request->email;
+        if ($request->password) {
+            $cuisinier->password = bcrypt($request->password);
+        }
+        $cuisinier->save();
+
+        return redirect()->route('cuisiniers.index')->with('success', 'Informations cuisinier mises à jour avec succès.');
+    }
+
+    public function destroyCuisinier($id)
+    {
+        $cuisinier = User::where('id', $id)
+                        ->where('role', 'cuisinier')
+                        ->where('restaurant_id', auth()->user()->restaurant->id)
+                        ->firstOrFail();
+        $cuisinier->delete();
+        return redirect()->route('cuisinier.index')->with('success','Cuisinier supprimé avec succès');
     }
 }

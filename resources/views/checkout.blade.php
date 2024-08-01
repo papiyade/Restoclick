@@ -185,6 +185,33 @@
                                 name="code_pin">
                         </div>
 
+                         <!-- Mode de commande -->
+    <div class="form-group">
+        <h3>Mode de Commande</h3>
+        <div class="d-flex flex-wrap">
+            <div class="form-check form-check-inline text-center mr-4">
+                <input style="margin-top: 5%" class="form-check-input" type="radio" id="emporter" name="mode_commande" value="à emporter" required>
+                <label class="form-check-label" for="emporter">À emporter</label>
+            </div>
+            <div class="form-check form-check-inline text-center mr-4">
+                <input style="margin-top: 5%" class="form-check-input" type="radio" id="sur_place" name="mode_commande" value="sur place" required>
+                <label class="form-check-label" for="sur_place">Sur place</label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sélection de table -->
+    <div id="table-select" style="display: none;">
+        <div class="form-group">
+            <label for="table_id">Table</label>
+            <select name="table_id" id="table_id" class="form-control">
+                @foreach($tables as $table)
+                    <option value="{{ $table->id }}">{{ $table->numero_table }}</option>
+                @endforeach
+            </select>
+        </div>
+    </div>
+
                         <button style="background-color: #000" type="submit" class="btn btn-dark mt-3">Passer la commande</button>
                     </form>
                 </div>
@@ -198,6 +225,13 @@
     <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
     <script>
         $(document).ready(function() {
+            $('input[name="mode_commande"]').on('change', function() {
+            if ($(this).val() === 'sur place') {
+                $('#table-select').show();
+            } else {
+                $('#table-select').hide();
+            }
+        });
             $('#commandeForm').submit(function(event) {
                 event.preventDefault();
                 $.ajax({

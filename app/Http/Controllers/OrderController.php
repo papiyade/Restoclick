@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 use App\Models\Notification;
 use App\Models\Paiement;
 use App\Models\Restaurant;
+use App\Models\Table;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Dompdf\Dompdf;
@@ -70,7 +71,10 @@ class OrderController extends Controller
 
         if ($admin && $admin->restaurant_id) {
             $query = $request->input('search');
-            $status = $request->input('status', 'En Cours');
+            $status = $request->input('status');
+            $commandeId = $request->input('commande_id');
+            $dateCommande = $request->input('date_commande');
+            $telephone = $request->input('telephone');
 
             $commandesQuery = Commande::where('restaurant_id', $admin->restaurant_id);
 
@@ -81,6 +85,20 @@ class OrderController extends Controller
             if ($status) {
                 $commandesQuery->where('statut', $status);
             }
+
+            if ($commandeId) {
+                $commandesQuery->where('id', $commandeId);
+            }
+
+            if ($dateCommande) {
+                $commandesQuery->whereDate('created_at', $dateCommande);
+            }
+
+            if ($telephone) {
+                $commandesQuery->where('telephone_client', 'LIKE', "%{$telephone}%");
+            }
+                    // Ajout de l'ordre par commande récente
+        $commandesQuery->orderBy('created_at', 'desc');
 
             $commandes = $commandesQuery->paginate(5);
 
@@ -100,6 +118,7 @@ class OrderController extends Controller
     }
 
 
+
     public function show($id)
     {
         $commande = Commande::findOrFail($id);
@@ -116,41 +135,43 @@ class OrderController extends Controller
     public function commander(Request $request)
     {
         try {
-            // Valider les données de la commande
             $validatedData = $request->validate([
                 'client_name' => 'required|string',
                 'telephone_client' => 'required|string',
                 'restaurant_id' => 'required|exists:restaurants,id',
                 'mode_paiement' => 'required|in:carte_credit,wave,om,especes',
-                'code_pin' => 'nullable|string|max:255'
+                'code_pin' => 'nullable|string|max:255',
+                'mode_commande' => 'required|in:à emporter,sur place',
+                'table_id' => 'nullable|exists:tables,id'
             ]);
 
-            // Récupérez les données nécessaires depuis la requête
             $restaurantId = $validatedData['restaurant_id'];
-
-            // Récupérez le panier depuis la session
             $cartKey = "cart_$restaurantId";
             $cart = session()->get($cartKey);
 
-            // Vérifiez si $cart est vide ou non défini
             if (empty($cart)) {
                 throw new \Exception('Le panier est vide ou invalide.');
             }
 
-            // Créez une nouvelle commande associée au restaurant
             $commande = new Commande();
             $commande->restaurant_id = $restaurantId;
             $commande->client_name = $validatedData['client_name'];
             $commande->telephone_client = $validatedData['telephone_client'];
+            $commande->mode_commande = $validatedData['mode_commande'];
+
+            if ($validatedData['mode_commande'] == 'sur place' && $validatedData['table_id']) {
+                $commande->table_id = $validatedData['table_id'];
+
+                // Marquer la table comme occupée
+                $table = Table::find($validatedData['table_id']);
+                $table->marquerCommeOccupee();
+            }
+
             $commande->save();
 
-            // Récupérez les plats correspondants aux ID dans le panier
             $plats = Plat::whereIn('id', array_keys($cart))->get();
-
-            // Calculer le total de la commande
             $totalOrderPrice = 0;
 
-            // Enregistrez les détails de la commande (les plats commandés)
             foreach ($plats as $plat) {
                 $quantity = $cart[$plat->id]['quantity'];
                 $totalOrderPrice += $plat->price * $quantity;
@@ -158,43 +179,41 @@ class OrderController extends Controller
                 $detailCommande = new DetailCommande();
                 $detailCommande->commande_id = $commande->id;
                 $detailCommande->plat_id = $plat->id;
-                $detailCommande->quantite = $quantity; // Quantité commandée
+                $detailCommande->quantite = $quantity;
                 $detailCommande->save();
             }
 
-            // Créez le paiement associé
             $paiement = new Paiement();
             $paiement->commande_id = $commande->id;
-            $paiement->montant = $totalOrderPrice; // Utiliser le montant total calculé
+            $paiement->montant = $totalOrderPrice;
             $paiement->date_heure = now();
             $paiement->mode_paiement = $validatedData['mode_paiement'];
             if ($validatedData['mode_paiement'] != 'especes') {
-                $paiement->cc_number = $validatedData['code_pin']; // Enregistrez le code pin dans un champ approprié
+                $paiement->cc_number = $validatedData['code_pin'];
             }
             $paiement->save();
 
-            // Ajouter une notification pour l'admin du restaurant
             Notification::create([
                 'client_name' => $validatedData['client_name'],
                 'client_phone_number' => $validatedData['telephone_client'],
                 'date_time' => now(),
-                'num_people' => 1, // Vous pouvez utiliser 1 par défaut ou ajouter une colonne quantité totale pour les commandes
+                'num_people' => 1,
                 'message' => "{$validatedData['client_name']} vient de passer une commande.",
                 'link' => route('admin.commandes.show', $commande->id),
                 'is_read' => false,
-                'restaurant_id' => $restaurantId, // Ajouter l'ID du restaurant associé à la notification
+                'restaurant_id' => $restaurantId,
             ]);
-
 
             return redirect()->route('checkout', ['restaurant_id' => $restaurantId])->with('success', 'Commande enregistrée avec succès!');
         } catch (\Exception $e) {
-            // Retournez une réponse JSON pour indiquer l'échec avec l'erreur
             return response()->json([
                 'success' => false,
                 'message' => 'Erreur lors de l\'enregistrement de la commande: ' . $e->getMessage(),
             ]);
         }
     }
+
+
 
     public function downloadPDF($id)
     {

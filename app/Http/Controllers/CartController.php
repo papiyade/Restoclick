@@ -6,6 +6,7 @@ use App\Models\Restaurant;
 use App\Models\Category;
 use App\Models\Plat;
 use Illuminate\Http\Request;
+use App\Models\Table;
 use Cart;
 
 class CartController extends Controller
@@ -124,14 +125,19 @@ class CartController extends Controller
             return redirect()->back()->with('error', 'Restaurant non trouvé.');
         }
 
+// Récupérer les tables disponibles pour le restaurant
+$tables = Table::where('restaurant_id', $restaurantId)->where('statut', 'disponible')->get();
+
         return view('checkout', [
             'cartItems' => $plats, // Passer les plats avec les quantités choisies
             'totalPrice' => $totalOrderPrice, // Total de la commande
             'cart' => $cart, // Passer le panier à la vue
             'restaurantId' => $restaurantId, // Passer l'ID du restaurant à la vue
             'restaurant' => $restaurant, // Passer le restaurant à la vue
+            'tables' => $tables, // Passer les tables disponibles à la vue
         ]);
     }
+
 
 
     public function getCartDetails()

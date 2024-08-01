@@ -207,6 +207,14 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('serveurs/{serveur}/edit', [AdminController::class, 'editServeur'])->name('serveurs.edit');
         Route::put('serveurs/{serveur}', [AdminController::class, 'updateServeur'])->name('serveurs.update');
         Route::delete('serveurs/{serveur}', [AdminController::class, 'destroyServeur'])->name('serveurs.destroy');
+
+        Route::get('cuisinier', [AdminController::class, 'indexCuisiniers'])->name('cuisinier.index');
+        Route::get('cuisinier/create', [AdminController::class, 'createCuisinier'])->name('cuisinier.create');
+        Route::post('cuisinier', [AdminController::class, 'storeCuisinier'])->name('cuisinier.store');
+        Route::get('cuisinier/{cuisinier}', [AdminController::class, 'showCuisinier'])->name('cuisinier.show');
+        Route::get('cuisinier/{cuisinier}/edit', [AdminController::class, 'editCuisinier'])->name('cuisinier.edit');
+        Route::put('cuisinier/{cuisinier}', [AdminController::class, 'updateCuisinier'])->name('cuisinier.update');
+        Route::delete('cuisinier/{cuisinier}', [AdminController::class, 'destroyCuisinier'])->name('cuisinier.destroy');
     });
     Route::get('/reservation', [ReservationController::class, 'showReservationsForm'])->name('client.reservation.form');
     Route::get('/admin/commandes', [OrderController::class, 'showOrders'])->name('admin.commandes.index');

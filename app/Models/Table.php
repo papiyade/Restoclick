@@ -29,4 +29,12 @@ class Table extends Model
     {
         return $this->belongsTo(Restaurant::class);
     }
+
+    // Dans le modèle Table.php
+public function marquerCommeOccupee()
+{
+    $this->statut = 'occupee';
+    $this->save();
+}
+
 }
