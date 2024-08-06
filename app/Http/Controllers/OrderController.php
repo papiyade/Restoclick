@@ -218,7 +218,7 @@ class OrderController extends Controller
     public function downloadPDF($id)
     {
         $commande = Commande::findOrFail($id);
-        $commande->load('details.plat');
+        $commande->load('details.plat', 'restaurant');
 
         // Calcul du prix total (si nécessaire)
         $totalPrice = $commande->details->sum(function ($detail) {
@@ -226,12 +226,12 @@ class OrderController extends Controller
         });
 
         // Configuration de DOMPDF
-        $options = new Options();
+        $options = new \Dompdf\Options();
         $options->set('isHtml5ParserEnabled', true);
         $options->set('isRemoteEnabled', true);
 
         // Création de l'instance de Dompdf
-        $dompdf = new Dompdf($options);
+        $dompdf = new \Dompdf\Dompdf($options);
 
         // Vue pour le PDF
         $pdf = view('admin.commandes.invoice_pdf', compact('commande', 'totalPrice'))->render();
@@ -248,6 +248,7 @@ class OrderController extends Controller
         // Téléchargement du PDF avec un nom de fichier
         return $dompdf->stream("commande_{$commande->id}_invoice.pdf");
     }
+
     public function changeStatus($id, $status)
     {
         $status = strtolower($status); // Convertir le statut en minuscule
@@ -257,4 +258,27 @@ class OrderController extends Controller
 
         return response()->json(['success' => true]);
     }
+
+    public function encaisserCommande(Request $request, $id)
+    {
+        $commande = Commande::find($id);
+        if ($commande->statut == 'en_cours') {
+            $commande->statut = 'terminée';
+            $commande->save();
+
+            // Libérer la table associée
+            if ($commande->table) {
+                $table = $commande->table;
+                $table->statut = 'disponible'; // Utilisez 'statut' au lieu de 'occupee'
+                $table->save();
+            }
+
+            return response()->json(['status' => 'success', 'message' => 'Commande encaissée et table libérée.']);
+        }
+
+        return response()->json(['status' => 'error', 'message' => 'Erreur lors de l\'encaissement de la commande.']);
+    }
+
+
+
 }

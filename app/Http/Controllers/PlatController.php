@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Plat;
 use App\Models\Category;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class PlatController extends Controller
 {
@@ -71,10 +72,7 @@ class PlatController extends Controller
 
             // Traitement de l'image
             if ($request->hasFile('image')) {
-
                 $imagePath = $request->file('image')->store('images', 'public');
-
-
                 $plat->image_url = $imagePath;
             }
 
@@ -91,82 +89,73 @@ class PlatController extends Controller
         }
     }
 
+    public function edit(Plat $plat)
+    {
+        $user = auth()->user();
+        $userId = Auth::id();
+        $plat->restaurant_id = $user->restaurant->id;
 
-public function edit(Plat $plat)
-{
-    $user = auth()->user();
-    $userId = Auth::id();
-    $plat->restaurant_id = $user->restaurant->id;
-    // Vérifier si l'administrateur est autorisé à modifier ce plat
-    $categories = Category::whereHas('restaurant', function ($query) use ($userId) {
-        $query->where('admin_id', $userId);
-    })->get();
+        // Vérifier si l'administrateur est autorisé à modifier ce plat
+        $categories = Category::whereHas('restaurant', function ($query) use ($userId) {
+            $query->where('admin_id', $userId);
+        })->get();
 
-    return view('admin.plats.edit', compact('plat', 'categories'));
-}
-
-
-
-
-public function update(Request $request, Plat $plat)
-{
-    // Validation des données du formulaire
-    $validatedData = $request->validate([
-        'name' => 'required|string|max:255',
-        'description' => 'nullable|string',
-        'price' => 'required|numeric|min:0',
-        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validation de l'image
-        'availability' => 'required|in:available,unavailable',
-        'category_id' => 'required|exists:categories,id', // Validation de la catégorie
-    ]);
-
-    // Traitement de l'image
-    if ($request->hasFile('image')) {
-        $imagePath = $request->file('image')->store('images', 'public');
-        $validatedData['image_url'] = $imagePath;
+        return view('admin.plats.edit', compact('plat', 'categories'));
     }
 
-    // Mettre à jour les informations du plat
-    $plat->update($validatedData);
+    public function update(Request $request, Plat $plat)
+    {
+        // Validation des données du formulaire
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric|min:0',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validation de l'image
+            'availability' => 'required|in:available,unavailable',
+            'category_id' => 'required|exists:categories,id', // Validation de la catégorie
+        ]);
 
-    // Redirection avec un message de succès
-    return redirect()->route('admin.plats.index')->with('success', 'Plat mis à jour avec succès.');
-}
+        // Traitement de l'image
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('images', 'public');
+            $validatedData['image_url'] = $imagePath;
+        }
 
+        // Mettre à jour les informations du plat
+        $plat->update($validatedData);
 
-public function trierPlats(Request $request)
-{
-    // Récupérer le critère de tri depuis la requête
-    $critereTri = $request->input('tri');
-
-    // Récupérer l'ID de l'utilisateur connecté
-    $userId = Auth::id();
-
-    // Récupérer les plats associés au restaurant de l'administrateur connecté
-    $plats = Plat::whereHas('restaurant', function ($query) use ($userId) {
-        $query->where('admin_id', $userId);
-    });
-
-    // Appliquer le tri en fonction du critère sélectionné
-    if ($critereTri === 'nom') {
-        $plats->orderBy('name');
-    } elseif ($critereTri === 'prix') {
-        $plats->orderBy('price');
-    } elseif ($critereTri === 'disponibilite') {
-        $plats->orderBy('availability');
+        // Redirection avec un message de succès
+        return redirect()->route('admin.plats.index')->with('success', 'Plat mis à jour avec succès.');
     }
 
-    // Récupérer les plats triés
-    $plats = $plats->get();
+    public function trierPlats(Request $request)
+    {
+        // Récupérer le critère de tri depuis la requête
+        $critereTri = $request->input('tri');
 
-    // Retourner la vue avec les plats triés
-    return view('admin.plats.index', compact('plats'));
-}
+        // Récupérer l'ID de l'utilisateur connecté
+        $userId = Auth::id();
 
+        // Récupérer les plats associés au restaurant de l'administrateur connecté
+        $plats = Plat::whereHas('restaurant', function ($query) use ($userId) {
+            $query->where('admin_id', $userId);
+        });
 
+        // Appliquer le tri en fonction du critère sélectionné
+        if ($critereTri === 'nom') {
+            $plats->orderBy('name');
+        } elseif ($critereTri === 'prix') {
+            $plats->orderBy('price');
+        } elseif ($critereTri === 'disponibilite') {
+            $plats->orderBy('availability');
+        }
 
+        // Récupérer les plats triés
+        $plats = $plats->get();
 
-
+        // Retourner la vue avec les plats triés
+        return view('admin.plats.index', compact('plats'));
+    }
 
     // Supprimer un plat de la base de données
     public function destroy(Plat $plat)

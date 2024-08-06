@@ -14,6 +14,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\TableController;
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Controllers\ConfigController;
 use App\Http\Middleware\SuperAdminMiddleware;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\NewUserCreated;
@@ -181,6 +182,13 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('admin/reservations/{page?}/{reservationId?}', [ReservationController::class, 'index'])->name('admin.reservations');
         Route::get('admin/notification/{id}', [NotificationController::class, 'markAsRead'])->name('admin.notification.show');
         Route::get('admin/commandes/{id}', [OrderController::class, 'show'])->name('admin.commandes.show');
+        // Route::post('/encaisser-commande/{id}', [OrderController::class, 'encaisserCommande']);
+        Route::post('/admin/commandes/encaisser/{id}', [OrderController::class, 'encaisserCommande'])->name('admin.commandes.encaisser');
+
+
+
+        Route::get('/config', [ConfigController::class, 'index'])->name('config.index');
+        Route::post('/config', [ConfigController::class, 'update'])->name('config.update');
 
         Route::get('/front-menu', function () {
             return view('front-menu');

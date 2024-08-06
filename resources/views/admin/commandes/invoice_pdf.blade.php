@@ -27,6 +27,14 @@
             background-color: #f9f9f9;
             box-sizing: border-box;
         }
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .signature {
+            text-align: right;
+            margin-top: 40px;
+        }
         h6 {
             margin-bottom: 10px;
             color: #333;
@@ -60,16 +68,20 @@
     <div class="row">
         <div class="column">
             <h6>De:</h6>
+            <div class="logo">
+                @if ($commande->restaurant->logo)
+                    <img src="{{ Storage::url($commande->restaurant->logo) }}" alt="Logo du Restaurant" width="100">
+                @endif
+            </div>
             <div><strong>{{ $commande->restaurant->name }}</strong></div>
-            <div>Adresse</div>
-            <div>{{ $commande->restaurant->address }}</div>
+            <div>Adresse: {{ $commande->restaurant->address }}</div>
             <div>Email: {{ $commande->restaurant->email }}</div>
             <div>Téléphone: {{ $commande->restaurant->phone_number }}</div>
         </div>
         <div class="column">
             <h6>A:</h6>
             <div><strong>{{ $commande->client_name }}</strong></div>
-            <div>{{ $commande->telephone_client }}</div>
+            <div>Téléphone: {{ $commande->telephone_client }}</div>
         </div>
     </div>
     <table>
@@ -93,5 +105,10 @@
         </tbody>
     </table>
     <p class="total">Total: {{ $totalPrice }} Fcfa</p>
+    <div class="signature">
+        @if ($commande->restaurant->signature)
+            <img src="{{ Storage::url($commande->restaurant->signature) }}" alt="Signature du Cachet" width="150">
+        @endif
+    </div>
 </body>
 </html>

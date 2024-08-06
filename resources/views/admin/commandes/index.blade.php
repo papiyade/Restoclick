@@ -59,7 +59,8 @@
 
                                 <div class="table-responsive active-projects style-1 ItemsCheckboxSec shorting">
                                     <div class="p-3" style="width: 40%;">
-                                        <input type="text" id="search-commandes" class="form-control" placeholder="Rechercher un client...">
+                                        <input type="text" id="search-commandes" class="form-control"
+                                            placeholder="Rechercher un client...">
                                     </div>
 
 
@@ -72,6 +73,7 @@
                                                 <th>Nom du Client</th>
                                                 <th>Statut Commande</th>
                                                 <th>Date de Commande</th>
+                                                <th>Table</th>
                                                 <th>Téléphone</th>
                                                 <th>Actions</th>
                                             </tr>
@@ -114,10 +116,16 @@
 
 
                                                     <td>{{ $commande->created_at->format('d/m/Y H:i') }}</td>
+                                                    <td>
+                                                        @if ($commande->table)
+                                                            {{ $commande->table->id }}
+                                                        @else
+                                                            NA
+                                                        @endif
+                                                    </td>
                                                     <td>{{ $commande->telephone_client }}</td>
                                                     <td class="py-2">
                                                         <div class="d-flex align-items-center">
-
                                                             <a class="dropdown-item view-order-details"
                                                                 href="javascript:void(0);"
                                                                 data-order-id="{{ $commande->id }}">
@@ -144,6 +152,9 @@
                                                     <div class="modal fade" id="orderDetailsModal" tabindex="-1"
                                                         aria-labelledby="orderDetailsModalLabel" aria-hidden="true">
                                                         <div class="modal-dialog modal-lg">
+                                                            <!-- Ajoutez ceci dans votre vue commandes/index.blade.php -->
+                                                            <div id="table-list"></div>
+
                                                             <!-- Utilisation de la classe modal-lg pour un modal plus large -->
                                                             <div class="modal-content">
                                                                 <div class="modal-header">
@@ -159,12 +170,14 @@
                                                                     </div>
                                                                 </div>
                                                                 <div class="modal-footer">
+
                                                                     <!-- Autres boutons du modal -->
                                                                     <a href="{{ route('admin.commandes.downloadPDF', $commande->id) }}"
                                                                         class="btn btn-primary"
                                                                         target="_blank">Télécharger PDF</a>
                                                                     <button type="button" class="btn btn-danger"
                                                                         data-bs-dismiss="modal">Fermer</button>
+
                                                                     <td>
                                                                         <div class="dropdown">
                                                                             <button class="btn btn-info dropdown-toggle"
@@ -222,29 +235,74 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 
-       <script>
+    {{-- Encaissement --}}
+    <script>
+        function refreshTables() {
+            fetch('/admin/tables')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('table-list').innerHTML = html;
+                })
+                .catch(error => console.error('Erreur:', error));
+        }
 
+        function encaisserCommande(id) {
+            if (confirm(`Êtes-vous sûr de vouloir encaisser la commande ${id}?`)) {
+                fetch(`/admin/commandes/encaisser/${id}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            id: id
+                        })
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Erreur lors de l\'encaissement de la commande');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.status === 'success') {
+                            document.getElementById(`encaisser-btn-${id}`).innerText = 'Encaissé';
+                            document.getElementById(`encaisser-btn-${id}`).classList.replace('btn-success', 'badge',
+                                'bg-success');
+                            alert(data.message);
+                        } else {
+                            alert(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erreur:', error);
+                        alert('Erreur lors de l\'encaissement de la commande');
+                    });
+            }
+        }
+    </script>
 
-    document.addEventListener('DOMContentLoaded', function () {
-        const searchInput = document.getElementById('search-commandes');
-        const tableBody = document.getElementById('commande-table-body');
-        const rows = tableBody.querySelectorAll('tr');
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('search-commandes');
+            const tableBody = document.getElementById('commande-table-body');
+            const rows = tableBody.querySelectorAll('tr');
 
-        searchInput.addEventListener('input', function () {
-            const searchTerm = searchInput.value.toLowerCase();
-            rows.forEach(row => {
-                const cells = row.querySelectorAll('td');
-                let rowContainsSearchTerm = false;
-                cells.forEach(cell => {
-                    if (cell.textContent.toLowerCase().includes(searchTerm)) {
-                        rowContainsSearchTerm = true;
-                    }
+            searchInput.addEventListener('input', function() {
+                const searchTerm = searchInput.value.toLowerCase();
+                rows.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    let rowContainsSearchTerm = false;
+                    cells.forEach(cell => {
+                        if (cell.textContent.toLowerCase().includes(searchTerm)) {
+                            rowContainsSearchTerm = true;
+                        }
+                    });
+                    row.style.display = rowContainsSearchTerm ? '' : 'none';
                 });
-                row.style.display = rowContainsSearchTerm ? '' : 'none';
             });
         });
-    });
-</script>
+    </script>
 
     <script>
         $(document).ready(function() {
