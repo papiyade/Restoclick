@@ -119,13 +119,13 @@
                                             <button class="btn increase-quantity"
                                                 style="border: none; color: black; font-size: 14px; padding: 0.5rem;">+</button>
                                         </div>
-                                        <a class="delete-item ml-3" href="javascript:void(0);">
+                                        {{-- <a class="delete-item ml-3" href="javascript:void(0);">
                                             <svg style="color: black; font-size:24rem;" xmlns="http://www.w3.org/2000/svg" width="24"
                                                 height="24" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
                                                 <path
                                                     d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
                                             </svg>
-                                        </a>
+                                        </a> --}}
                                     </div>
 
                                 </div>
@@ -144,14 +144,20 @@
         @else
             <div class="row">
                 <div class="col-12">
-                    <p class="text-center">Votre panier est vide.
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                    <p class="text-center fs-4">Votre panier est vide.
+                        {{-- <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
                             class="bi bi-cart-x-fill" viewBox="0 0 16 16">
                             <path
                                 d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0m7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0M7.354 5.646 8.5 6.793l1.146-1.147a.5.5 0 0 1 .708.708L9.207 7.5l1.147 1.146a.5.5 0 0 1-.708.708L8.5 8.207 7.354 9.354a.5.5 0 1 1-.708-.708L7.793 7.5 6.646 6.354a.5.5 0 1 1 .708-.708" />
-                        </svg>
+                        </svg> --}}
                     </p>
                 </div>
+            </div>
+            <div class="column">
+                <div class="col-8">
+                   <img  class="text-center" src="{{asset('assets/images/panier_vide.jpg')}}" alt="">
+                </div>
+
             </div>
         @endif
 

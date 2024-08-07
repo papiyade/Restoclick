@@ -228,16 +228,17 @@
                     </button>
                 </div>
 
-                <div class="card bordered-section ">
-                    <button class="btn btn-link btn-block text-left" style="width: 100%" type="button"
-                        data-toggle="modal" data-target="#modalInfo">
-                        <div class="card-header" id="headingInfo">
-                            <i class="fa fa-info-circle"></i> <span style="margin-left: 10px;">Info</span>
-                            <br> Téléphone et Adresse
-                            <i class="fas fa-chevron-right icon-right"></i>
-                        </div>
-                    </button>
-                </div>
+<!-- Bouton pour ouvrir le modal -->
+<div class="card bordered-section">
+    <button class="btn btn-link btn-block text-left" style="width: 100%" type="button"
+        data-toggle="modal" data-target="#modalInfo">
+        <div class="card-header" id="headingInfo">
+            <i class="fa fa-info-circle"></i> <span style="margin-left: 10px;">Info</span>
+            <br>Téléphone et Adresse
+            <i class="fas fa-chevron-right icon-right"></i>
+        </div>
+    </button>
+</div>
 
                 <div class="card bordered-section">
                     <button class="btn btn-link btn-block text-left" type="button" data-toggle="modal"
@@ -285,6 +286,23 @@
             </div>
         </div>
     </div>
+
+<!-- Modal pour afficher les informations du restaurant -->
+<div class="modal fade" id="modalInfo" tabindex="-1" role="dialog" aria-labelledby="modalInfoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="close-bar" data-dismiss="modal"><span></span></div>
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalInfoLabel">Informations du Restaurant</h5>
+            </div>
+            <div class="modal-body">
+                <h6>Nom : {{ $restaurant->name }}</h6>
+                <h6>Adresse : {{ $restaurant->address }}</h6>
+                <div id="map" style="height: 400px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
 
     <!-- Modal Info -->
     <div class="modal fade" id="modalPlats" tabindex="-1" role="dialog" aria-labelledby="modalPlatsLabel"
@@ -490,6 +508,7 @@
 
 
 
+
     <!-- Modal Vins -->
     <div class="modal fade" id="modalVins" tabindex="-1" role="dialog" aria-labelledby="modalVinsLabel"
         aria-hidden="true">
@@ -562,44 +581,44 @@
         });
     </script>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Function to initialize the map
-            function initMap(lat, lng) {
-                // Create the map
-                var map = L.map('map').setView([lat, lng], 13);
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Function to initialize the map
+        function initMap(lat, lng) {
+            // Create the map
+            var map = L.map('map').setView([lat, lng], 13);
 
-                // Add OpenStreetMap tiles
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                }).addTo(map);
+            // Add OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
 
-                // Add a marker
-                L.marker([lat, lng]).addTo(map)
-                    .bindPopup('{{ $restaurant->name }}')
-                    .openPopup();
+            // Add a marker
+            L.marker([lat, lng]).addTo(map)
+                .bindPopup('{{ $restaurant->name }}')
+                .openPopup();
+        }
+
+        // Geocode the restaurant address
+        async function geocodeAddress(address) {
+            const response = await fetch(
+                `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
+            const data = await response.json();
+            if (data && data.length > 0) {
+                const lat = data[0].lat;
+                const lng = data[0].lon;
+                initMap(lat, lng);
+            } else {
+                console.error("Adresse non retrouvée");
             }
+        }
 
-            // Geocode the restaurant address
-            async function geocodeAddress(address) {
-                const response = await fetch(
-                    `https://nominatim.openstreetmap.org/search?format=json&q=${address}`);
-                const data = await response.json();
-                if (data && data.length > 0) {
-                    const lat = data[0].lat;
-                    const lng = data[0].lon;
-                    initMap(lat, lng);
-                } else {
-                    console.error("Adresse non retrouvée");
-                }
-            }
-
-            // Geocode the restaurant address
+        // Initialize the map when the modal is shown
+        $('#modalInfo').on('shown.bs.modal', function () {
             geocodeAddress("{{ $restaurant->address }}");
         });
-    </script>
-
-
+    });
+</script>
 
     <script>
         $(document).ready(function() {
