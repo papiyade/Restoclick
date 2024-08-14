@@ -499,11 +499,11 @@
                             </g>
 
 						</div>
-							<span class="nav-text">Serveurs</span>
+							<span class="nav-text">Personnel</span>
 						</a>
 						<ul aria-expanded="false">
-							<li><a href="{{route('serveurs.index')}}">Liste des Serveurs</a></li>
-                            <li><a href="{{route('serveurs.create')}}">Ajouter un Serveur</a></li>
+							<li><a href="{{route('personnel.index')}}">Liste du personnel</a></li>
+                            <li><a href="{{route('personnel.create')}}">Ajouter un profil</a></li>
 						</ul>
 					</li>
                     <li><a class="has-arrow " href="javascript:void(0);" aria-expanded="false">
@@ -518,7 +518,7 @@
 							<span class="nav-text">Configuration</span>
 						</a>
 						<ul aria-expanded="false">
-							<li><a href="/config">Config</a></li>
+							<li><a href="/config">Logo et Cachet</a></li>
 						</ul>
 					</li>
 				</ul>
@@ -674,6 +674,11 @@
         },
     });
 </script>
+
+@livewireStyles
+...
+@livewireScripts
+
 
 
 

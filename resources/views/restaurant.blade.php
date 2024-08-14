@@ -470,7 +470,7 @@
                         <div class="form-group">
                             <label for="num_people">Nombre de personnes*</label>
                             <input type="number" value="1" class="form-control" id="num_people"
-                                name="num_people" min="1" max="5" required>
+                                name="num_people" min="1" max="30" required>
                             <div id="num_people_error" class="text-danger" style="display: none;">
                                 Le nombre de personnes par table doit commencer par 1
                             </div>

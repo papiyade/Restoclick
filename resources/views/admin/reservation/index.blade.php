@@ -151,7 +151,7 @@
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td colspan="9" class="text-center">Aucune réservation trouvée</td> <!-- Update colspan to 9 -->
+                                                    <td colspan="9" class="text-center">Aucune réservation trouvée</td> 
                                                 </tr>
                                             @endforelse
                                         </tbody>

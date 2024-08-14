@@ -18,7 +18,7 @@ class RedirectIfAuthenticated
             } elseif ($user->role === 'admin') {
                 return redirect()->route('admin.dashboard');
             } elseif ($user->role === 'serveur') {
-                return redirect()->route('layouts.app_serveur');
+                return redirect()->route('serveur.calendrier');
             }
         }
 

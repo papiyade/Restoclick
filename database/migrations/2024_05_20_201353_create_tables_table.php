@@ -3,28 +3,37 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
+
 
 return new class extends Migration
 {
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
-        Schema::create('tables', function (Blueprint $table) {
-            $table->id();
-            $table->string('numero_table');
-            $table->string('qr_code')->nullable();
-            $table->enum('statut', ['occupee', 'disponible'])->default('disponible');
-            $table->timestamps();
+        Schema::table('tables', function (Blueprint $table) {
+            $table->uuid('uuid')->nullable();  // Ajout sans contrainte unique pour éviter les erreurs
+        });
+
+        // Remplir les UUID pour les enregistrements existants
+        \App\Models\Table::whereNull('uuid')->get()->each(function ($table) {
+            $table->uuid = (string) Str::uuid();
+            $table->save();
+        });
+
+        // Maintenant ajouter la contrainte d'unicité
+        Schema::table('tables', function (Blueprint $table) {
+            $table->uuid('uuid')->unique()->change();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
-        Schema::dropIfExists('tables');
+        Schema::table('tables', function (Blueprint $table) {
+            $table->dropColumn('uuid');
+        });
     }
+
 };

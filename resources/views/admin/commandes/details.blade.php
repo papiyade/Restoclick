@@ -35,7 +35,18 @@
                             @endif
                         </strong>
                     </div>
-                    <div class="col-sm-3 mt-3"> <img src="{{asset('assets/images/qr.png')}}" alt="" class="img-fluid width110"> </div>
+                    <div class="col-sm-3 mt-3">
+                        @if($commande->table->qr_code)
+                        <img src="{{ asset($commande->table->qr_code) }}" alt="QR Code" width="80" >
+
+
+                        @else
+                        {{-- <img src="{{asset('assets/images/qr.png')}}" alt="" class="img-fluid width110"> --}}
+                        No QR Code
+
+
+                    @endif
+
                 </div>
             </div>
         </div>

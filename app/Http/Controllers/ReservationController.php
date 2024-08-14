@@ -80,7 +80,7 @@ class ReservationController extends Controller
             'email' => 'required|email|max:255',
             'date' => 'required|date',
             'time' => 'required',
-            'num_people' => 'required|integer|min:1|max:5',
+            'num_people' => 'required|integer|min:1|max:30',
             'restaurant_id' => 'required|exists:restaurants,id',
             'table_id' => 'required|exists:tables,id',
         ]);
@@ -182,22 +182,7 @@ class ReservationController extends Controller
             return response()->json(['error' => 'Erreur lors de la confirmation de la réservation.'], 500);
         }
     }
-    // public function sendEmail(Request $request)
-    // {
-    //     $reservation = Reservation::find($request->reservation_id);
 
-    //     if (!$reservation) {
-    //         return response()->json(['success' => false, 'message' => 'Réservation non trouvée.']);
-    //     }
-
-    //     // Envoyer l'email
-    //     try {
-    //         Mail::to($reservation->client_email)->send(new ReservationConfirmed($reservation, $request->message));
-    //         return response()->json(['success' => true, 'message' => 'Email envoyé avec succès!']);
-    //     } catch (\Exception $e) {
-    //         return response()->json(['success' => false, 'message' => 'Erreur lors de l\'envoi de l\'email.']);
-    //     }
-    // }
     public function sendEmail(Request $request)
     {
         $reservation = Reservation::find($request->reservation_id);

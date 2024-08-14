@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\NewUserCreated;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PanierController;
+use App\Http\Controllers\PersonnelController;
 use App\Http\Middleware\ServeurMiddleware;
 use App\Models\Commande;
 use App\Models\Reservation;
@@ -34,6 +35,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/dashboard', function () {
             if (Auth::user()->hasRole('superadmin')) {
                 return redirect()->route('superadmin.users.index');
+            }
+            elseif (Auth::user()->hasRole('serveur')) {
+                return redirect()->route('serveur.calendrier');
             }
 
             // Calculer les statuts des commandes pour le restaurant de l'utilisateur connecté
@@ -73,18 +77,30 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
             return view('dashboard', compact('statuts', 'totalPrices', 'totalOrders', 'totalReservations'));
         })->name('dashboard');
-    });
-
-    // Routes pour les serveurs protégées par le middleware 'serveur'
-
-
-
-
 
 
     Route::middleware([ServeurMiddleware::class])->group(function () {
-        Route::get('serveur-dashboard', [AdminController::class, 'dashboard'])->name('serveur.dashboard');
-        Route::get('/calendrier', function () {
+// routes/web.php
+
+// Page pour créer une commande
+Route::get('/serveur/commandes/create', [OrderController::class, 'create'])->name('serveur.commandes.create');
+
+// Routes pour les étapes du wizard
+// Route::post('/serveur/commandes/select-table', [OrderController::class, 'selectTable'])->name('serveur.commandes.select-table');
+// routes/web.php
+
+Route::get('/serveur/commandes/select-table', [OrderController::class, 'selectTable'])->name('serveur.commandes.select-table');
+Route::post('/serveur/commandes/select-table', [OrderController::class, 'storeTableSelection'])->name('serveur.commandes.store-table-selection');
+
+Route::post('/serveur/commandes/add-dishes', [OrderController::class, 'addDishes'])->name('serveur.commandes.add-dishes');
+Route::post('/serveur/commandes/add-client-info', [OrderController::class, 'addClientInfo'])->name('serveur.commandes.add-client-info');
+Route::post('/serveur/commandes/confirm', [OrderController::class, 'confirmOrder'])->name('serveur.commandes.confirm');
+Route::post('/serveur/commandes/confirm', [OrderController::class, 'confirmOrder'])->name('serveur.commandes.confirm');
+
+
+
+
+Route::get('/serveur/calendrier', function () {
             // Récupérer l'identifiant du restaurant de l'utilisateur connecté
             $restaurantId = auth()->user()->restaurant_id;
 
@@ -106,16 +122,17 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
             });
 
             return view('serveur.calendrier', ['reservationEvents' => $reservationEvents]);
-        });
-        Route::resource('admin/plats', PlatController::class)->except('show');
-        Route::resource('admin/menus', MenuController::class)->except('show');
-        Route::get('admin/plats/trier', [PlatController::class, 'trierPlats'])->name('admin.plats.trier');
-        Route::get('admin/reservations', [ReservationController::class, 'showReservations'])->name('admin.reservations');
-        Route::get('admin/reservation', [ReservationController::class, 'index'])->name('admin.reservation.index');
-        Route::get('/errors/error-403', function () {
-            return view('errors.error-403');
-        })->name('errors.error-403');
+        })->name('serveur.calendrier');
+        Route::get('/admin/commandes/create', [OrderController::class, 'create'])->name('admin.commandes.create');
+        Route::post('/admin/commandes/store', [OrderController::class, 'store'])->name('admin.commandes.store');
+
+
     });
+
+
+    });
+
+    // Routes pour les serveurs protégées par le middleware 'serveur'
 
     Route::middleware([SuperAdminMiddleware::class])->group(function () {
         // Placez ici les routes du SuperAdmin
@@ -138,6 +155,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
             return view('errors.error-403');
         })->name('errors.error-403');
     });
+
 
 
     // Routes de l'Admin
@@ -182,8 +200,17 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('admin/reservations/{page?}/{reservationId?}', [ReservationController::class, 'index'])->name('admin.reservations');
         Route::get('admin/notification/{id}', [NotificationController::class, 'markAsRead'])->name('admin.notification.show');
         Route::get('admin/commandes/{id}', [OrderController::class, 'show'])->name('admin.commandes.show');
-        // Route::post('/encaisser-commande/{id}', [OrderController::class, 'encaisserCommande']);
         Route::post('/admin/commandes/encaisser/{id}', [OrderController::class, 'encaisserCommande'])->name('admin.commandes.encaisser');
+        Route::get('/admin/commandes/create', [OrderController::class, 'create'])->name('admin.commandes.create');
+        Route::post('/admin/commandes/store', [OrderController::class, 'store'])->name('admin.commandes.store');
+
+
+        Route::get('/personnel', [PersonnelController::class, 'index'])->name('personnel.index');
+        Route::get('/personnel/create', [PersonnelController::class, 'create'])->name('personnel.create');
+        Route::post('/personnel', [PersonnelController::class, 'store'])->name('personnel.store');
+        Route::get('/personnel/{id}/edit', [PersonnelController::class, 'edit'])->name('personnel.edit');
+        Route::put('/personnel/{id}', [PersonnelController::class, 'update'])->name('personnel.update');
+        Route::delete('/personnel/{id}', [PersonnelController::class, 'destroy'])->name('personnel.destroy');
 
 
 

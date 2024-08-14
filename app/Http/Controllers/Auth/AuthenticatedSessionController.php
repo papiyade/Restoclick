@@ -17,16 +17,20 @@ class AuthenticatedSessionController extends Controller
 
 
      protected function authenticated(Request $request, $user)
-{
-    if ($user->role === 'superadmin') {
-        return redirect()->route('superadmin.index');
-    } elseif ($user->role === 'admin') {
-        return redirect()->route('admin.index');
-    }
+     {
+         if ($user->role === 'superadmin') {
+             return redirect()->route('superadmin.index');
+         } elseif ($user->role === 'admin') {
+             return redirect()->route('admin.index');
+         } elseif ($user->role === 'serveur') {
+             return redirect()->route('serveur.calendrier');
+         }
 
-    // Redirection par défaut pour les autres utilisateurs
-    return redirect('/dashboard');
-}
+         // Redirection par défaut pour les autres utilisateurs
+         return redirect()->route('serveur.calendrier');
+     }
+
+
     public function store(Request $request)
     {
         $request->validate([
@@ -43,7 +47,7 @@ class AuthenticatedSessionController extends Controller
         }
 
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
+            'email' => 'Cet Email n\'existe pas dans l\'application.',
         ]);
     }
 

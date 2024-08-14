@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Page des Commandes</title>
     <link rel="shortcut icon" type="image/png" href="{{ asset('assets/images/favicon.png') }}">
+    <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/vendor/bootstrap-select/dist/css/bootstrap-select.min.css') }}" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .avatar-circle {
@@ -20,6 +22,44 @@
             font-size: 18px;
             font-weight: bold;
         }
+        .pagination {
+        display: flex;
+        justify-content: center;
+        padding-left: 0;
+        list-style: none;
+        border-radius: 0.375rem;
+    }
+
+    .pagination li {
+        margin: 0 5px;
+    }
+
+    .pagination li a,
+    .pagination li span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem 0.75rem;
+        font-size: 1rem;
+        color: #007bff;
+        background-color: #fff;
+        border: 1px solid #dee2e6;
+        border-radius: 0.375rem;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .pagination li a:hover,
+    .pagination li span:hover {
+        color: #fff;
+        background-color: #007bff;
+        text-decoration: none;
+    }
+
+    .pagination .active span {
+        color: #fff;
+        background-color: #007bff;
+        border-color: #007bff;
+    }
     </style>
 </head>
 
@@ -41,7 +81,7 @@
                 </li>
             </ul>
             <div>
-                <a href="javascript:void(0)" class="btn btn-primary me-1">+ Nouvelle Commande</a>
+                <a href="{{route('admin.commandes.create')}}" class="btn btn-primary me-1">+ Nouvelle Commande</a>
                 <select class="default-select h-select ms-1" aria-label="Default select example">
                     <option selected>Semaine</option>
                     <option value="1">Mois</option>
@@ -58,9 +98,9 @@
                             <div class="card-body p-0">
 
                                 <div class="table-responsive active-projects style-1 ItemsCheckboxSec shorting">
+
                                     <div class="p-3" style="width: 40%;">
-                                        <input type="text" id="search-commandes" class="form-control"
-                                            placeholder="Rechercher un client...">
+                                        <input type="text" id="search-commandes" class="form-control" placeholder="Rechercher un client...">
                                     </div>
 
 
@@ -93,27 +133,30 @@
                                                     <td>{{ $commande->client_name }}</td>
                                                     <td>
                                                         @php
-                                                            $badgeClass = '';
+                                                            $badgeColor = '';
+                                                            $textColor = '#fff'; // Couleur du texte par défaut
+
                                                             switch (strtolower($commande->statut)) {
-                                                                case 'en cours':
-                                                                    $badgeClass = 'badge bg-warning';
+                                                                case 'en_cours':
+                                                                    $badgeColor = '#f2c020'; // Jaune pour "en cours"
+                                                                    $textColor = '#000'; // Noir pour le texte
                                                                     break;
-                                                                case 'terminée':
-                                                                    $badgeClass = 'badge bg-success';
+                                                                case 'terminee':
+                                                                    $badgeColor = '#4BC54F'; // Vert pour "terminée"
                                                                     break;
-                                                                case 'annulé':
-                                                                    $badgeClass = 'badge bg-danger';
+                                                                case 'annulee':
+                                                                    $badgeColor = '#df3517'; // Rouge pour "annulé"
                                                                     break;
                                                                 default:
-                                                                    $badgeClass = 'badge bg-secondary';
+                                                                    $badgeColor = '#888'; // Gris pour les autres statuts
                                                                     break;
                                                             }
                                                         @endphp
-                                                        <span class="{{ $badgeClass }}">
-                                                            {{ $commande->statut }}
+                                                        <span class="badge" style="background-color: {{ $badgeColor }}; color: {{ $textColor }}; padding: 5px 10px; border-radius: 5px;">
+                                                                {{ ucfirst($commande->statut) }}
+
                                                         </span>
                                                     </td>
-
 
                                                     <td>{{ $commande->created_at->format('d/m/Y H:i') }}</td>
                                                     <td>
@@ -212,15 +255,25 @@
                                             @endforelse
                                         </tbody>
                                     </table>
-                                    {{ $commandes->links() }}
+                                    <div class="d-flex justify-content-between mt-3">
+                                        {{-- <div>
+                                            @if ($commandes instanceof \Illuminate\Pagination\LengthAwarePaginator)
+                                                <p>Affichage de {{ $commandes->firstItem() }} à
+                                                    {{ $commandes->lastItem() }} sur
+                                                    {{ $commandes->total() }} commandes</p>
+                                            @endif
+                                        </div> --}}
+                                        {{ $commandes->links() }}
+                                        <div>
+                                        </div>
+
+
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="inactive-tab-pane" role="tabpanel" aria-labelledby="inactive-tab"
-                        tabindex="0">
-                        <!-- Contenu pour les réservations en attente -->
-                    </div>
+
                 </div>
             </div>
         </div>
