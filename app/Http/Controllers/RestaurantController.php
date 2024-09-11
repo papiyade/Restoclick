@@ -11,6 +11,9 @@ use App\Mail\AdminAssignedToRestaurant;
 use App\Models\Plat;
 use App\Models\Table;
 use App\Models\Menu;
+use Dompdf\Dompdf;
+use Dompdf\Options;
+
 
 class RestaurantController extends Controller
 {
@@ -115,4 +118,27 @@ class RestaurantController extends Controller
 
         return redirect()->route('superadmin.restaurants.index')->with('success', 'Restaurant supprimé avec succès.');
     }
+
+
+    public function generatePdfMenu($menuId)
+    {
+        $menu = Menu::findOrFail($menuId);
+        $categories = Category::all();
+
+        $pdf = new Dompdf();
+        $pdf->setOptions(new Options(['defaultFont' => 'Arial']));
+
+        $view = view('pdf.menu', compact('menu', 'categories'));
+        $pdf->loadHtml($view->render());
+        $pdf->render();
+
+        $output = $pdf->output();
+
+        // Définir le type de contenu pour le navigateur
+        return response($output, 200)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'inline; filename="' . $menu->id . '.pdf"');
+    }
+
+
 }

@@ -47,11 +47,6 @@ class ReservationController extends Controller
     }
 
 
-    public function showReservationForm($id)
-    {
-        $restaurant = Restaurant::findOrFail($id);
-        return view('book-table', compact('restaurant'));
-    }
 
 
     public function showReservations()
@@ -191,6 +186,10 @@ class ReservationController extends Controller
             return response()->json(['success' => false, 'message' => 'Réservation non trouvée.']);
         }
 
+        // Confirmer la réservation
+        $reservation->status = 'Confirmée'; // Supposons que 'confirmed' est le statut pour une réservation confirmée
+        $reservation->save();
+
         // Envoyer l'email
         try {
             Mail::to($reservation->client_email)->send(new ReservationConfirmed($reservation, $request->message));
@@ -200,7 +199,7 @@ class ReservationController extends Controller
 
         // Envoyer un message WhatsApp
         try {
-            $client = new Client(env('TWILIO_SID'), env('TWILIO_AUTH_TOKEN'));
+            $client = new \Twilio\Rest\Client(env('TWILIO_SID'), env('TWILIO_AUTH_TOKEN'));
 
             $client->messages->create(
                 'whatsapp:' . $reservation->client_phone_number,
@@ -210,9 +209,10 @@ class ReservationController extends Controller
                 ]
             );
 
-            return response()->json(['success' => true, 'message' => 'Email et message WhatsApp envoyés avec succès!']);
+            return response()->json(['success' => true, 'message' => 'Réservation confirmée, email et message WhatsApp envoyés avec succès!']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Erreur lors de l\'envoi du message WhatsApp: ' . $e->getMessage()]);
         }
     }
+
 }

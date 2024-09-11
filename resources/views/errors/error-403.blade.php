@@ -2,7 +2,6 @@
 <!DOCTYPE html>
 <html lang="en" class="h-100">
 
-
 <!-- Mirrored from salero.dexignzone.com/xhtml/page-error-403.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 20 Apr 2024 17:57:03 GMT -->
 <head>
     <meta charset="utf-8">
@@ -75,9 +74,9 @@
     }
 </script>
 
-<script src="vendor/global/global.min.js"></script>
-<script src="js/custom.js"></script>
-<script src="js/deznav-init.js"></script>
+<script src="{{asset('assets/vendor/global/global.min.js')}}"></script>
+<script src="{{asset('assets/js/custom.js')}}"></script>
+<script src="{{asset('assets/js/deznav-init.js')}}"></script>
 </body>
 
 <!-- Mirrored from salero.dexignzone.com/xhtml/page-error-403.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 20 Apr 2024 17:57:03 GMT -->

@@ -20,6 +20,9 @@
 	<!-- FAVICONS ICON -->
 	<link rel="shortcut icon" type="image/png" href="images/favicon.png">
 
+
+    
+
 	<link href="{{ asset('assets/vendor/bootstrap-select/dist/css/bootstrap-select.min.css') }}" rel="stylesheet">
 <link href="{{ asset('assets/vendor/swiper/css/swiper-bundle.min.css') }}" rel="stylesheet">
 <link href="{{ asset('assets/vendor/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet">
@@ -429,9 +432,9 @@
 						</a>
 						<ul aria-expanded="false">
 							<li><a href="{{route('admin.commandes.index')}}">Liste des commandes</a></li>
+                            <li><a href="{{route('serveur.commandes.create')}}">Ajouter une commande</a></li>
 						</ul>
 					</li>
-
 				</ul>
 				<div class="plus-box">
 					<div class="media">

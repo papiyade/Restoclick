@@ -20,6 +20,9 @@ class RedirectIfAuthenticated
             } elseif ($user->role === 'serveur') {
                 return redirect()->route('serveur.calendrier');
             }
+        } elseif ($user->role === 'polyvalents') {
+            return redirect()->route('admin.plats.index');
+        }
         }
 
         return $next($request);

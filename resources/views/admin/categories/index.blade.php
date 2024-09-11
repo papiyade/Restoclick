@@ -13,7 +13,6 @@
                     </div>
                 @endif
 
-                <div class="card-header flex-wrap border-0 d-flex justify-content-between align-items-center">
                     <div>
                         <h4 class="card-title" style="font-size: 28px;">Liste des Catégories</h4>
                     </div>
@@ -76,7 +75,7 @@
                 {{ $categories->links() }} <!-- Afficher les liens de pagination générés par Laravel -->
             </div>
         </div>
-    </div>
+    
 
 @endsection
 

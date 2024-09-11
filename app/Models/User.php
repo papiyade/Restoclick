@@ -82,8 +82,18 @@ public function restaurants()
 
 public function plats()
 {
-    return $this->restaurant->plats ?? collect(); // Assurez-vous de retourner une collection même si le restaurant est null
+    // Récupérer le restaurant associé à l'utilisateur
+    $restaurant = $this->restaurants;
+
+    // Si le restaurant est null, retourner une collection vide
+    if ($restaurant) {
+        return $restaurant->plats;
+    }
+
+    return collect(); // Retourner une collection vide si le restaurant est null
 }
+
+
 
 public function commandes()
 {

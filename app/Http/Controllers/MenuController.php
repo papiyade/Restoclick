@@ -12,6 +12,10 @@ use App\Models\Reservation;
 use App\Models\Table;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+// use PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 class MenuController extends Controller
 {
@@ -94,16 +98,14 @@ class MenuController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'prix' => 'nullable|numeric|min:0',
             'plats' => 'required|array',
             'plats.*' => 'exists:plats,id',
         ]);
 
-        // Créer un nouveau menu
+        // Créer un nouveau menu sans prix
         $menu = new Menu([
             'name' => $request->name,
             'description' => $request->description,
-            'prix' =>  $request->prix,
         ]);
 
         // Enregistrer le menu
@@ -146,7 +148,7 @@ public function update(Request $request, Menu $menu)
         'plats.*' => 'exists:plats,id',
     ]);
 
-    // Mettre à jour les données du menu
+    // Mettre à jour les données du menu sans prix
     $menu->update([
         'name' => $request->name,
         'description' => $request->description,
@@ -175,4 +177,20 @@ public function destroy(Menu $menu)
 }
 
     // Autres méthodes pour edit, update et destroy
+
+    public function generatePDF($menuId)
+    {
+        // Charger le menu avec ses plats, catégories, et restaurant associé
+        $menu = Menu::with('plats.category', 'restaurant')->findOrFail($menuId);
+
+        // Charger toutes les catégories pour les afficher par catégorie
+        $categories = Category::all();
+
+        // Passer le menu, les catégories et le restaurant à la vue PDF
+        $pdf = PDF::loadView('admin.menus.pdf', compact('menu', 'categories'));
+
+        // Télécharger le PDF avec le nom du menu
+        return $pdf->download('menu-' . $menu->name . '.pdf');
+    }
+
 }

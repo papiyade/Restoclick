@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\RestaurantController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\TableController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\ConfigController;
+use App\Http\Controllers\CuisinierController;
 use App\Http\Middleware\SuperAdminMiddleware;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\NewUserCreated;
@@ -22,8 +24,14 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PanierController;
 use App\Http\Controllers\PersonnelController;
 use App\Http\Middleware\ServeurMiddleware;
+use App\Http\Middleware\PolyvalentsMiddleware;
+use App\Http\Middleware\CuisinierMiddleware;
 use App\Models\Commande;
 use App\Models\Reservation;
+use App\Http\Middleware\GerantMiddleware;
+use App\Http\Controllers\GerantController;
+use App\Http\Middleware\CaissierMiddleware;
+use App\Http\Controllers\CaissierController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -39,6 +47,19 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
             elseif (Auth::user()->hasRole('serveur')) {
                 return redirect()->route('serveur.calendrier');
             }
+            elseif (Auth::user()->hasRole('polyvalents')) {
+                return redirect()->route('admin.plats.index');
+            }
+            elseif (Auth::user()->hasRole('cuisiniers')) {
+                return redirect()->route('cuisinier.plats.index');
+            }
+            elseif (Auth::user()->hasRole('gérant')) {
+                return redirect()->route('gerant.commandes.index');
+            }
+            elseif (Auth::user()->hasRole('caissier')) {
+                return redirect()->route('caissier.commandes.index');
+            }
+
 
             // Calculer les statuts des commandes pour le restaurant de l'utilisateur connecté
             $restaurantId = Auth::user()->restaurant_id;
@@ -79,23 +100,37 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         })->name('dashboard');
 
 
+        Route::middleware([PolyvalentsMiddleware::class])->group(function () {
+            Route::get('admin/plats', [PlatController::class, 'index'])->name('admin.plats.index');
+        });
+
+        Route::middleware([CuisinierMiddleware::class])->group(function () {
+            Route::get('cuisinier/plats/index', [CuisinierController::class, 'index'])->name('cuisinier.plats.index');
+
+        });
+        Route::middleware([GerantMiddleware::class])->group(function () {
+            Route::get('gerant/commandes/index', [GerantController::class, 'index'])->name('gerant.commandes.index');
+        });
+
+        Route::middleware([CaissierMiddleware::class])->group(function () {
+            Route::get('caissier/commandes/index', [CaissierController::class, 'index'])->name('caissier.commandes.index');
+        });
+
     Route::middleware([ServeurMiddleware::class])->group(function () {
-// routes/web.php
 
 // Page pour créer une commande
 Route::get('/serveur/commandes/create', [OrderController::class, 'create'])->name('serveur.commandes.create');
 
-// Routes pour les étapes du wizard
-// Route::post('/serveur/commandes/select-table', [OrderController::class, 'selectTable'])->name('serveur.commandes.select-table');
-// routes/web.php
 
 Route::get('/serveur/commandes/select-table', [OrderController::class, 'selectTable'])->name('serveur.commandes.select-table');
-Route::post('/serveur/commandes/select-table', [OrderController::class, 'storeTableSelection'])->name('serveur.commandes.store-table-selection');
-
-Route::post('/serveur/commandes/add-dishes', [OrderController::class, 'addDishes'])->name('serveur.commandes.add-dishes');
-Route::post('/serveur/commandes/add-client-info', [OrderController::class, 'addClientInfo'])->name('serveur.commandes.add-client-info');
-Route::post('/serveur/commandes/confirm', [OrderController::class, 'confirmOrder'])->name('serveur.commandes.confirm');
-Route::post('/serveur/commandes/confirm', [OrderController::class, 'confirmOrder'])->name('serveur.commandes.confirm');
+Route::post('/serveur/commandes/store-table-selection', [OrderController::class, 'storeTableSelection'])->name('serveur.commandes.store-table-selection');
+Route::get('/serveur/commandes/add-dishes', [OrderController::class, 'addDishes'])->name('serveur.commandes.add-dishes');
+Route::post('/serveur/commandes/store-dishes', [OrderController::class, 'storeDishes'])->name('serveur.commandes.store-dishes');
+Route::get('/serveur/commandes/add-client-info', [OrderController::class, 'addClientInfo'])->name('serveur.commandes.add-client-info');
+Route::post('/serveur/commandes/store-client-info', [OrderController::class, 'storeClientInfo'])->name('serveur.commandes.store-client-info');
+Route::post('/serveur/commandes/confirm-order', [OrderController::class, 'confirmOrder'])->name('serveur.commandes.confirm-order');
+Route::get('/serveur/commandes/create', [OrderController::class, 'create'])->name('serveur.commandes.create');
+Route::post('/serveur/commandes/store', [OrderController::class, 'store'])->name('serveur.commandes.store');
 
 
 
@@ -123,6 +158,7 @@ Route::get('/serveur/calendrier', function () {
 
             return view('serveur.calendrier', ['reservationEvents' => $reservationEvents]);
         })->name('serveur.calendrier');
+
         Route::get('/admin/commandes/create', [OrderController::class, 'create'])->name('admin.commandes.create');
         Route::post('/admin/commandes/store', [OrderController::class, 'store'])->name('admin.commandes.store');
 
@@ -175,6 +211,8 @@ Route::get('/serveur/calendrier', function () {
         Route::get('admin/menus', [MenuController::class, 'index'])->name('admin.menus.index');
         Route::get('admin/menus/create', [MenuController::class, 'create'])->name('admin.menus.create');
         Route::post('admin/menus', [MenuController::class, 'store'])->name('admin.menus.store');
+        Route::get('admin/menus/{id}/pdf', [MenuController::class, 'generatePdf'])->name('admin.menus.pdf');
+
         Route::get('admin/menus/{menu}/edit', [MenuController::class, 'edit'])->name('admin.menus.edit');
         Route::put('admin/menus/{menu}', [MenuController::class, 'update'])->name('admin.menus.update');
         Route::delete('admin/menus/{menu}', [MenuController::class, 'destroy'])->name('admin.menus.destroy');
@@ -194,6 +232,8 @@ Route::get('/serveur/calendrier', function () {
 
         Route::post('/admin/reservation/confirm/{id}', [ReservationController::class, 'confirmReservation']);
         Route::post('/admin/reservation/send-email', [ReservationController::class, 'sendEmail']);
+        Route::post('/admin/reservation/confirm-and-send/{id}', [ReservationController::class, 'confirmAndSendEmail'])->name('admin.reservation.confirm-and-send');
+
 
         Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
         Route::get('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
@@ -203,6 +243,14 @@ Route::get('/serveur/calendrier', function () {
         Route::post('/admin/commandes/encaisser/{id}', [OrderController::class, 'encaisserCommande'])->name('admin.commandes.encaisser');
         Route::get('/admin/commandes/create', [OrderController::class, 'create'])->name('admin.commandes.create');
         Route::post('/admin/commandes/store', [OrderController::class, 'store'])->name('admin.commandes.store');
+        Route::delete('/commandes/{id}', [OrderController::class, 'destroy'])->name('commandes.destroy');
+
+
+
+        Route::get('/commandes/ajout', [OrderController::class, 'ajout'])->name('admin.commandes.ajout');
+        Route::post('/commandes/add', [OrderController::class, 'add'])->name('admin.commandes.add');
+        Route::post('/serveur/commandes/store', [OrderController::class, 'store'])->name('serveur.commandes.store');
+
 
 
         Route::get('/personnel', [PersonnelController::class, 'index'])->name('personnel.index');
@@ -217,10 +265,10 @@ Route::get('/serveur/calendrier', function () {
         Route::get('/config', [ConfigController::class, 'index'])->name('config.index');
         Route::post('/config', [ConfigController::class, 'update'])->name('config.update');
 
-        Route::get('/front-menu', function () {
-            return view('front-menu');
-        });
-        Route::get('/front-menu', [MenuFrontController::class, 'showMenu']);
+        // Route::get('/front-menu', function () {
+        //     return view('front-menu');
+        // });
+        // Route::get('/front-menu', [MenuFrontController::class, 'showMenu']);
 
         Route::get('/menu', [MenuController::class, 'showMenu'])->name('client.menu');
         Route::post('/menu/add-to-cart/{plat}', [OrderController::class, 'addToCart'])->name('client.add-to-cart');
@@ -263,6 +311,8 @@ Route::get('/Shop/{id}', [CartController::class, 'seeShop'])->name('Shop.showByI
 Route::get('/get-cart', [CartController::class, 'getCart'])->name('cart.get');
 Route::post('/add-to-cart', [CartController::class, 'addToCart']);
 Route::post('/remove-from-cart', [CartController::class, 'removeFromCart']);
+Route::post('/update-cart-quantity', [CartController::class, 'updateCartQuantity'])->name('update.cart.quantity');
+
 
 Route::post('/place-order', [OrderController::class, 'placeOrder'])->name('place.order');
 
@@ -270,22 +320,16 @@ Route::get('/confirmation', 'OrderController@confirmation')->name('confirmation'
 
 Route::get('/shop-detail/{id}', [ShopController::class, 'show'])->name('shop-detail');
 
-Route::get('/Resto', [MenuFrontController::class, 'showthatMenu'])->name('Resto.showthatMenu');
 
-Route::get('/Resto/{id}', [MenuFrontController::class, 'showMenuParId'])->name('Resto.showById');
 
 Route::get('/client/restaurant/{id}', [ReservationController::class, 'showReservationForm'])->name('client.restaurant');
 Route::post('/reservation', [ReservationController::class, 'makeReservation'])->name('client.make-reservation');
 Route::get('restaurant/{id}/reservation', [ReservationController::class, 'showReservationForm'])->name('client.reservation.form');
 Route::post('restaurant/reservation', [ReservationController::class, 'makeReservation'])->name('client.reservation.submit');
-Route::get('/Resto/{id}', [MenuFrontController::class, 'showMenuParId'])->name('Resto.showById');
 Route::get('/restaurant/{id}', [MenuFrontController::class, 'showeMenuParId'])->name('restaurant.showById');
 Route::get('/get-cart', [App\Http\Controllers\CartController::class, 'getCartContent'])->name('get-cart');
 Route::get('/get-cart', [CartController::class, 'getCartDetails'])->name('get-cart');
 
-Route::get('/panier', [PanierController::class, 'index'])->name('panier.index');
-Route::post('/panier/store', [PanierController::class, 'store'])->name('panier.store');
-Route::post('/panier/destroy', [PanierController::class, 'destroy'])->name('panier.destroy');
 
 Route::post('/add-to-cart', [CartController::class, 'addToCart'])->name('add.to.cart');
 Route::delete('/delete-cart-item', [CartController::class, 'deleteCartItem'])->name('delete.cart.item');
@@ -300,18 +344,8 @@ Route::post('/checkout/initiate', [CartController::class, 'initiateOrder'])->nam
 
 Route::get('/webmaster-resto', [RestaurantController::class, 'showAllRestaurants'])->name('webmaster-resto');
 Route::get('/restaurant/{id}', [RestaurantController::class, 'showeMenuParId'])->name('restaurant.showById');
+Route::get('/restaurants/{id}/menu/pdf', [RestaurantController::class, 'generatePdfMenu'])->name('restaurant.menu.pdf');
 
 
-Route::get('/test-email', function () {
-    $user = new App\Models\User([
-        'name' => 'Test User',
-        'email' => 'test@example.com',
-    ]);
-    $password = 'password123';
-    Mail::to($user->email)->send(new NewUserCreated($user, $password));
-    return 'Email has been sent!';
-});
 
-Route::get('number',  function () {
-    return view("number");
-});
+

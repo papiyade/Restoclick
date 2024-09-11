@@ -151,7 +151,7 @@
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td colspan="9" class="text-center">Aucune réservation trouvée</td> 
+                                                    <td colspan="9" class="text-center">Aucune réservation trouvée</td>
                                                 </tr>
                                             @endforelse
                                         </tbody>
@@ -362,6 +362,61 @@
                                 });
                             });
                         </script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('sendEmailButton').addEventListener('click', function() {
+        var reservationId = document.getElementById('reservationId').value;
+        var emailMessage = document.getElementById('emailMessage').value;
+
+        fetch('{{ route('admin.reservation.send-email') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    reservation_id: reservationId,
+                    message: emailMessage
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Réservation confirmée et email envoyé!',
+                        text: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    document.getElementById('emailMessage').value = '';
+                    var emailModal = new bootstrap.Modal(document.getElementById('emailModal'));
+                    emailModal.hide();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erreur',
+                        text: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erreur',
+                    text: 'Une erreur est survenue lors de la confirmation et de l\'envoi de l\'email.',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            });
+    });
+});
+
+</script>
                     @endsection
 </body>
 

@@ -125,8 +125,8 @@ class CartController extends Controller
             return redirect()->back()->with('error', 'Restaurant non trouvé.');
         }
 
-// Récupérer les tables disponibles pour le restaurant
-$tables = Table::where('restaurant_id', $restaurantId)->where('statut', 'disponible')->get();
+        // Récupérer les tables disponibles pour le restaurant
+        $tables = Table::where('restaurant_id', $restaurantId)->where('statut', 'disponible')->get();
 
         return view('checkout', [
             'cartItems' => $plats, // Passer les plats avec les quantités choisies
@@ -146,28 +146,9 @@ $tables = Table::where('restaurant_id', $restaurantId)->where('statut', 'disponi
         return view('cart-details', compact('cartItems'));
     }
 
-    public function seeShop($id)
-    {
-        $restaurant = Restaurant::findOrFail($id);
-        $categories = Category::where('restaurant_id', $id)->with('plats')->get();
-        $cart = session()->get("cart_$id", []);
 
-        $plats = Plat::whereIn('id', array_keys($cart))->get();
-        $subtotal = $plats->reduce(function ($carry, $plat) use ($cart) {
-            return $carry + ($plat->price * $cart[$plat->id]);
-        }, 0);
 
-        return view('Shop', compact('categories', 'restaurant', 'cart', 'subtotal'));
-    }
-
-    public function getCart($restaurantId)
-    {
-        $cart = session()->get("cart_$restaurantId", []);
-        $plats = Plat::whereIn('id', array_keys($cart))->get();
-
-        $view = view('partials.cart-items', compact('plats', 'cart'))->render();
-        return response()->json(['html' => $view]);
-    }
+  
 
     public function getCartContent()
     {

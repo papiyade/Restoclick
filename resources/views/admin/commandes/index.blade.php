@@ -22,44 +22,46 @@
             font-size: 18px;
             font-weight: bold;
         }
+
         .pagination {
-        display: flex;
-        justify-content: center;
-        padding-left: 0;
-        list-style: none;
-        border-radius: 0.375rem;
-    }
+    display: flex;
+    justify-content: center;
+    padding-left: 0;
+    list-style: none;
+    border-radius: 0.375rem;
+}
 
-    .pagination li {
-        margin: 0 5px;
-    }
+.pagination li {
+    margin: 0 5px;
+}
 
-    .pagination li a,
-    .pagination li span {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0.5rem 0.75rem;
-        font-size: 1rem;
-        color: #007bff;
-        background-color: #fff;
-        border: 1px solid #dee2e6;
-        border-radius: 0.375rem;
-        transition: background-color 0.3s, color 0.3s;
-    }
+.pagination li a,
+.pagination li span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+    color: #007bff;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    transition: background-color 0.3s, color 0.3s;
+}
 
-    .pagination li a:hover,
-    .pagination li span:hover {
-        color: #fff;
-        background-color: #007bff;
-        text-decoration: none;
-    }
+.pagination li a:hover,
+.pagination li span:hover {
+    color: #fff;
+    background-color: #007bff;
+    text-decoration: none;
+}
 
-    .pagination .active span {
-        color: #fff;
-        background-color: #007bff;
-        border-color: #007bff;
-    }
+.pagination .active span {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
     </style>
 </head>
 
@@ -70,18 +72,21 @@
         <div class="d-flex justify-content-between mb-4 flex-wrap">
             <ul class="revnue-tab nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="status-tab" data-bs-toggle="tab" data-bs-target="#active-tab-pane"
-                        type="button" role="tab" aria-controls="active-tab-pane"
-                        aria-selected="true">Confirmée</button>
+                    <button class="nav-link active" id="status-confirmed-tab" data-status="confirmée" data-bs-toggle="tab"
+                        type="button" role="tab" aria-controls="confirmed-tab-pane" aria-selected="true">Confirmée</button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="inactive-tab" data-bs-toggle="tab" data-bs-target="#inactive-tab-pane"
-                        type="button" role="tab" aria-controls="inactive-tab-pane" aria-selected="false">En
-                        Attente</button>
+                    <button class="nav-link" id="status-pending-tab" data-status="en attente" data-bs-toggle="tab"
+                        type="button" role="tab" aria-controls="pending-tab-pane" aria-selected="false">En Attente</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="status-canceled-tab" data-status="annulée" data-bs-toggle="tab"
+                        type="button" role="tab" aria-controls="canceled-tab-pane" aria-selected="false">Annulée</button>
                 </li>
             </ul>
+
             <div>
-                <a href="{{route('admin.commandes.create')}}" class="btn btn-primary me-1">+ Nouvelle Commande</a>
+                <a href="{{ route('admin.commandes.ajout') }}" class="btn btn-primary me-1">+ Nouvelle Commande</a>
                 <select class="default-select h-select ms-1" aria-label="Default select example">
                     <option selected>Semaine</option>
                     <option value="1">Mois</option>
@@ -100,7 +105,8 @@
                                 <div class="table-responsive active-projects style-1 ItemsCheckboxSec shorting">
 
                                     <div class="p-3" style="width: 40%;">
-                                        <input type="text" id="search-commandes" class="form-control" placeholder="Rechercher un client...">
+                                        <input type="text" id="search-commandes" class="form-control"
+                                            placeholder="Rechercher un client...">
                                     </div>
 
 
@@ -138,7 +144,7 @@
 
                                                             switch (strtolower($commande->statut)) {
                                                                 case 'en_cours':
-                                                                    $badgeColor = '#f2c020'; // Jaune pour "en cours"
+                                                                    $badgeColor = '#dfad0c'; // Jaune pour "en cours"
                                                                     $textColor = '#000'; // Noir pour le texte
                                                                     break;
                                                                 case 'terminee':
@@ -152,8 +158,9 @@
                                                                     break;
                                                             }
                                                         @endphp
-                                                        <span class="badge" style="background-color: {{ $badgeColor }}; color: {{ $textColor }}; padding: 5px 10px; border-radius: 5px;">
-                                                                {{ ucfirst($commande->statut) }}
+                                                        <span class="badge"
+                                                            style="background-color: {{ $badgeColor }}; color: {{ $textColor }}; padding: 5px 10px; border-radius: 5px;">
+                                                            {{ ucfirst($commande->statut) }}
 
                                                         </span>
                                                     </td>
@@ -182,7 +189,8 @@
                                                                 </svg>
                                                             </a>
                                                             <a class="dropdown-item text-danger ms-2"
-                                                                href="javascript:void(0);">
+                                                                href="javascript:void(0);"
+                                                                onclick="confirmDelete({{ $commande->id }})">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="20"
                                                                     height="20" fill="currentColor"
                                                                     class="bi bi-trash3-fill" viewBox="0 0 16 16">
@@ -190,6 +198,7 @@
                                                                         d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
                                                                 </svg>
                                                             </a>
+
                                                         </div>
                                                     </td>
                                                     <div class="modal fade" id="orderDetailsModal" tabindex="-1"
@@ -256,19 +265,9 @@
                                         </tbody>
                                     </table>
                                     <div class="d-flex justify-content-between mt-3">
-                                        {{-- <div>
-                                            @if ($commandes instanceof \Illuminate\Pagination\LengthAwarePaginator)
-                                                <p>Affichage de {{ $commandes->firstItem() }} à
-                                                    {{ $commandes->lastItem() }} sur
-                                                    {{ $commandes->total() }} commandes</p>
-                                            @endif
-                                        </div> --}}
                                         {{ $commandes->links() }}
-                                        <div>
-                                        </div>
-
-
                                     </div>
+
                                 </div>
                             </div>
                         </div>
@@ -286,6 +285,33 @@
     <script src="{{ asset('assets/js/deznav-init.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <script>
+        function confirmDelete(id) {
+            // Demander confirmation avant de supprimer
+            if (confirm("Êtes-vous sûr de vouloir supprimer cette commande ?")) {
+                // Envoyer la requête de suppression
+                $.ajax({
+                    url: '/commandes/' + id,
+                    type: 'DELETE',
+                    data: {
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        // Redirection après succès
+                        alert('Commande supprimée avec succès !');
+                        location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Erreur lors de la suppression de la commande.');
+                    }
+                });
+            } else {
+                console.log("Suppression annulée.");
+            }
+        }
+    </script>
 
 
     {{-- Encaissement --}}
@@ -319,9 +345,11 @@
                     })
                     .then(data => {
                         if (data.status === 'success') {
-                            document.getElementById(`encaisser-btn-${id}`).innerText = 'Encaissé';
-                            document.getElementById(`encaisser-btn-${id}`).classList.replace('btn-success', 'badge',
-                                'bg-success');
+                            // Remplacer le bouton "Encaisser" par un badge vert
+                            const encaisserBtn = document.getElementById(`encaisser-btn-${id}`);
+                            encaisserBtn.outerHTML =
+                                `<span class="badge bg-success" id="status-badge-${id}">Encaissée</span>`;
+
                             alert(data.message);
                         } else {
                             alert(data.message);
@@ -361,6 +389,9 @@
         $(document).ready(function() {
             $('.view-order-details').on('click', function() {
                 var orderId = $(this).data('order-id');
+                $('#order-details-content').html(
+                    '<div class="spinner-border text-primary" role="status"><span class="sr-only">Chargement...</span></div>'
+                    );
                 $.ajax({
                     url: "{{ route('admin.commandes.show', ['commande' => ':id']) }}".replace(
                         ':id', orderId),

@@ -60,6 +60,8 @@ class PlatController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validation de l'image
             'availability' => 'required|in:available,unavailable',
             'category_id' => 'required|exists:categories,id', // Validation de la catégorie
+            'preparation_time' => 'nullable|integer|min:1', // Validation du champ preparation_time
+
         ]);
 
         // Récupérer l'utilisateur connecté
@@ -113,6 +115,8 @@ class PlatController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validation de l'image
             'availability' => 'required|in:available,unavailable',
             'category_id' => 'required|exists:categories,id', // Validation de la catégorie
+            'preparation_time' => 'nullable|integer|min:1', // Validation du champ preparation_time
+
         ]);
 
         // Traitement de l'image

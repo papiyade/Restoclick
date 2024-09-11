@@ -17,13 +17,8 @@
             <label for="description">Description</label>
             <textarea class="form-control" name="description" id="description" style="width: 50%;"></textarea>
         </div>
-        <div class="form-group">
-            <label for="price">Prix</label>
-            <input type="number" name="prix" id="prix" style="width: 50%;" class="form-control" step="0.01"
-                required>
-        </div>
         <div class="row mt-3">
-            @php $colWidth = 6 / count($categories); @endphp <!-- Calcul de la largeur des colonnes -->
+            @php $colWidth = 8 / count($categories); @endphp
             @foreach($categories as $category)
             <div class="col-md-{{ $colWidth }}">
                 <div class="form-group">
@@ -38,7 +33,6 @@
                 </div>
             </div>
             @endforeach
-
         </div>
         <button type="submit" class="btn btn-primary mt-3">Créer Menu</button>
     </form>

@@ -13,6 +13,10 @@ class Kernel extends HttpKernel
         'admin' => \App\Http\Middleware\AdminMiddleware::class,
         'superadmin' => \App\Http\Middleware\SuperAdminMiddleware::class,
         'serveur' => \App\Http\Middleware\ServeurMiddleware::class,
+        'polyvalents' => \App\Http\Middleware\PolyvalentsMiddleware::class,
+        'cuisiniers' => \App\Http\Middleware\PolyvalentsMiddleware::class,
+        'gérant' => \App\Http\Middleware\GerantMiddleware::class,
+
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         \App\Http\Middleware\RedirectAfterLogin::class,
         'redirect.if.authenticated' => \App\Http\Middleware\RedirectIfAuthenticated::class,

@@ -7,6 +7,7 @@ class Commande extends Model
 {
     protected $fillable = [
         'client_id',
+        'mode_commande',
         'client_name',
         'restaurant_id',
         'statut',
@@ -42,5 +43,11 @@ class Commande extends Model
     {
         return $this->hasOne(Paiement::class);
     }
-    
+    public function plats()
+    {
+        return $this->belongsToMany(Plat::class, 'detail_commandes')->withPivot('quantite');
+    }
+
+
+
 }

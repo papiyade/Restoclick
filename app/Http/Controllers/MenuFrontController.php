@@ -36,63 +36,8 @@ class MenuFrontController extends Controller
     /**
      * Display the specified resource.
      */
-    public function showMenu()
-    {
-        // Récupérer tous les menus pour l'utilisateur connecté
-        $menus = auth()->user()->restaurant->menus;
-        $lastMenu = $menus->last();
-        $userId = Auth::id();
 
-        // Récupérer les catégories créées par l'utilisateur connecté
-        $categories = Category::whereHas('restaurant', function ($query) use ($userId) {
-            $query->where('admin_id', $userId);
-        })->get();
 
-        // Passer les variables à la vue
-        return view('front-menu', compact('lastMenu', 'categories'));
-    }
-    public function showthatMenu()
-    {
-        // Récupérer tous les menus pour l'utilisateur connecté
-        $menus = auth()->user()->restaurant->menus;
-        $lastMenu = $menus->last();
-        $userId = Auth::id();
-
-        // Récupérer les catégories créées par l'utilisateur connecté
-        $categories = Category::whereHas('restaurant', function ($query) use ($userId) {
-            $query->where('admin_id', $userId);
-        })->get();
-        return view('Resto', compact('lastMenu', 'categories'));
-    }
-
-    public function showMenuById($id)
-    {
-        // Récupérer le restaurant par son ID
-        $restaurant = Restaurant::findOrFail($id);
-
-        // Récupérer les menus et le dernier menu du restaurant
-        $menus = $restaurant->menus;
-        $lastMenu = $menus->last();
-
-        // Récupérer les catégories associées à ce restaurant
-        $categories = Category::where('restaurant_id', $id)->get();
-
-        // Passer les variables à la vue
-        return view('front-menu', compact('lastMenu', 'categories', 'restaurant'));
-    }
-
-    public function showMenuParId($id){
-        $restaurant = Restaurant::findOrFail($id);
-
-    // Récupérer les menus et le dernier menu du restaurant
-    $menus = $restaurant->menus;
-    $lastMenu = $menus->last();
-
-    // Récupérer les catégories associées aux plats du dernier menu
-    $categories = $lastMenu ? Category::whereIn('id', $lastMenu->plats->pluck('category_id'))->get() : collect();
-
-    return view('Resto', compact('lastMenu', 'categories', 'restaurant'));
-    }
 
     public function showeMenuParId($id){
         $restaurant = Restaurant::findOrFail($id);

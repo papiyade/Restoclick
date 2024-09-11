@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('tables', function (Blueprint $table) {
+
             //
-            Schema::table('tables', function (Blueprint $table) {
-                $table->uuid('uuid')->unique()->nullable(false)->after('id');
-            });
-        });
+            // Schema::table('tables', function (Blueprint $table) {
+            //     $table->uuid('uuid')->unique()->nullable(false)->after('id');
+            // });
+
     }
 
     /**
@@ -26,9 +26,9 @@ return new class extends Migration
     {
         Schema::table('tables', function (Blueprint $table) {
             //
-            Schema::table('tables', function (Blueprint $table) {
+
                 $table->dropColumn('uuid');
-            });
+
         });
     }
 };

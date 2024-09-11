@@ -37,6 +37,11 @@
                                 <option value="unavailable">Non disponible</option>
                             </select>
                         </div>
+                        <div class="form-group">
+                            <label for="preparation_time">Temps de Préparation (en minutes)</label>
+                            <input type="number" class="form-control" id="preparation_time" name="preparation_time" min="1" placeholder="Exemple : 5">
+                        </div>
+
 
                         <div class="form-group">
                             <label for="category_id">Catégorie</label>

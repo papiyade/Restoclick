@@ -47,6 +47,8 @@
                                 <button type="submit" class="btn btn-outline-light"
                                     onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce menu ?')"><i class="fas fa-trash-alt"></i></button>
                             </form>
+                            <a href="{{ route('admin.menus.pdf', $menu->id) }}" class="btn btn-outline-light"><i class="fas fa-file-pdf"></i> Télécharger PDF</a>
+
                         </div>
                     </div>
                 </div>
