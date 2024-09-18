@@ -7,11 +7,6 @@
         <!-- Filtre de statut -->
         <div style="width: 20%;">
             <label for="status-filter" class="form-label" style="color: rgb(6, 51, 158);">Filtrer par statut :</label>
-            {{-- <select id="status-filter" class="form-select" aria-label="Filtrer par statut">
-                <option value="all">Tous</option>
-                <option value="disponible">Disponible</option>
-                <option value="occupee">Occupée</option>
-            </select> --}}
             <select id="status-filter" class="default-select h-select ms-1" aria-label="Filtrer par statut">
                 <option value="all">Tous</option>
                 <option value="disponible">Disponible</option>

@@ -5,7 +5,6 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
-
 return new class extends Migration
 {
     /**
@@ -13,8 +12,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('tables', function (Blueprint $table) {
-            $table->uuid('uuid')->nullable();  // Ajout sans contrainte unique pour éviter les erreurs
+        // Créer la table 'tables' si elle n'existe pas
+        Schema::create('tables', function (Blueprint $table) {
+            $table->id();
+            $table->string('numero_table')->unique();
+            $table->string('qr_code')->nullable(); // QR code peut être ajouté ici ou plus tard
+            $table->enum('statut', ['disponible', 'occupee'])->default('disponible');
+            $table->timestamps();
+            $table->uuid('uuid')->nullable();  // Ajout de l'UUID
         });
 
         // Remplir les UUID pour les enregistrements existants
@@ -23,7 +28,7 @@ return new class extends Migration
             $table->save();
         });
 
-        // Maintenant ajouter la contrainte d'unicité
+        // Maintenant ajouter la contrainte d'unicité sur l'UUID
         Schema::table('tables', function (Blueprint $table) {
             $table->uuid('uuid')->unique()->change();
         });
@@ -31,9 +36,6 @@ return new class extends Migration
 
     public function down()
     {
-        Schema::table('tables', function (Blueprint $table) {
-            $table->dropColumn('uuid');
-        });
+        Schema::dropIfExists('tables');
     }
-
 };

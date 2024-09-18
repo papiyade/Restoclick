@@ -30,6 +30,6 @@ class InsertSuperadminUser extends Migration
      */
     public function down()
     {
-        // Vous pouvez ajouter du code pour supprimer l'utilisateur ici si nécessaire
+        
     }
 }
