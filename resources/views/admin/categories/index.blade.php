@@ -1,6 +1,5 @@
 @extends('layouts.app_admin')
 
-
 @section('title', 'Liste des Catégories')
 
 @section('content')
@@ -13,28 +12,25 @@
                     </div>
                 @endif
 
-                    <div>
-                        <h4 class="card-title" style="font-size: 28px;">Liste des Catégories</h4>
-                    </div>
-                    <div>
-                        <a href="{{ route('admin.categories.create') }}">
-                            <button type="button" class="btn btn-success">
-                                <span class="btn-icon-start text-info">
-                                    <i class="fa fa-plus color-info"></i>
-                                </span>
-                                Ajouter
-                            </button>
-                        </a>
-                    </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="card-title" style="font-size: 28px;">Liste des Catégories</h4>
+                    <a href="{{ route('admin.categories.create') }}">
+                        <button type="button" class="btn btn-success">
+                            <span class="btn-icon-start text-info">
+                                <i class="fa fa-plus color-info"></i>
+                            </span>
+                            Ajouter
+                        </button>
+                    </a>
                 </div>
 
                 <div class="card-body pt-0">
                     <div class="table-responsive">
-                        <table id="categoriesTable" class="display table" style="min-width: 845px">
+                        <table id="categoriesTable" class="display table table-striped" style="min-width: 845px">
                             <thead>
                                 <tr>
                                     <th></th>
-                                    <th>ID</th>
+                                    <th>No</th>
                                     <th>Nom</th>
                                     <th>Description</th>
                                     <th>Actions</th>
@@ -45,22 +41,22 @@
                                     <tr>
                                         <td>
                                             <div class="form-check custom-checkbox">
-                                                <input type="checkbox" class="form-check-input" id="customCheckBox2" required="">
-                                                <label class="form-check-label" for="customCheckBox2"></label>
+                                                <input type="checkbox" class="form-check-input" id="customCheckBox{{ $category->id }}" required="">
+                                                <label class="form-check-label" for="customCheckBox{{ $category->id }}"></label>
                                             </div>
                                         </td>
                                         <td>{{ $category->id }}</td>
                                         <td>{{ $category->name }}</td>
                                         <td>{{ $category->description }}</td>
                                         <td>
-                                            <a href="{{ route('admin.categories.edit', ['category' => $category->id]) }}" class="btn btn-primary">
+                                            <a href="{{ route('admin.categories.edit', ['category' => $category->id]) }}" class="btn btn-primary btn-sm" title="Modifier">
                                                 <i class="fa fa-pencil"></i>
                                             </a>
 
                                             <form id="delete-category-form-{{ $category->id }}" action="{{ route('admin.categories.destroy', $category->id) }}" method="POST" style="display: inline-block;">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="button" class="btn btn-danger sweet-confirm" data-id="{{ $category->id }}">
+                                                <button type="button" class="btn btn-danger btn-sm sweet-confirm" data-id="{{ $category->id }}" title="Supprimer">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
                                             </form>
@@ -72,11 +68,10 @@
                     </div>
                 </div>
 
-                {{ $categories->links() }} <!-- Afficher les liens de pagination générés par Laravel -->
+                {{ $categories->links() }}
             </div>
         </div>
-    
-
+    </div>
 @endsection
 
 @section('scripts')

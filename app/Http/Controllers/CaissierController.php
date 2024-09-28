@@ -72,4 +72,17 @@ class CaissierController extends Controller
 
         return view('caissier.commandes.index', compact('commandes', 'status'));
     }
+
+    public function show($id)
+    {
+        $commande = Commande::findOrFail($id);
+        $commande->load('details.plat');
+        // Calculer le prix total
+        $totalPrice = $commande->details->sum(function ($detail) {
+            return $detail->quantite * $detail->plat->price;
+        });
+        return response()->json([
+            'html' => view('caissier.commandes.details', compact('commande', 'totalPrice'))->render()
+        ]);
+    }
 }

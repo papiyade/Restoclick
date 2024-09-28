@@ -103,6 +103,7 @@ class OrderController extends Controller
             'html' => view('admin.commandes.details', compact('commande', 'totalPrice'))->render()
         ]);
     }
+
     public function commander(Request $request)
     {
         try {

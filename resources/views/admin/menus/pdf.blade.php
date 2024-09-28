@@ -135,7 +135,7 @@
 
 <!-- Menu Title and Description -->
 <h1>{{ $menu->name }}</h1>
-<p>{{ $menu->description }}</p>
+<p style="text-align: center">{{ $menu->description }}</p>
 
 <!-- Category and Dish Listing -->
 @foreach ($categories as $category)

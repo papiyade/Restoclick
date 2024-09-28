@@ -143,54 +143,24 @@
 
                                 <li class="notification_dropdown">
                                     <a class="nav-link bell-link" href="javascript:void(0);" role="button" data-bs-toggle="dropdown">
+                                        <!-- Icône de la cloche et badge des notifications -->
                                         <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd" clip-rule="evenodd" d="M17.5 12H19C19.8284 12 20.5 12.6716 20.5 13.5C20.5 14.3284 19.8284 15 19 15H6C5.17157 15 4.5 14.3284 4.5 13.5C4.5 12.6716 5.17157 12 6 12H7.5L8.05827 6.97553C8.30975 4.71226 10.2228 3 12.5 3C14.7772 3 16.6903 4.71226 16.9417 6.97553L17.5 12Z" fill="#222B40"/>
                                             <path opacity="0.3" d="M14.5 18C14.5 16.8954 13.6046 16 12.5 16C11.3954 16 10.5 16.8954 10.5 18C10.5 19.1046 11.3954 20 12.5 20C13.6046 20 14.5 19.1046 14.5 18Z" fill="#222B40"/>
                                         </svg>
-                                        <span class="badge light text-white bg-primary rounded-circle">{{ \App\Models\Notification::where('is_read', false)->count() }}</span>
+
+                                        <span id="notification-count" class="badge light text-white bg-primary rounded-circle">0</span>
                                     </a>
+
                                     <div class="dropdown-menu dropdown-menu-end">
                                         <div id="DZ_W_Notification1" class="widget-media dz-scroll p-2" style="height:380px;">
                                             <ul class="timeline" style="text-align: center;">
-                                                @if($notifications->isEmpty())
-                                                    <li>
-                                                        <div class="timeline-panel">
-                                                            <div class="media-body">
-                                                                <svg style="color: #3a62c5" xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="currentColor" class="bi bi-bell-fill" viewBox="0 0 16 16">
-                                                                    <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901"/>
-                                                                </svg>
-                                                                <h6 style="color: #848383; margin-top: 95%;">Aucune notification pour le moment</h6>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                @else
-                                                    @foreach($notifications as $notification)
-                                                        <li>
-                                                            <div class="timeline-panel">
-                                                                <div class="media me-2">
-                                                                    <img alt="image" width="40" src="{{ asset('assets/images/avatar/1.jpg') }}">
-                                                                </div>
-
-                                                                <div class="media-body">
-                                                                    <h6 class="mb-1">{{ $notification->message }}</h6>
-                                                                    <div class="d-block" style="display: inline-block; text-align:center; align-items:center">
-                                                                        <small class="d-block">{{ $notification->created_at->format('d M Y - H:i') }}</small>
-                                                                        <a href="{{ route('notifications.read', $notification->id) }}">Voir</a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                    @endforeach
-                                                @endif
+                                                <!-- Contenu dynamique des notifications -->
                                             </ul>
-
                                         </div>
                                         <a class="all-notification" href="{{ route('notifications.index') }}">Voir toutes les notifications <i class="ti-arrow-end"></i></a>
                                     </div>
                                 </li>
-
-
-
 
 
 								<li class=" notification_dropdown">
@@ -641,6 +611,130 @@
 <script src="{{ asset('assets/js/styleSwitcher.js') }}"></script>
 <script src="{{ asset ('assets/vendor/sweetalert2/dist/sweetalert2.min.js')}}"></script>
 <script src="{{ asset ('assets/js/plugins-init/sweetalert.init.js')}}"></script>
+
+{{-- <script>
+    $(document).ready(function() {
+        // Fonction pour charger les notifications
+        function loadNotifications() {
+            $.ajax({
+                url: "{{ route('notifications.unread') }}",
+                type: 'GET',
+                success: function(data) {
+                    // Vider la liste des notifications avant d'ajouter les nouvelles
+                    $('#DZ_W_Notification1 .timeline').empty();
+
+                    if(data.length > 0) {
+                        // Mettre à jour uniquement le badge des notifications avec le nombre de notifications non lues
+                        $('#notification-count').text(data.length);
+
+                        // Parcourir les notifications et les ajouter à la liste
+                        $.each(data, function(index, notification) {
+                            let notificationItem = `
+                                <li>
+                                    <div class="timeline-panel">
+                                        <div class="media me-2">
+                                            <img alt="image" width="40" src="{{ asset('assets/images/avatar/1.jpg') }}">
+                                        </div>
+                                        <div class="media-body">
+                                            <h6 class="mb-1">${notification.message}</h6>
+                                            <div class="d-block">
+                                                <small class="d-block">${new Date(notification.created_at).toLocaleString()}</small>
+                                                <a href="/notifications/read/${notification.id}">Voir</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            `;
+                            $('#DZ_W_Notification1 .timeline').append(notificationItem);
+                        });
+                    } else {
+                        // Afficher un message si aucune notification n'est disponible
+                        $('#DZ_W_Notification1 .timeline').html(`
+                            <li>
+                                <div class="timeline-panel">
+                                    <div class="media-body">
+                                        <h6 style="color: #848383;">Aucune notification pour le moment</h6>
+                                    </div>
+                                </div>
+                            </li>
+                        `);
+                        $('#notification-count').text(0);
+                    }
+                }
+            });
+        }
+
+        // Appeler la fonction loadNotifications toutes les 10 secondes (10000 ms)
+        setInterval(loadNotifications, 10000);
+
+        // Charger immédiatement les notifications au chargement de la page
+        loadNotifications();
+    });
+</script> --}}
+
+<script>
+$(document).ready(function() {
+    // Charger les notifications non lues
+    function loadNotifications() {
+        $.ajax({
+            url: "{{ route('notifications.unread') }}",
+            type: 'GET',
+            success: function(data) {
+                // Mettre à jour la liste et le badge des notifications
+                let notificationTimeline = $('#DZ_W_Notification1 .timeline');
+                notificationTimeline.empty();
+
+                if(data.length > 0) {
+                    $('#notification-count').text(data.length);
+
+                    $.each(data, function(index, notification) {
+                        let notificationItem = `
+                            <li>
+                                <div class="timeline-panel">
+                                    <div class="media me-2">
+                                        <img alt="image" width="40" src="{{ asset('assets/images/avatar/1.jpg') }}">
+                                    </div>
+                                    <div class="media-body">
+                                        <h6 class="mb-1">${notification.message}</h6>
+                                        <div class="d-block">
+                                            <small class="d-block">${new Date(notification.created_at).toLocaleString()}</small>
+                                            <!-- Générer l'URL avec l'ID de notification -->
+                                            <a href="{{ route('notifications.markAsRead', '') }}/${notification.id}">Voir</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>`;
+                        notificationTimeline.append(notificationItem);
+                    });
+                } else {
+                    notificationTimeline.html('<li><h6>Aucune notification pour le moment</h6></li>');
+                    $('#notification-count').text(0);
+                }
+            }
+        });
+    }
+
+    // Marquer les notifications comme lues quand le dropdown s'ouvre
+    $('.notification_dropdown').on('show.bs.dropdown', function() {
+        $.ajax({
+            url: "{{ route('notifications.markAsRead', 0) }}".replace('0', ''), // Eviter de générer une URL avec un paramètre incorrect
+            type: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}'
+            },
+            success: function() {
+                $('#notification-count').text(0); // Remettre le badge à 0
+            }
+        });
+    });
+
+    // Recharger les notifications toutes les 10 secondes
+    setInterval(loadNotifications, 10000);
+    loadNotifications(); // Charger immédiatement les notifications
+});
+
+</script>
+
 
 <script>
     var swiper = new Swiper(".mySwiper", {

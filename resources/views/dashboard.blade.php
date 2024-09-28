@@ -91,8 +91,6 @@
 
         </div>
 
-
-
     </div>
 
 
@@ -102,13 +100,13 @@
                 <div class="card">
                     <div class="card-header border-0 pb-0">
                         <h3 class="h-title">Résumé des commandes</h3>
-                        <div style="margin-left: 130%">
+                        <div >
                             <select class="default-select h-select" aria-label="Default select example">
                                 <option selected>Week</option>
                                 <option value="1">Month</option>
                                 <option value="2">Daily</option>
                             </select>
-                            <div class="dropdown custom-dropdown mb-0" style="margin-left: 130%;">
+                            <div class="dropdown custom-dropdown mb-0" >
                                 <div class="btn sharp tp-btn dark-btn" data-bs-toggle="dropdown">
                                     <svg width="5" height="18" viewBox="0 0 5 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <circle cx="2.25748" cy="2.19083" r="1.92398" fill="#1921FA"/>
@@ -124,7 +122,7 @@
                         </div>
                     </div>
 
-                    <div class="card-body" style="width: 170%">
+                    <div class="card-body" >
                         <div class="row">
                             <div class="col-xl-6">
                                 <div id="piecharte"></div>

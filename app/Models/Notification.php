@@ -9,7 +9,7 @@ class Notification extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'client_name', 'client_phone_number', 'date_time', 'num_people', 'message', 'link', 'is_read', 'restaurant_id'
+        'client_name', 'client_phone_number', 'date_time', 'num_people', 'message', 'link', 'is_read', 'type', 'restaurant_id'
     ];
 
     public function restaurant()

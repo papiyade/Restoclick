@@ -28,6 +28,28 @@
 
 
     <style>
+        /* Quantity controls */
+        .quantity-controls {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .quantity-controls button {
+            border: none;
+            background-color: #1e1136;
+            color: white;
+            font-size: 1.2rem;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .quantity-controls span {
+            font-size: 1.2rem;
+            margin: 0 10px;
+        }
+
         /* Pour les grands écrans - Disposition par défaut */
         .menu-details {
             display: flex;
@@ -95,39 +117,14 @@
             /* Centre l'image verticalement */
         }
 
-        .btn-add-to-cart {
+        /* .btn-add-to-cart {
             align-self: center;
             /* Centre le bouton verticalement */
-            margin-left: 10px;
-            /* Ajoute un petit espace après l'image */
-        }
-
-        .quantity-controls {
-            display: flex;
-            align-items: center;
-            /* Centre le contenu de la section verticalement */
-            margin-left: auto;
-            /* Aligne la section de quantité à droite */
-            align-self: center;
-            /* Centre la section verticalement dans le conteneur */
-        }
+        margin-left: 10px;
+        /* Ajoute un petit espace après l'image */
+        /* } */
 
 
-        .quantity-controls span {
-            margin: 0 5px;
-            /* Ajoute un espacement entre les éléments */
-        }
-
-        .quantity-controls button {
-            margin: 0 5px;
-            /* Ajoute un espacement entre les éléments */
-            background-color: #b4b4b4;
-            /* Couleur de fond similaire à bg-light */
-        }
-
-        .quantity-text {
-            font-weight: bold;
-        }
 
         @media (max-width: 768px) {
             .prix {
@@ -146,18 +143,12 @@
                 /* Empêche le wrapping des éléments */
             }
 
-            .menu-item .col-md-4 img,
-            .menu-item .col-md-4 .btn-add-to-cart {
+            /* .menu-item .col-md-4 img,
+            /* .menu-item .col-md-4 .btn-add-to-cart {
                 align-self: center;
                 /* Centre les images et les boutons verticalement */
-            }
 
-            .quantity-controls {
-                margin-top: 0;
-                /* Supprime la marge supérieure */
-                align-self: center;
-                /* Centre la section de quantité verticalement */
-            }
+
 
             .menu-item .col-md-8 {
                 margin-bottom: 10px;
@@ -327,7 +318,7 @@
             color: green;
         }
 
-        .btn-add-to-cart {
+        /* .btn-add-to-cart {
             width: 30px;
             height: 30px;
             border-radius: 50%;
@@ -341,20 +332,20 @@
             bottom: 10px;
             margin-left: 27%;
             transition: transform 0.2s ease;
-        }
+        } */
 
-        .btn-add-to-cart:hover {
+        /* .btn-add-to-cart:hover {
             transform: scale(1.1);
-        }
+        } */
 
-        .btn-add-to-cart strong {
+        /* .btn-add-to-cart strong {
             color: black;
-        }
+        } */
 
-        .btn-add-to-cart svg {
+        /* .btn-add-to-cart svg {
             width: 24px;
             height: 24px;
-        }
+        } */
 
 
         .position-absolute {
@@ -704,46 +695,163 @@
         }
 
         .go-to-cart {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    padding: 10px 20px;
-    background-color: #1a1034;
-    color: #fff;
-    border-radius: 50px;
-    z-index: 1000;
-    opacity: 0;
-    transform: translateX(100%);
-    transition: opacity 0.5s, transform 0.5s;
-}
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #1a1034;
+            color: #fff;
+            border-radius: 50px;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: opacity 0.5s, transform 0.5s;
+        }
 
-.go-to-cart.show {
-    opacity: 1;
-    transform: translateX(0);
-}
-.go-to-cart:hover {
-    background-color: #352e66; /* Couleur de fond au survol */
-}
+        .go-to-cart.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
 
-@keyframes fadeInRight {
-    0% {
-        opacity: 0;
-        transform: translateX(100%);
+        .go-to-cart:hover {
+            background-color: #352e66;
+            /* Couleur de fond au survol */
+        }
+
+        @keyframes fadeInRight {
+            0% {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .fade-in-right {
+            animation: fadeInRight 0.6s ease-out;
+        }
+
+        .btn-go-to-cart {
+            transition: opacity 0.6s ease-out;
+        }
+
+        .product-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background-color: white;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .product-item img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .product-details {
+            flex: 1;
+            margin-left: 15px;
+        }
+
+        .product-details h5 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #1a1034;
+        }
+
+        .product-details p {
+            font-size: 1rem;
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
+
+        .product-price {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .price {
+            font-size: 1rem;
+            color: #1e1136;
+            font-weight: bold;
+            margin-bottom: 10px;
+            justify-content: right;
+        }
+
+        .btn-add-to-cart {
+            width: 60%;
+            background-color: #1e1136;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+            justify-content: right;
+        }
+
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+
+            /* Keep the flex layout for smaller screens */
+            .product-item {
+                flex-direction: row;
+                /* Keep horizontal layout */
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            /* Adjust image size for smaller screens */
+            .product-item img {
+                width: 80px;
+                /* Smaller image width */
+                height: 80px;
+            }
+
+            /* Adjust text alignment */
+            .product-details {
+                margin-left: 10px;
+            }
+
+            .product-price {
+                margin-left: auto;
+            }
+
+
+
+            .btn-add-to-cart {
+                width: 60%;
+                background: linear-gradient(45deg, #1a1034, #524b82);
+                color: white;
+                margin-left: 30%;
+                border-radius: 25px;
+                font-size: 1rem;
+                transition: background-color 0.3s ease;
+                justify-content: right;
+            }
+        }
+
+        @media (max-width: 768px) {
+        .card-title {
+            font-size: 1.2rem; /* Ajuster la taille de la police sur mobile */
+        }
+        .card-header {
+            padding: 8px; /* Ajuster le padding des en-têtes sur mobile */
+        }
+        .icon-right {
+            font-size: 0.8rem; /* Ajuster la taille de l'icône sur mobile */
+        }
     }
-    100% {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-.fade-in-right {
-    animation: fadeInRight 0.6s ease-out;
-}
-
-.btn-go-to-cart {
-    transition: opacity 0.6s ease-out;
-}
-
     </style>
 </head>
 
@@ -791,63 +899,55 @@
         </div>
     </nav>
 
-    <div class="card mb-0">
-        <img src="{{ asset('assets/images/post/post1.jpg') }}" class="card-img-top" alt="...">
-        <div class="card-body">
-
-
-            <h5 class="card-title" style="color: linear-gradient(45deg, #1a1034, #524b82);">{{ $restaurant->name }}
+    <div class="card mb-0 w-100" style="height: 100vh;">
+        <img src="{{ asset('assets/images/post/post1.jpg') }}" class="card-img-top" alt="..." style="object-fit: cover; width: 100%; height: 50%;">
+        <div class="card-body" style="height: 50%; display: flex; flex-direction: column; justify-content: space-between;">
+            <h5 class="card-title" style="color: linear-gradient(45deg, #1a1034, #524b82); font-size: 1.5rem;">
+                {{ $restaurant->name }}
             </h5>
-            <div class="accordion" id="menuAccordion">
+            <div class="accordion" id="menuAccordion" style="flex-grow: 1;">
                 <div class="card bordered-section">
-                    <button class="btn btn-link btn-block text-left" style="width: 100%" type="button"
-                        data-toggle="modal" data-target="#modalExcellent">
+                    <button class="btn btn-link btn-block text-left" type="button" data-toggle="modal" data-target="#modalExcellent">
                         <div class="card-header" id="headingExcellent">
-                            <i class="fa fa-star" style="color: #1a1034;"></i> <span
-                                style="margin-left: 10px ;color: #1a1034;">4.7 - Excellent</span>
+                            <i class="fa fa-star" style="color: #1a1034;"></i>
+                            <span style="margin-left: 10px; color: #1a1034;">4.7 - Excellent</span>
                             <br>38 notes
                             <i class="fas fa-chevron-right icon-right" style="color: #1a1034;"></i>
                         </div>
                     </button>
                 </div>
-                <!-- Bouton pour ouvrir le modal -->
                 <div class="card bordered-section">
-                    <button class="btn btn-link btn-block text-left" style="width: 100%" type="button"
-                        data-toggle="modal" data-target="#modalInfo">
+                    <button class="btn btn-link btn-block text-left" type="button" data-toggle="modal" data-target="#modalInfo">
                         <div class="card-header" id="headingInfo">
-                            <i class="fa fa-info-circle" style="color: #1a1034;"></i> <span
-                                style="margin-left: 10px;">Info</span>
+                            <i class="fa fa-info-circle" style="color: #1a1034;"></i>
+                            <span style="margin-left: 10px;">Info</span>
                             <br>Téléphone et Adresse
                             <i class="fas fa-chevron-right icon-right" style="color: #1a1034;"></i>
                         </div>
                     </button>
                 </div>
-
                 <div class="card bordered-section">
-                    <button class="btn btn-link btn-block text-left" type="button" data-toggle="modal"
-                        data-target="#modalPlats">
+                    <button class="btn btn-link btn-block text-left" type="button" data-toggle="modal" data-target="#modalPlats">
                         <div class="card-header" id="headingOne">
-                            <i class="fa fa-utensils" style="color: #1a1034;"></i> <span
-                                style="margin-left: 10px;">Menus et Plats</span>
+                            <i class="fa fa-utensils" style="color: #1a1034;"></i>
+                            <span style="margin-left: 10px;">Menus et Plats</span>
                         </div>
                     </button>
                 </div>
-
                 <div class="card bordered-section">
-                    <button class="btn btn-link btn-block text-left" type="button" data-toggle="modal"
-                        data-target="#modalPizzas">
+                    <button class="btn btn-link btn-block text-left" type="button" data-toggle="modal" data-target="#modalPizzas">
                         <div class="card-header" id="headingTwo" style="color: #1a1034;">
-                            <i class="fa fa-calendar"></i> <span style="margin-left: 10px;">Réservation</span>
+                            <i class="fa fa-calendar"></i>
+                            <span style="margin-left: 10px;">Réservation</span>
                         </div>
                     </button>
                 </div>
-
             </div>
-            <button class="btn btn-block mt-3" style="background-color: #1a1034;"><span style="color: #ddd">Évaluez
-                    votre expérience</span></button>
+            <button class="btn btn-block mt-3" style="background-color: #1a1034;">
+                <span style="color: #ddd">Évaluez votre expérience</span>
+            </button>
         </div>
     </div>
-
     <!-- Modal Excellent -->
     <div class="modal fade" id="modalExcellent" tabindex="-1" role="dialog" aria-labelledby="modalExcellentLabel"
         aria-hidden="true">
@@ -988,8 +1088,6 @@
                         </ul>
                     </div>
 
-
-
                 </div>
                 <div class="modal-body">
                     <div id="sidebar" class="sidebar">
@@ -1025,63 +1123,35 @@
                             </a>
                         </div>
                         @foreach ($plats as $plat)
-                            <div class="menu-item filter-{{ $plat->category_id }}">
-                                <div class="menu-details row align-items-center">
-                                    <!-- Partie gauche avec le nom et la description du plat -->
-                                    <div class="col-md-8">
-                                        <h5>{{ $plat->name }}</h5>
-                                        <p style="color: #7e7e7e">{{ $plat->description }}</p>
-                                    </div>
-
-                                    <!-- Partie droite avec l'image, le prix et les boutons -->
-                                    <div class="col-md-4 d-flex align-items-center justify-content-between">
-                                        <!-- Image du plat -->
-                                        <img src="{{ asset('storage/' . $plat->image_url) }}" alt="Image du plat"
-                                            class="rounded img-fluid plat-image mb-2 mb-md-0"
-                                            style="max-width: 90px; max-height: 90px;">
-
-                                        <!-- Prix du plat aligné à droite de l'image -->
-                                        <p class="prix ms-3 mb-0"
-                                            style="font-size: 0.8rem; font-family: Arial, Helvetica, sans-serif; font-weight: bold;">
-                                            {{ $plat->price }} Fcfa
-                                        </p>
-
-                                        <!-- Bouton pour ajouter au panier -->
-                                        <button class="btn btn-primary btn-add-to-cart ms-2"
-                                            data-plat-id="{{ $plat->id }}"
-                                            data-restaurant-id="{{ $restaurant->id }}">
-                                            <strong>
-                                                <svg style="color: #1a1034;" xmlns="http://www.w3.org/2000/svg"
-                                                    width="16" height="16" fill="currentColor"
-                                                    class="bi bi-plus-lg" viewBox="0 0 16 16">
-                                                    <path fill-rule="evenodd"
-                                                        d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" />
-                                                </svg>
-                                            </strong>
-                                        </button>
-
-                                        <!-- Groupe de boutons pour ajuster la quantité -->
-                                        <div class="wrapper d-none quantity-controls ms-auto d-inline-flex align-items-center justify-content-between p-2"
-                                            data-plat-id="{{ $plat->id }}"
-                                            style="background: linear-gradient(45deg, #1a1034, #524b82); width: 120px; border-radius: 10%">
-                                            <span class="minus btn-decrease-quantity"
-                                                style="color: #fff; cursor: pointer; padding: 0.1rem;"
-                                                data-plat-id="{{ $plat->id }}"
-                                                data-restaurant-id="{{ $restaurant->id }}">-</span>
-                                            <span class="num quantity-text text-center"
-                                                id="quantity-{{ $plat->id }}"
-                                                style="color: #fff; margin: 0 5px;">1</span>
-                                            <span class="plus btn-increase-quantity"
-                                                style="color: #fff; cursor: pointer; padding: 0.1rem;"
-                                                data-plat-id="{{ $plat->id }}"
-                                                data-restaurant-id="{{ $restaurant->id }}">+</span>
-                                        </div>
-
-                                    </div>
+                            <div class="product-item menu-item filter-{{ $plat->category_id }}">
+                                <img src="{{ asset('storage/' . $plat->image_url) }}" alt="Image du plat"
+                                    class="rounded img-fluid plat-image mb-2 mb-md-0"
+                                    style="max-width: 90px; max-height: 90px;">
+                                <div class="product-details">
+                                    <h5>{{ $plat->name }}</h5>
+                                    <p>{{ $plat->description }}.</p>
                                 </div>
+                                <div class="product-price">
+                                    <p class="price">{{ $plat->price }} F</p>
+                                    <button class="btn btn-add-to-cart" data-plat-id="{{ $plat->id }}"
+                                        data-restaurant-id="{{ $restaurant->id }}"><svg
+                                            xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            fill="currentColor" class="bi bi-basket2-fill" viewBox="0 0 16 16">
+                                            <path
+                                                d="M5.929 1.757a.5.5 0 1 0-.858-.514L2.217 6H.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h.623l1.844 6.456A.75.75 0 0 0 3.69 15h8.622a.75.75 0 0 0 .722-.544L14.877 8h.623a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1.717L10.93 1.243a.5.5 0 1 0-.858.514L12.617 6H3.383zM4 10a1 1 0 0 1 2 0v2a1 1 0 1 1-2 0zm3 0a1 1 0 0 1 2 0v2a1 1 0 1 1-2 0zm4-1a1 1 0 0 1 1 1v2a1 1 0 1 1-2 0v-2a1 1 0 0 1 1-1" />
+                                        </svg></button>
 
-                                <hr>
+                                    <div class="quantity-controls d-none" data-plat-id="{{ $plat->id }}">
+                                        <button class="btn btn-decrease" data-plat-id="{{ $plat->id }}"
+                                            data-restaurant-id="{{ $restaurant->id }}">-</button>
+                                        <span id="quantity-{{ $plat->id }}" class="quantity">1</span>
+                                        <button class="btn btn-increase" data-plat-id="{{ $plat->id }}"
+                                            data-restaurant-id="{{ $restaurant->id }}">+</button>
+                                    </div>
+
+                                </div>
                             </div>
+                            <hr>
                         @endforeach
                     </div>
 
@@ -1164,26 +1234,14 @@
             </div>
         </div>
     </div>
-    {{-- @if (request()->query('success') == 'true')
-    <div class="alert alert-success solid alert-dismissible fade show">
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="btn-close">
-            <span><i class="fa-solid fa-xmark"></i></span>
-        </button>
-        <div class="media">
-            <div class="media-body">
-                <h5 class="mt-1 mb-2 text-white">Informations</h5>
-                <p class="mb-0">Pour connaitre le temps de préparation de votre commande, vous pouvez suivre le minuteur dans la section Infos. <br>Bon appétit à l'avance !</p>
-            </div>
-        </div>
-    </div>
-@endif --}}
-
 
 
     <a href="{{ url('cart/' . $restaurant->id) }}" class="btn btn-primary go-to-cart d-none">
-        Valider <svg style="margin-left: 2%" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart-dash-fill" viewBox="0 0 16 16">
-            <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0m7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0M6.5 7h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1 0-1"/>
-          </svg>
+        Valider <svg style="margin-left: 2%" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+            fill="currentColor" class="bi bi-cart-dash-fill" viewBox="0 0 16 16">
+            <path
+                d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0m7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0M6.5 7h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1 0-1" />
+        </svg>
     </a>
 
 
@@ -1324,13 +1382,9 @@
                 success: function(response) {
                     $('#cart-quantity').text(response.cartCount);
 
-                    // Remplacez le bouton par le SVG
+                    // Remplacer le bouton par le SVG uniquement pour masquer le badge
                     $button.removeClass('btn btn-primary')
-                        .addClass('badge badge-info')
-                        .html(
-                            '<svg style="color: #000" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16"><path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/></svg>'
-                        )
-                        .prop('disabled', true);
+                        .addClass('d-none'); // Masquer le bouton d'ajout au panier
 
                     // Affichez les contrôles de quantité
                     $('.quantity-controls[data-plat-id="' + platId + '"]').removeClass('d-none');
@@ -1339,10 +1393,8 @@
                     if (response.cartCount > 0) {
                         $('.go-to-cart')
                             .removeClass('d-none')
-                            .addClass('fade-in-right show')
-                            .removeClass('d-none'); // Assurez-vous que 'd-none' n'est pas ajouté ici
+                            .addClass('fade-in-right show');
                     }
-
 
                     Swal.fire({
                         icon: 'success',
@@ -1352,6 +1404,7 @@
                         showConfirmButton: false
                     });
                 },
+
                 error: function(xhr, status, error) {
                     console.error(xhr.responseText);
                     Swal.fire({
@@ -1364,8 +1417,7 @@
         });
 
 
-        // Gestion de l'augmentation de la quantité
-        $(document).on('click', '.btn-increase-quantity', function(e) {
+        $(document).on('click', '.btn-increase', function(e) {
             e.preventDefault();
 
             var platId = $(this).data('plat-id');
@@ -1378,14 +1430,14 @@
                     _token: '{{ csrf_token() }}',
                     id: platId,
                     restaurant_id: restaurantId,
-                    quantity: 1
+                    quantity: 1 // Augmentation de 1
                 },
                 success: function(response) {
+                    // Mise à jour de la quantité dans le DOM
                     var quantity = parseInt($('#quantity-' + platId).text()) + 1;
                     $('#quantity-' + platId).text(quantity);
                 },
                 error: function(xhr, status, error) {
-                    console.error(xhr.responseText);
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -1395,15 +1447,12 @@
             });
         });
 
-        // Gestion de la diminution de la quantité
-        $(document).on('click', '.btn-decrease-quantity', function(e) {
+
+        $(document).on('click', '.btn-decrease', function(e) {
             e.preventDefault();
 
             var platId = $(this).data('plat-id');
             var restaurantId = $(this).data('restaurant-id');
-
-            console.log('Plat ID:', platId); // Débogage
-            console.log('Restaurant ID:', restaurantId); // Débogage
 
             $.ajax({
                 url: '{{ route('update.cart.quantity') }}',
@@ -1412,7 +1461,7 @@
                     _token: '{{ csrf_token() }}',
                     id: platId,
                     restaurant_id: restaurantId,
-                    quantity: -1
+                    quantity: -1 // Diminution de 1
                 },
                 success: function(response) {
                     var quantity = parseInt($('#quantity-' + platId).text()) - 1;
@@ -1420,20 +1469,18 @@
                     if (quantity > 0) {
                         $('#quantity-' + platId).text(quantity);
                     } else {
-                        console.log('Masquage des contrôles de quantité pour le plat ID:', platId);
+                        // Si la quantité tombe à 0, cacher les contrôles et réactiver le bouton d'ajout au panier
                         $('.quantity-controls[data-plat-id="' + platId + '"]').addClass('d-none');
 
-                        $('.btn-add-to-cart[data-plat-id="' + platId + '"]').removeClass(
-                                'badge badge-info')
+                        // Remettre le bouton initial d'ajout au panier
+                        var $button = $('.btn-add-to-cart[data-plat-id="' + platId + '"]');
+                        $button.removeClass('badge badge-info')
                             .addClass('btn btn-primary')
-                            .html(
-                                '<strong><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/></svg></strong>'
-                            )
+                            .html('<strong>+</strong>')
                             .prop('disabled', false);
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.error(xhr.responseText);
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',

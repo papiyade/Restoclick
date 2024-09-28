@@ -11,19 +11,22 @@
                 </div>
 
                 <div>
-                    <a href="{{ route('admin.plats.create') }}"><button type="button" class="btn btn-success"><span class="btn-icon-start text-info"><i class="fa fa-plus color-info"></i></span>Ajouter</button></a>
+                    <a href="{{ route('admin.plats.create') }}">
+                        <button type="button" class="btn btn-success">
+                            <span class="btn-icon-start text-info">
+                                <i class="fa fa-plus color-info"></i>
+                            </span>
+                            Ajouter
+                        </button>
+                    </a>
                 </div>
             </div>
 
-            <!-- Conteneur flex pour aligner la recherche et le tri -->
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <!-- Barre de recherche -->
                 <div class="form-group" style="margin-bottom: 0;">
                     <input type="text" id="searchInput" class="form-control" style="width: 100%; margin-left: 20%;" placeholder="Rechercher un plat...">
-
                 </div>
 
-                <!-- Sélecteur de tri -->
                 <form style="width: 30%;" action="{{ route('admin.plats.trier') }}" method="GET">
                     <div class="input-group">
                         <select class="default-select form-control wide bleft" name="tri" id="tri">
@@ -72,7 +75,7 @@
                                     <td> {{$plat->preparation_time}} min </td>
                                     <td>
                                         @if ($plat->image_url)
-                                            <img src="{{ asset('storage/' . $plat->image_url) }}" alt="Image du plat" style="max-width: 100px;">
+                                            <img class="rounded" src="{{ asset('storage/' . $plat->image_url) }}" alt="Image du plat" style="max-width: 100px;">
                                         @else
                                             Aucune image
                                         @endif
@@ -91,7 +94,7 @@
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce plat ?')">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                                                    <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
+                                                    <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0v-8.5a.5.5 0 0 0-.5-.5"/>
                                                 </svg>
                                             </button>
                                         </form>
@@ -100,20 +103,53 @@
                             @endforeach
                         @else
                             <tr>
-                                <td colspan="6">Aucun plat trouvé.</td>
+                                <td colspan="8" class="text-center">Aucun plat trouvé.</td>
                             </tr>
                         @endif
                     </tbody>
                 </table>
 
-                <!-- Contrôles de pagination -->
-                <div id="paginationControls" class="mt-3 d-flex justify-content-center"></div>
+               <!-- Contrôles de pagination -->
+               <div id="paginationControls" class="mt-3 d-flex justify-content-center"></div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Script de recherche instantanée et pagination -->
+@section('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        const platsTable = document.getElementById('platsTable');
+        const rows = platsTable.querySelectorAll('tbody tr');
+
+        searchInput.addEventListener('keyup', function() {
+            const filter = searchInput.value.toLowerCase();
+
+            rows.forEach(row => {
+                const cells = row.getElementsByTagName('td');
+                let found = false;
+
+                for (let i = 0; i < cells.length; i++) {
+                    const cell = cells[i];
+                    if (cell) {
+                        if (cell.textContent.toLowerCase().indexOf(filter) > -1) {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (found) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    });
+</script>
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const searchInput = document.getElementById("searchInput");
@@ -161,41 +197,41 @@
         }
 
         // Fonction de recherche
-        searchInput.addEventListener("keyup", function() {
-            const filter = searchInput.value.toLowerCase();
-            const rows = platsTable.getElementsByTagName("tr");
+        // searchInput.addEventListener("keyup", function() {
+        //     const filter = searchInput.value.toLowerCase();
+        //     const rows = platsTable.getElementsByTagName("tr");
 
-            platsTotaux = 0;
+        //     platsTotaux = 0;
 
-            for (let i = 0; i < rows.length; i++) {
-                const row = rows[i];
-                const cells = row.getElementsByTagName("td");
+        //     for (let i = 0; i < rows.length; i++) {
+        //         const row = rows[i];
+        //         const cells = row.getElementsByTagName("td");
 
-                let matchFound = false;
-                for (let j = 0; j < cells.length; j++) {
-                    if (cells[j]) {
-                        const cellValue = cells[j].textContent || cells[j].innerText;
-                        if (cellValue.toLowerCase().indexOf(filter) > -1) {
-                            matchFound = true;
-                            break;
-                        }
-                    }
-                }
+        //         let matchFound = false;
+        //         for (let j = 0; j < cells.length; j++) {
+        //             if (cells[j]) {
+        //                 const cellValue = cells[j].textContent || cells[j].innerText;
+        //                 if (cellValue.toLowerCase().indexOf(filter) > -1) {
+        //                     matchFound = true;
+        //                     break;
+        //                 }
+        //             }
+        //         }
 
-                if (matchFound) {
-                    row.style.display = "";
-                    platsTotaux++;
-                } else {
-                    row.style.display = "none";
-                }
-            }
+        //         if (matchFound) {
+        //             row.style.display = "";
+        //             platsTotaux++;
+        //         } else {
+        //             row.style.display = "none";
+        //         }
+        //     }
 
-            afficherPage(1);
-        });
+        //     afficherPage(1);
+        // });
 
         // Afficher la première page au chargement
         afficherPage(pageActuelle);
     });
 </script>
-
+@endsection
 @endsection

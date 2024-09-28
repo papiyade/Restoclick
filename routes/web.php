@@ -114,6 +114,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
         Route::middleware([CaissierMiddleware::class])->group(function () {
             Route::get('caissier/commandes/index', [CaissierController::class, 'index'])->name('caissier.commandes.index');
+            Route::get('caissier/commandes/{id}', [OrderController::class, 'show'])->name('caissier.commandes.show');
+
         });
 
     Route::middleware([ServeurMiddleware::class])->group(function () {
@@ -196,6 +198,11 @@ Route::get('/serveur/calendrier', function () {
 
     // Routes de l'Admin
     Route::middleware([AdminMiddleware::class])->group(function () {
+        Route::get('/notifications/unread', [NotificationController::class, 'getUnreadNotifications'])->name('notifications.unread');
+        Route::get('/notifications/read/{id}', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+
+
+
         Route::get('admin/categories', [CategoryController::class, 'index'])->name('admin.categories.index');
         Route::get('admin/categories/create', [CategoryController::class, 'create'])->name('admin.categories.create');
         Route::post('admin/categories', [CategoryController::class, 'store'])->name('admin.categories.store');

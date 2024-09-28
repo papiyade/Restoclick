@@ -52,19 +52,18 @@ class PlatController extends Controller
     // Enregistrer un nouveau plat dans la base de données
     public function store(Request $request)
     {
-        // Validation des données du formulaire
+
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validation de l'image
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'availability' => 'required|in:available,unavailable',
-            'category_id' => 'required|exists:categories,id', // Validation de la catégorie
-            'preparation_time' => 'nullable|integer|min:1', // Validation du champ preparation_time
+            'category_id' => 'required|exists:categories,id',
+            'preparation_time' => 'nullable|integer|min:1',
 
         ]);
 
-        // Récupérer l'utilisateur connecté
         $user = Auth::user();
 
         // Vérifier si l'utilisateur est connecté et associé à un restaurant
@@ -78,12 +77,10 @@ class PlatController extends Controller
                 $plat->image_url = $imagePath;
             }
 
-            // Associer le plat au restaurant de l'admin
             $plat->restaurant_id = $user->restaurant->id;
 
             $plat->save();
 
-            // Rediriger avec un message de succès
             return redirect()->route('admin.plats.index')->with('success', 'Plat créé avec succès.');
         } else {
             // Rediriger avec un message d'erreur
