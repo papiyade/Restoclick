@@ -38,7 +38,7 @@
             margin-bottom: 8px;
         }
 
-        h1, h2 {
+        h1, h2{
             text-align: center;
             color: #333;
         }
@@ -118,7 +118,7 @@
 <body>
 
 <!-- Header Section with Logo and Contact Info -->
-<div class="header">
+<div class="header d-flex justify-content-between">
     <div class="header-left">
         @if ($menu->restaurant->logo)
             <img src="{{ public_path('storage/' . $menu->restaurant->logo) }}" alt="Logo" class="img-thumbnail mt-2">
@@ -128,14 +128,14 @@
         <p>{{ $menu->restaurant->address }}</p>
     </div>
     <div class="header-right">
-        <p><strong>Téléphone:</strong> {{ $menu->restaurant->phone_number }}</p>
+        <p><strong>Téléphone:</strong> {{ $menu->restaurant->phone_number}}</p>
         <p><strong>Email:</strong> {{ $menu->restaurant->email }}</p>
     </div>
 </div>
 
 <!-- Menu Title and Description -->
 <h1>{{ $menu->name }}</h1>
-<p>{{ $menu->description }}</p>
+<p style="text-align: center">{{ $menu->description }}</p>
 
 <!-- Category and Dish Listing -->
 @foreach ($categories as $category)

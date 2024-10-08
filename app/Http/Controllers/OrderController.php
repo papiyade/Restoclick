@@ -104,6 +104,103 @@ class OrderController extends Controller
         ]);
     }
 
+    // public function commander(Request $request)
+    // {
+    //     try {
+    //         // Validation des données de la requête
+    //         $validatedData = $request->validate([
+    //             'client_name' => 'required|string',
+    //             'telephone_client' => 'required|string',
+    //             'restaurant_id' => 'required|exists:restaurants,id',
+    //             'mode_paiement' => 'required|in:carte_credit,wave,om,especes',
+    //             'code_pin' => 'nullable|string|max:255',
+    //             'mode_commande' => 'required|in:à emporter,sur place',
+    //             'table_id' => 'nullable|exists:tables,id'
+    //         ]);
+
+    //         $restaurantId = $validatedData['restaurant_id'];
+    //         $cartKey = "cart_$restaurantId";
+    //         $cart = session()->get($cartKey);
+
+    //         if (empty($cart)) {
+    //             throw new \Exception('Le panier est vide ou invalide.');
+    //         }
+
+    //         // Création de la commande
+    //         $commande = new Commande();
+    //         $commande->restaurant_id = $restaurantId;
+    //         $commande->client_name = $validatedData['client_name'];
+    //         $commande->telephone_client = $validatedData['telephone_client'];
+    //         $commande->mode_commande = $validatedData['mode_commande'];
+
+    //         if ($validatedData['mode_commande'] == 'sur place' && $validatedData['table_id']) {
+    //             $commande->table_id = $validatedData['table_id'];
+
+    //             // Marquer la table comme occupée
+    //             $table = Table::find($validatedData['table_id']);
+    //             $table->marquerCommeOccupee();
+    //         }
+
+    //         $commande->save();
+
+    //         // Calcul du temps total de préparation
+    //         $plats = Plat::whereIn('id', array_keys($cart))->get();
+    //         $totalOrderPrice = 0;
+    //         $totalPreparationTime = 0;
+
+    //         foreach ($plats as $plat) {
+    //             $quantity = $cart[$plat->id]['quantity'];
+    //             $totalOrderPrice += $plat->price * $quantity;
+    //             $totalPreparationTime += $plat->preparation_time * $quantity;
+
+    //             $detailCommande = new DetailCommande();
+    //             $detailCommande->commande_id = $commande->id;
+    //             $detailCommande->plat_id = $plat->id;
+    //             $detailCommande->quantite = $quantity;
+    //             $detailCommande->save();
+    //         }
+
+    //         // Calculer la moyenne du temps de préparation
+    //         $totalQuantity = array_sum(array_column($cart, 'quantity'));
+    //         $averagePreparationTime = $totalQuantity > 0 ? $totalPreparationTime / $totalQuantity : 0;
+
+    //         $expirationTime = now()->addMinutes($averagePreparationTime)->toIso8601String();
+    //         session()->put('timer_expiration_time', $expirationTime);
+
+
+    //         // Enregistrement du paiement
+    //         $paiement = new Paiement();
+    //         $paiement->commande_id = $commande->id;
+    //         $paiement->montant = $totalOrderPrice;
+    //         $paiement->date_heure = now();
+    //         $paiement->mode_paiement = $validatedData['mode_paiement'];
+    //         if ($validatedData['mode_paiement'] != 'especes') {
+    //             $paiement->cc_number = $validatedData['code_pin'];
+    //         }
+    //         $paiement->save();
+
+    //         // Création de la notification
+    //         Notification::create([
+    //             'client_name' => $validatedData['client_name'],
+    //             'client_phone_number' => $validatedData['telephone_client'],
+    //             'date_time' => now(),
+    //             'num_people' => 1,
+    //             'message' => "{$validatedData['client_name']} vient de passer une commande.",
+    //             'link' => route('admin.commandes.show', $commande->id),
+    //             'is_read' => false,
+    //             'restaurant_id' => $restaurantId,
+    //         ]);
+
+    //         // Redirection vers la page du restaurant après la commande
+    //         return redirect()->route('restaurant.showById', ['id' => $restaurantId])
+    //             ->with('success', 'Commande enregistrée avec succès!');
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Erreur lors de l\'enregistrement de la commande: ' . $e->getMessage(),
+    //         ]);
+    //     }
+    // }
     public function commander(Request $request)
     {
         try {
@@ -167,7 +264,6 @@ class OrderController extends Controller
             $expirationTime = now()->addMinutes($averagePreparationTime)->toIso8601String();
             session()->put('timer_expiration_time', $expirationTime);
 
-
             // Enregistrement du paiement
             $paiement = new Paiement();
             $paiement->commande_id = $commande->id;
@@ -191,6 +287,9 @@ class OrderController extends Controller
                 'restaurant_id' => $restaurantId,
             ]);
 
+            // Vider le panier de la session
+            session()->forget($cartKey); // Vide le panier après la commande
+
             // Redirection vers la page du restaurant après la commande
             return redirect()->route('restaurant.showById', ['id' => $restaurantId])
                 ->with('success', 'Commande enregistrée avec succès!');
@@ -201,6 +300,8 @@ class OrderController extends Controller
             ]);
         }
     }
+
+
 
     public function downloadPDF($id)
     {

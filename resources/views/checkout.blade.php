@@ -28,6 +28,57 @@
             background-color: #2d2d2d;
             /* Remplacez par la couleur de votre choix */
         }
+
+           /* Définition de l'animation */
+    @keyframes moveIcon {
+        0% {
+            transform: translateX(0);
+        }
+        50% {
+            transform: translateX(30px); /* Déplacement à droite */
+        }
+        70% {
+            transform: translateX(-10px); /* Dépassement léger à gauche */
+        }
+        100% {
+            transform: translateX(0); /* Retour à la position initiale */
+        }
+    }
+
+    /* Application de l'animation à l'icône */
+    .animated-icon {
+        animation: moveIcon 4s ease-in-out infinite; /* Animation continue */
+    }
+
+        /* Animation pour le fade-in (apparition en fondu) */
+        .fade-in {
+        animation: fadeIn 1s forwards;
+    }
+
+    /* Animation pour le fade-out (disparition en fondu) */
+    .fade-out {
+        animation: fadeOut 1s forwards;
+    }
+
+    /* Animation pour cacher en fondu */
+    @keyframes fadeOut {
+        from {
+            opacity: 1;
+        }
+        to {
+            opacity: 0;
+        }
+    }
+
+    /* Animation pour faire apparaître en fondu */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
     </style>
 
 </head>
@@ -71,162 +122,7 @@
             </div>
         </div>
     </nav>
-    {{-- <div class="container" style="margin-top: 30px;">
-        <h2 class="mt-10">Validation de la commande</h2>
 
-        <div class="card-body">
-            <div class="row">
-                <div class="col-lg-4 order-lg-2 mb-4">
-                    <h4 class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="text-muted">Votre Panier</span>
-                        <span class="badge badge-primary badge-pill" style="background-color: rgb(160, 132, 16)">
-                            {{ count($cartItems) }}
-                        </span>
-                    </h4>
-                    <ul class="list-group mb-3">
-                        <!-- Titres des colonnes -->
-                        <li class="list-group-item d-flex justify-content-between">
-                            <div>
-                                <strong class="fs-4">Produit</strong>
-                            </div>
-                            <div class="d-flex flex-column align-items-end">
-                                <strong class="fs-4">Quantité</strong>
-                                <strong class="fs-6 text-muted">Prix</strong>
-                            </div>
-                        </li>
-
-                        @foreach ($cartItems as $item)
-                            <li class="list-group-item d-flex justify-content-between lh-condensed">
-                                <div>
-                                    <h6 class="my-0">{{ $item->name }}</h6>
-                                    <small class="text-muted">{{ $item->description }}</small>
-                                </div>
-                                <div class="d-flex flex-column align-items-end">
-                                    <strong class="">{{ $item->quantity }}</strong>
-                                    <span class="text-muted">{{ $item->price }} Fcfa</span>
-                                </div>
-                            </li>
-                        @endforeach
-                        <li class="list-group-item d-flex justify-content-between"
-                            style="background-color: rgb(160, 132, 16)">
-                            <span style="color: white">Total (Fcfa)</span>
-                            <strong style="color: white">{{ $totalPrice }} F</strong>
-                        </li>
-                    </ul>
-                </div>
-
-
-                <div class="col-lg-8 order-lg-1">
-                    <form id="orderForm" method="POST" action="{{ route('commander') }}">
-                        @csrf
-                        <input type="hidden" name="restaurant_id" value="{{ $restaurantId }}">
-                        <!-- Champs pour le nom du client et le numéro de téléphone -->
-                        <div class="mb-3">
-                            <label for="client_name" class="form-label">Nom Complet</label>
-                            <input type="text" style="width: 60%" class="form-control" id="client_name"
-                                name="client_name" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="telephone_client" class="form-label">Numéro de Téléphone</label>
-                            <input type="text" style="width: 60%" class="form-control" id="telephone_client"
-                                name="telephone_client" required>
-                        </div>
-                        <!-- Champ caché pour le panier (cart) -->
-                        <input type="hidden" name="cart" id="cartData" value="{{ json_encode($cartItems) }}">
-
-                        <div class="form-group">
-                            <h3>Mode de Paiement</h3>
-                            <div class="d-flex flex-wrap">
-                                <div class="form-check form-check-inline text-center mr-4">
-                                    <input style="margin-top: 89%" class="form-check-input" type="radio"
-                                        id="especes" name="mode_paiement" value="especes" required>
-                                    <label class="form-check-label" for="especes">
-                                        <img src="{{ asset('assets/images/espèce.png') }}" style="width: 65px;"
-                                            class="form-check-img" alt="Espèces">
-                                        <br>Espèces
-                                    </label>
-                                </div>
-                                <div class="form-check form-check-inline text-center mr-4">
-                                    <input style="margin-top: 60%" class="form-check-input" type="radio"
-                                        id="om" name="mode_paiement" value="om" required>
-                                    <label class="form-check-label" for="om">
-                                        <img src="{{ asset('assets/images/om.png') }}" style="width: 65px;"
-                                            class="form-check-img" alt="Orange Money">
-                                        <br>Orange Money
-                                    </label>
-                                </div>
-                                <div class="form-check form-check-inline text-center mr-4">
-                                    <input style="margin-top: 50%" class="form-check-input" type="radio"
-                                        id="wave" name="mode_paiement" value="wave" required>
-                                    <label class="form-check-label" for="wave">
-                                        <img src="{{ asset('assets/images/wave.png') }}" style="width: 130px;"
-                                            class="form-check-img" alt="Wave">
-                                        <br>Wave
-                                    </label>
-                                </div>
-                                <div class="form-check form-check-inline text-center mr-4">
-                                    <input style="margin-top: 56%" class="form-check-input" type="radio"
-                                        id="carte_credit" name="mode_paiement" value="carte_credit" required>
-                                    <label class="form-check-label" for="carte_credit">
-                                        <img src="{{ asset('assets/images/credit_card.png') }}" style="width: 65px;"
-                                            class="form-check-img" alt="Carte de Crédit">
-                                        <br>Carte de Crédit
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div id="code-pin-div" style="display:inline-block; margin-top:2%;" class="row">
-                            <label for="code_pin">Code</label>
-                            <input class="form-control" style="width: 60%;" type="text" id="code_pin"
-                                name="code_pin">
-                        </div>
-
-                        <div id="code-pin-div" style="display:none;">
-                            <label for="code_pin">Code Pin</label>
-                            <input class="form-control" style="width: 20%;" type="text" id="code_pin"
-                                name="code_pin">
-                        </div>
-
-                        <!-- Mode de commande -->
-                        <div class="form-group">
-                            <h3>Mode de Commande</h3>
-                            <div class="d-flex flex-wrap">
-                                <div class="form-check form-check-inline text-center mr-4">
-                                    <input style="margin-top: 5%" class="form-check-input" type="radio"
-                                        id="emporter" name="mode_commande" value="à emporter" required>
-                                    <label class="form-check-label" for="emporter">À emporter</label>
-                                </div>
-                                <div class="form-check form-check-inline text-center mr-4">
-                                    <input style="margin-top: 5%" class="form-check-input" type="radio"
-                                        id="sur_place" name="mode_commande" value="sur place" required>
-                                    <label class="form-check-label" for="sur_place">Sur place</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Sélection de table -->
-                        <div id="table-select" style="display: none;">
-                            <div class="form-group">
-                                <label for="table_id">Table</label>
-                                <select name="table_id" id="table_id" class="form-control">
-                                    @foreach ($tables as $table)
-                                        <option value="{{ $table->id }}">{{ $table->numero_table }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-                        <button style="background-color: #000" type="submit" class="btn btn-dark mt-3">Passer la
-                            commande</button>
-                    </form>
-                </div>
-                <div class="alert alert-success mt-4" id="success-alert" style="display: none;">
-                    <button type="button" class="close" data-dismiss="alert">&times;</button>
-                    <strong>Succès!</strong> La commande a été passée avec succès.
-                </div>
-            </div>
-        </div>
-    </div> --}}
 
     <div class="container" style="margin-top: 30px;">
         <h2 class="mt-10">Validation de la commande</h2>
@@ -271,6 +167,26 @@
                         </li>
                     </ul>
                 </div>
+
+<!-- Timer centré -->
+{{-- <div id="timer-container" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #524b82; color: white; padding: 40px 20px; border-radius: 20px; text-align: center; width: 300px; height: 300px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);">
+    <!-- Icône de plat avec animation -->
+    <div style="margin-bottom: 30px;">
+        <img src="{{ asset('assets/images/prime-time.png') }}" alt="Icone de plat" class="animated-icon" style="width: 100px; height: 100px;">
+    </div>
+
+    <!-- Timer centré en dessous -->
+    <div id="timer-text" class="fade-in" style="font-size: 28px; font-weight: bold;">
+        Temps restant : <span id="timer">--</span>
+    </div>
+
+    <!-- Texte 'Commande prête !' masqué par défaut -->
+    <div id="ready-text" class="fade-out" style="font-size: 28px; font-weight: bold; display: none;">
+        Commande prête !
+    </div>
+</div> --}}
+
+
 
                 <!-- Formulaire de validation de la commande -->
                 <div class="col-lg-8 order-lg-1">
@@ -373,70 +289,98 @@
     </div>
 
 
-    {{-- <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('input[name="mode_commande"]').on('change', function() {
-                if ($(this).val() === 'sur place') {
-                    $('#table-select').show();
-                } else {
-                    $('#table-select').hide();
-                }
-            });
-            $('#commandeForm').submit(function(event) {
-                event.preventDefault();
-                $.ajax({
-                    url: '{{ route('commander') }}',
-                    type: 'POST',
-                    data: $(this).serialize(),
-                    success: function(response) {
-                        $('#success-alert').fadeIn();
-                        $('#commandeForm')[0].reset();
-                    },
-                    error: function(xhr, status, error) {
-                        console.error(error);
-                        alert('Erreur lors de la soumission de la commande.');
-                    }
-                });
-            });
-        });
-    </script>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    <script>
-        // Vérifier s'il y a un message de succès dans la session (affiché après la redirection)
-        @if (session('success'))
-            Swal.fire({
-                icon: 'success',
-                title: 'Commande passée avec succès!',
-                showConfirmButton: false,
-                timer: 1500 // Durée de l'alerte en millisecondes
-            }).then(function() {
-                // Afficher l'alerte Bootstrap après la SweetAlert
-                document.getElementById('success-alert').style.display = 'block';
-
-                // Optionnel : Vous pouvez rediriger vers une autre page si nécessaire
-                // window.location.href = "{{ route('restaurant.showById', ['id' => $restaurant->id]) }}";
-            });
-        @endif
-    </script>
-
-    <script>
-        $(document).ready(function() {
-            $('input[name="mode_paiement"]').change(function() {
-                if ($(this).val() == 'om' || $(this).val() == 'wave' || $(this).val() == 'carte_credit') {
-                    $('#code-pin-div').show();
-                    $('#code_pin').attr('required', true);
-                } else {
-                    $('#code-pin-div').hide();
-                    $('#code_pin').removeAttr('required');
-                }
-            });
-        });
-    </script> --}}
     <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    {{-- <script>
+$(document).ready(function() {
+    // Fonction pour démarrer le timer
+    function startTimer(duration, display) {
+        var timer = duration, minutes, seconds;
+        var interval = setInterval(function() {
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+
+            // Formater les minutes et secondes pour avoir toujours deux chiffres
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            display.text(minutes + ":" + seconds); // Afficher le temps restant
+
+            if (--timer < 0) {
+                clearInterval(interval); // Arrêter le timer une fois terminé
+
+                // Faire disparaître le texte "Temps restant : ..." avec animation de fondu
+                $('#timer-text').fadeOut(2000, function() {
+                    // Afficher le texte "Commande prête !" après la disparition du timer
+                    $('#ready-text').fadeIn(2000);
+                });
+
+                // 5 secondes après que "Commande prête !" soit affiché, cacher le div du timer
+                setTimeout(function() {
+                    $('#timer-container').fadeOut(1000); // Disparition du div après 5 secondes
+                }, 5000);
+            }
+        }, 1000); // Décompte chaque seconde
+    }
+
+    // Gestion du formulaire de commande avec AJAX
+    $('#orderForm').submit(function(event) {
+        event.preventDefault();
+        $.ajax({
+            url: '{{ route('commander') }}',
+            type: 'POST',
+            data: $(this).serialize(),
+            success: function(response) {
+                if (response.success) {
+                    // Affichage de l'alerte SweetAlert
+                    Swal.fire({
+                        icon: 'success',
+                        title: response.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(function() {
+                        // Récupérer le temps de préparation dynamique depuis la réponse AJAX
+                        var preparationTime = Math.floor((new Date(response.timer_expiration_time).getTime() - new Date().getTime()) / 1000);
+
+                        // Afficher le timer après le succès
+                        $('#timer-container').fadeIn(); // Afficher le div du timer
+                        startTimer(preparationTime, $('#timer')); // Démarrer le timer avec le temps dynamique
+                    });
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error(error);
+                alert('Erreur lors de la soumission de la commande.');
+            }
+        });
+    });
+
+    // Gestion de la visibilité du champ Code Pin
+    $('input[name="mode_paiement"]').change(function() {
+        if ($(this).val() == 'om' || $(this).val() == 'wave' || $(this).val() == 'carte_credit') {
+            $('#code-pin-div').show();
+            $('#code_pin').attr('required', true);
+        } else {
+            $('#code-pin-div').hide();
+            $('#code_pin').removeAttr('required');
+        }
+    });
+
+    // Gestion de la visibilité de la sélection de table
+    $('input[name="mode_commande"]').on('change', function() {
+        if ($(this).val() === 'sur place') {
+            $('#table-select').show();
+        } else {
+            $('#table-select').hide();
+        }
+    });
+});
+
+    </script> --}}
+
     <script>
         $(document).ready(function() {
             // Vérifier s'il y a un message de succès dans la session (affiché après la redirection)
@@ -448,10 +392,11 @@
                     timer: 1500 // Durée de l'alerte en millisecondes
                 }).then(function() {
                     // Redirection après 3 secondes
-// Dans checkout.blade.php, après le SweetAlert
-setTimeout(function() {
-    window.location.href = "{{ route('restaurant.showById', ['id' => $restaurant->id]) }}?success=true";
-}, 3000); // 3000 millisecondes = 3 secondes
+                    // Dans checkout.blade.php, après le SweetAlert
+                    setTimeout(function() {
+                        window.location.href =
+                            "{{ route('restaurant.showById', ['id' => $restaurant->id]) }}?success=true";
+                    }, 3000); // 3000 millisecondes = 3 secondes
 
                 });
             @endif
@@ -473,7 +418,8 @@ setTimeout(function() {
                         }).then(function() {
                             // Redirection après 3 secondes
                             setTimeout(function() {
-                                window.location.href = "{{ route('restaurant.showById', ['id' => $restaurant->id]) }}?success=true";
+                                window.location.href =
+                                    "{{ route('restaurant.showById', ['id' => $restaurant->id]) }}?success=true";
                             }, 3000); // 3000 millisecondes = 3 secondes
                         });
                     },
@@ -505,6 +451,7 @@ setTimeout(function() {
             });
         });
     </script>
+
 
 
 </body>

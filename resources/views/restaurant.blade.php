@@ -318,35 +318,6 @@
             color: green;
         }
 
-        /* .btn-add-to-cart {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: white;
-            border: none;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            position: absolute;
-            bottom: 10px;
-            margin-left: 27%;
-            transition: transform 0.2s ease;
-        } */
-
-        /* .btn-add-to-cart:hover {
-            transform: scale(1.1);
-        } */
-
-        /* .btn-add-to-cart strong {
-            color: black;
-        } */
-
-        /* .btn-add-to-cart svg {
-            width: 24px;
-            height: 24px;
-        } */
-
 
         .position-absolute {
             position: absolute;
@@ -525,41 +496,7 @@
             pointer-events: none;
         }
 
-        .timer-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
 
-        .timer-circle {
-            position: relative;
-            width: 150px;
-            height: 150px;
-            background: #e0e0e0;
-            border-radius: 50%;
-            box-shadow: 9px 9px 16px #bebebe, -9px -9px 16px #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .timer-progress {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: conic-gradient(#524b82 0deg, #e0e0e0 0deg);
-            border-radius: 50%;
-            z-index: 1;
-            transition: background 0.5s linear;
-        }
-
-        .timer-text {
-            position: relative;
-            font-size: 1.5rem;
-            color: #1a1034;
-            font-weight: bold;
-            z-index: 2;
-        }
 
 
         .social-icons-container {
@@ -852,6 +789,43 @@
             font-size: 0.8rem; /* Ajuster la taille de l'icône sur mobile */
         }
     }
+
+
+    .timer-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.timer-circle {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    background: #e0e0e0;
+    border-radius: 50%;
+    box-shadow: 9px 9px 16px #bebebe, -9px -9px 16px #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.timer-progress {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: conic-gradient(#524b82 0deg, #e0e0e0 0deg);
+    border-radius: 50%;
+    z-index: 1;
+    transition: background 0.5s linear;
+}
+
+.timer-text {
+    position: relative;
+    font-size: 1.5rem;
+    color: #1a1034;
+    font-weight: bold;
+    z-index: 2;
+}
     </style>
 </head>
 
@@ -998,9 +972,9 @@
                                 Restaurant
                             </h6>
                             <hr>
-                            Votre commande vous sera livrée dans :
-                            <br>
-                            <div class="timer-container mt-4">
+
+                            <div class="timer-container mt-4 d-none" id="timer-container">
+                                <br>
                                 <div class="timer-circle">
                                     <div class="timer-progress" id="timer-progress"></div>
                                     <div class="timer-text" id="timer-text">00:00</div>
@@ -1010,6 +984,7 @@
 
 
 
+                            <br>
 
                             <div class="social-icons-container">
                                 <a href="https://www.facebook.com" class="circle" target="_blank">
@@ -1028,6 +1003,8 @@
                                     <i class="fab fa-youtube"></i>
                                 </a>
                             </div>
+
+                            <br>
 
                             <a href="https://www.google.com/search?q={{ urlencode($restaurant->name) }}+{{ urlencode($restaurant->address) }}&lrd=0x...#lrd=0xec1729ca1bf2a41:0x7c056ce772b26119,3,,,,"
                                 target="_blank" class="google-review-container">
@@ -1268,64 +1245,58 @@
     </script>
 
 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const expirationTime = '{{ session('timer_expiration_time') }}';
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Récupérer l'heure d'expiration depuis le backend (format ISO)
-            const expirationTime = '{{ session('timer_expiration_time') }}';
+        // Vérifier s'il existe un timer (commande passée)
+        if (expirationTime) {
+            // Afficher le conteneur du timer
+            const timerContainer = document.getElementById('timer-container');
+            timerContainer.classList.remove('d-none');
+            timerContainer.style.display = 'flex'; // ou 'block' selon votre design
 
-            if (expirationTime) {
-                const endTime = new Date(expirationTime).getTime();
-                const timerText = document.getElementById('timer-text');
-                const timerProgress = document.getElementById('timer-progress');
+            const endTime = new Date(expirationTime).getTime();
+            const timerText = document.getElementById('timer-text');
+            const timerProgress = document.getElementById('timer-progress');
+            const totalTime = endTime - new Date().getTime();
 
-                // Définir la durée totale en millisecondes
-                const totalTime = endTime - new Date().getTime();
+            function updateTimer() {
+                const now = new Date().getTime();
+                const timeRemaining = endTime - now;
 
-                // Fonction pour mettre à jour le minuteur
-                function updateTimer() {
-                    const now = new Date().getTime();
-                    const timeRemaining = endTime - now;
+                if (timeRemaining > 0) {
+                    const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+                    // Afficher le temps restant
+                    timerText.innerHTML = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 
-                    if (timeRemaining > 0) {
-                        const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-                        const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+                    // Calcul du pourcentage de temps écoulé
+                    const timeElapsedPercent = ((totalTime - timeRemaining) / totalTime) * 360;
+                    // Mettre à jour la progression du timer
+                    timerProgress.style.background = `conic-gradient(#524b82 ${timeElapsedPercent}deg, #e0e0e0 0deg)`;
+                } else {
+                    // Le temps est écoulé
+                    timerText.innerHTML = "00:00";
+                    timerProgress.style.background = "conic-gradient(#68b333 360deg, #68b333 0deg)";
+                    clearInterval(timerInterval);
 
-                        // Afficher les minutes et secondes
-                        timerText.innerHTML = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-
-                        // Calculer le pourcentage de temps écoulé
-                        const timeElapsedPercent = ((totalTime - timeRemaining) / totalTime) * 100;
-
-                        // Déterminer la couleur de dégradé en fonction du temps écoulé
-                        const startColor = [82, 75, 130]; // Mauve initial (en RGB)
-                        const endColor = [0, 128, 0]; // Vert final (en RGB)
-
-                        // Interpoler les couleurs entre startColor et endColor
-                        const currentColor = startColor.map((start, i) => {
-                            return Math.floor(start + (endColor[i] - start) * (timeElapsedPercent / 100));
-                        });
-
-                        // Appliquer le dégradé au cercle
-                        timerProgress.style.background =
-                            `conic-gradient(rgb(${currentColor[0]}, ${currentColor[1]}, ${currentColor[2]}) ${timeElapsedPercent}deg, #e0e0e0 0deg)`;
-                    } else {
-                        // Le temps est écoulé
-                        timerText.innerHTML = "00:00";
-                        timerProgress.style.background = "conic-gradient(#68b333 360deg, #68b333 0deg)"; // Vert
-                        clearInterval(timerInterval);
-                    }
+                    // Cacher le conteneur du timer
+                    timerContainer.classList.add('d-none');
+                    timerContainer.style.display = 'none';
                 }
-
-                // Lancer la mise à jour du minuteur immédiatement pour éviter l'attente d'une seconde
-                updateTimer();
-
-                // Mettre à jour le minuteur toutes les secondes
-                const timerInterval = setInterval(updateTimer, 1000);
-            } else {
-                console.error('Aucune heure d\'expiration trouvée dans la session.');
             }
-        });
+
+            // Démarrer immédiatement le minuteur
+            updateTimer();
+            const timerInterval = setInterval(updateTimer, 1000);
+        } else {
+            // Si aucune commande active, garder le conteneur caché
+            const timerContainer = document.getElementById('timer-container');
+            timerContainer.classList.add('d-none');
+            timerContainer.style.display = 'none';
+        }
+    });
     </script>
 
 
